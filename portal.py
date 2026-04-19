@@ -16,6 +16,8 @@ from pathlib import Path
 from adapters import (
     Info1Adapter, Pro2Adapter, MetaAdapter, Data2Adapter, Data7Adapter,
     InfoSystemsAdapter, AIAgentsAdapter, AutoAdapter,
+    GraphRAGAdapter, Daten22Adapter, LegalAdapter,
+    ContinuumAdapter, AIResearchAdapter,
 )
 from adapters.base import BaseAdapter, PortalEntry
 from adapters.conversation import ConversationAdapter
@@ -82,13 +84,18 @@ class PortalResult:
 class NautilusPortal:
     def __init__(self) -> None:
         self.adapters = {
-            "info1":       Info1Adapter(),
-            "pro2":        Pro2Adapter(),
-            "meta":        MetaAdapter(),
-            "data2":       Data2Adapter(),
-            "data7":       Data7Adapter(),
-            "infosystems":   InfoSystemsAdapter(),
-            "ai_agents":     AIAgentsAdapter(),
+            "info1":        Info1Adapter(),
+            "pro2":         Pro2Adapter(),
+            "meta":         MetaAdapter(),
+            "data2":        Data2Adapter(),
+            "data7":        Data7Adapter(),
+            "infosystems":  InfoSystemsAdapter(),
+            "ai_agents":    AIAgentsAdapter(),
+            "graphrag":     GraphRAGAdapter(),
+            "daten22":      Daten22Adapter(),
+            "legal":        LegalAdapter(),
+            "continuum":    ContinuumAdapter(),
+            "ai_research":  AIResearchAdapter(),
             "conversations": ConversationAdapter("docs"),
             "sessions":      ConversationAdapter("docs/sessions"),
         }
@@ -157,6 +164,68 @@ class NautilusPortal:
             cross_links=self._cross_links(all_entries),
             consensus=self._consensus(all_entries),
         )
+
+    def query_by_bridge(self, entry_id: str, max_hops: int = 1) -> "PortalResult":
+        """
+        Обход графа bridges из entry_id на глубину max_hops.
+        Использует transitive_closure из BridgeRegistry для определения
+        достижимых адаптеров, затем fetches их записи.
+        """
+        source_repo = entry_id.split(":")[0]
+        reachable = self._bridge_registry.transitive_closure(source_repo, max_hops)
+        target_repos = {b.get("target", "") for b in reachable if b.get("target")}
+
+        # Получить исходную запись
+        seed_entries: list[PortalEntry] = []
+        if source_repo in self.adapters:
+            seed_entries = self.adapters[source_repo].fetch("")
+        seed = next((e for e in seed_entries if e.id == entry_id), None)
+
+        # Fetch из достижимых адаптеров
+        query_hint = seed.title if seed else ""
+        all_entries: list[PortalEntry] = list(seed_entries) if seed else []
+        for repo in sorted(target_repos):
+            if repo in self.adapters:
+                all_entries.extend(self.adapters[repo].fetch(query_hint))
+
+        # Аннотируем cross_links мостовой информацией
+        cross = self._cross_links(all_entries)
+
+        return PortalResult(
+            query=f"bridge:{entry_id}±{max_hops}",
+            entries=all_entries,
+            cross_links=cross,
+            consensus=self._consensus(all_entries),
+        )
+
+    def bridge_conflicts(self) -> list[dict]:
+        """
+        Protocol 3: обнаружить конфликты между записями разных адаптеров.
+        Возвращает список конфликтов в виде dict (сериализуемо).
+        """
+        all_entries: list[PortalEntry] = []
+        for adapter in self.adapters.values():
+            try:
+                all_entries.extend(adapter.fetch(""))
+            except Exception:
+                pass
+        conflicts = self._bridge_registry.detect_conflicts(all_entries)
+        return [c.as_dict() for c in conflicts]
+
+    def bridge_summary(self) -> dict:
+        """Сводка bridges + transitive_closure для каждого адаптера."""
+        summary = self._bridge_registry.summary()
+        closure: dict[str, list] = {}
+        for name in self.adapters:
+            tc = self._bridge_registry.transitive_closure(name, max_hops=2)
+            if tc:
+                closure[name] = [
+                    {"target": b["target"], "hop": b.get("_hop", 1),
+                     "type": b.get("type", "?"), "confidence": b.get("confidence")}
+                    for b in tc
+                ]
+        summary["transitive_closure"] = closure
+        return summary
 
     def _cross_links(self, entries: list) -> list:
         links, seen = [], set()

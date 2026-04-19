@@ -62,6 +62,43 @@
       "format": "jsonl",
       "compatibility": 1,
       "note": "ChatGPT corpus archive — подключить JSONLAdapter после клонирования репо"
+    },
+    {
+      "repo": "svend4/infom",
+      "adapter": "graphrag",
+      "format": "graphrag",
+      "compatibility": 1,
+      "passport": "passports/graphrag.md"
+    },
+    {
+      "repo": "svend4/daten22",
+      "adapter": "daten22",
+      "format": "daten22",
+      "compatibility": 1,
+      "passport": "passports/daten22.md"
+    },
+    {
+      "repo": "svend4/soz150",
+      "adapter": "legal",
+      "format": "legal",
+      "compatibility": 1,
+      "passport": "passports/legal.md"
+    },
+    {
+      "repo": "svend4/meta1",
+      "adapter": "continuum",
+      "format": "continuum",
+      "compatibility": 1,
+      "passport": "passports/continuum.md"
+    },
+    {
+      "repo": "svend4/info3+info4+info30+info100",
+      "adapter": "ai_research",
+      "name": "ai_research",
+      "format": "ai_research",
+      "compatibility": 1,
+      "passport": "passports/ai_research.md",
+      "note": "Объединённый адаптер для info3, info4, info30, info100"
     }
   ],
   "consensus_threshold": 1.0,
