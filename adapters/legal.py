@@ -146,8 +146,8 @@ class LegalAdapter(BaseAdapter):
                         "language": "de",
                         "gdpr_contains_personal_data": False,
                     },
-                    links=["legal:legal:writing_os"],
-                    is_fallback=not bool(q),
+                    links=["legal:writing_os"],
+                    is_fallback=False,
                 ))
 
         # Поиск по правовым концептам
@@ -167,8 +167,8 @@ class LegalAdapter(BaseAdapter):
                         "language": "de",
                         "gdpr_contains_personal_data": gdpr,
                     },
-                    links=["legal:legal:writing_os"],
-                    is_fallback=not bool(q),
+                    links=["legal:writing_os"],
+                    is_fallback=False,
                 ))
 
         if not results:
@@ -176,9 +176,10 @@ class LegalAdapter(BaseAdapter):
             return fb
 
         if not q:
-            return [e for e in results if e.id in {
-                "legal:legal:writing_os", "legal:legal:sgb2"
-            } or not e.id.startswith("legal:legal:")][:5]
+            # Без запроса: все концепты + первые 2 инструментальных категории
+            concepts = [e for e in results if not e.id.startswith("legal:writing:")]
+            tools = [e for e in results if e.id.startswith("legal:writing:")][:2]
+            return concepts + tools
 
         return results[:8]
 

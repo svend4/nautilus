@@ -103,8 +103,8 @@ class Daten22Adapter(BaseAdapter):
                     format_type="concept",
                     content=desc,
                     metadata={"q6": q6, "archetype_id": aid},
-                    links=["daten22:daten22:archetypes", "info1:methodology"],
-                    is_fallback=not bool(q),
+                    links=["daten22:archetypes", "info1:methodology"],
+                    is_fallback=False,
                 ))
 
         # Поиск по концептам
@@ -118,7 +118,7 @@ class Daten22Adapter(BaseAdapter):
                     content=content,
                     metadata={"q6": q6, "tags": tags},
                     links=links,
-                    is_fallback=not bool(q),
+                    is_fallback=False,
                 ))
 
         if not results:
@@ -130,9 +130,9 @@ class Daten22Adapter(BaseAdapter):
             ) for cid, title, content, q6, links, _ in _CONCEPTS[:2]]
             return fb
 
-        # Без запроса — только концепты, без 16 архетипов по одному
+        # Без запроса — все концепты + обзор архетипов (без 16 подробных)
         if not q:
-            return [e for e in results if not e.id.startswith("daten22:daten22:")][:6]
+            return [e for e in results if not e.id.startswith("daten22:arch:")]
 
         return results[:10]
 

@@ -6,3 +6,5 @@ __pycache__/
 *.pth
 cache/
 docs/_raw_sessions.md
+annotations.db
+

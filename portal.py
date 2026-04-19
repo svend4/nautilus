@@ -23,6 +23,7 @@ from adapters.base import BaseAdapter, PortalEntry
 from adapters.conversation import ConversationAdapter
 from adapters.jsonl import JSONLAdapter
 from bridge_registry import BridgeRegistry
+from annotations import AnnotationStore, Annotation
 
 
 def q6_neighbors(bits: str, max_distance: int = 1) -> list[str]:
@@ -100,6 +101,7 @@ class NautilusPortal:
             "sessions":      ConversationAdapter("docs/sessions"),
         }
         self._bridge_registry = BridgeRegistry("passports")
+        self._annotations = AnnotationStore()
         self._load_auto_adapters()
 
     def _load_auto_adapters(self) -> None:
@@ -226,6 +228,56 @@ class NautilusPortal:
                 ]
         summary["transitive_closure"] = closure
         return summary
+
+    # ------------------------------------------------------------------
+    # Annotation API (Double-Triangle Protocol 3)
+    # ------------------------------------------------------------------
+
+    def annotate(
+        self,
+        target: str,
+        author: str,
+        content: str,
+        visibility: str = "private",
+        tags: list[str] | None = None,
+        thread_parent: str | None = None,
+    ) -> str:
+        """Add an annotation to any PortalEntry. Returns annotation id."""
+        ann = Annotation.new(
+            target=target,
+            author=author,
+            content=content,
+            visibility=visibility,
+            tags=tags,
+            thread_parent=thread_parent,
+        )
+        return self._annotations.add(ann)
+
+    def annotations_for(
+        self,
+        target: str,
+        visibility: str | None = None,
+        author: str | None = None,
+    ) -> list[dict]:
+        """Return all annotations for a PortalEntry id."""
+        return [a.as_dict() for a in self._annotations.for_target(target, visibility, author)]
+
+    def flag_for_review(
+        self,
+        target: str,
+        author: str,
+        reason: str,
+        severity: str = "warning",
+    ) -> str:
+        """Protocol 3: agent flags a PortalEntry for human review."""
+        return self._annotations.flag_for_review(target, author, reason, severity)
+
+    def get_flags(self, severity: str | None = None) -> list[dict]:
+        """Return all Protocol-3 flags, optionally filtered by severity."""
+        return [a.as_dict() for a in self._annotations.get_flagged(severity)]
+
+    def annotation_stats(self) -> dict:
+        return self._annotations.stats()
 
     def _cross_links(self, entries: list) -> list:
         links, seen = [], set()

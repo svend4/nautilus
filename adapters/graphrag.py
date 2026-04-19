@@ -63,7 +63,7 @@ _GRAPH_NODES = [
      "(2) Local — вопрос → ближайшие узлы → expand по рёбрам → контекст → ответ. "
      "Преимущество перед chunk-RAG: понимает структурные отношения между концептами.",
      "110001",
-     ["graphrag:summarization", "graphrag:pipeline", "data7:knowledge_transformer"],
+     ["graphrag:summarization", "graphrag:pipeline", "data7:theory:transformation"],
      ["retrieval", "global", "local", "rag"]),
 
     ("graphrag:vs_vanilla_rag",
@@ -107,7 +107,7 @@ class GraphRAGAdapter(BaseAdapter):
     def fetch(self, query: str) -> list[PortalEntry]:
         q = query.lower()
         if not q:
-            return [self._make(n) for n in _GRAPH_NODES[:4]]
+            return [self._make(n) for n in _GRAPH_NODES]
 
         results = []
         for node in _GRAPH_NODES:
