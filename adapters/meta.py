@@ -48,11 +48,13 @@ class MetaAdapter(BaseAdapter):
         for hex_id, (char, name, desc, ca_class) in HEXAGRAM_TABLE.items():
             if q in name.lower() or q in desc.lower() or q in char:
                 results.append(self._make_entry(hex_id, char, name, desc, ca_class))
-        # если ничего не нашли по запросу — вернуть несколько ключевых
+        # если ничего не нашли по запросу — вернуть несколько ключевых (fallback)
         if not results:
             for hex_id in [50, 63, 24, 1]:
                 char, name, desc, ca_class = HEXAGRAM_TABLE[hex_id]
-                results.append(self._make_entry(hex_id, char, name, desc, ca_class))
+                entry = self._make_entry(hex_id, char, name, desc, ca_class)
+                entry.is_fallback = True
+                results.append(entry)
         return results[:4]
 
     def _make_entry(self, hex_id, char, name, desc, ca_class) -> PortalEntry:

@@ -1,0 +1,90 @@
+name: Auto-register repository
+
+# Срабатывает когда другой репо отправляет repository_dispatch
+# с event_type: "nautilus_register"
+on:
+  repository_dispatch:
+    types: [nautilus_register]
+
+  # Можно запустить вручную
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: "GitHub repo (owner/name)"
+        required: true
+
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Determine repo to register
+        id: target
+        run: |
+          REPO="${{ github.event.client_payload.repo || github.event.inputs.repo }}"
+          echo "repo=$REPO" >> $GITHUB_OUTPUT
+          echo "format=$(echo $REPO | cut -d'/' -f2 | tr '-.' '_')" >> $GITHUB_OUTPUT
+
+      - name: Scan repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scan_repo.py "${{ steps.target.outputs.repo }}" \
+            --format "${{ steps.target.outputs.format }}" \
+            --output "scan_result.json"
+
+      - name: Show scan result
+        run: |
+          echo "=== Passport ==="
+          cat "passports/${{ steps.target.outputs.format }}.md" || true
+          echo "=== Scan JSON ==="
+          cat scan_result.json | python -m json.tool | head -40
+
+      - name: Update nautilus.json registry
+        run: |
+          python - <<'EOF'
+          import json
+          from pathlib import Path
+
+          registry_path = Path("nautilus.json")
+          scan_path = Path("scan_result.json")
+
+          registry = json.loads(registry_path.read_text())
+          scan = json.loads(scan_path.read_text())
+
+          fmt = scan["format"]
+          repo = scan["repo"]
+
+          # Проверить не зарегистрирован ли уже
+          existing = [e for e in registry["registry"] if e.get("adapter") == fmt]
+          if existing:
+              print(f"Уже зарегистрирован: {fmt}")
+          else:
+              registry["registry"].append({
+                  "repo": repo,
+                  "adapter": fmt,
+                  "format": fmt,
+                  "compatibility": scan.get("compatibility", 1),
+                  "passport": f"passports/{fmt}.md",
+              })
+              registry_path.write_text(json.dumps(registry, ensure_ascii=False, indent=2))
+              print(f"Добавлен в registry: {fmt}")
+          EOF
+
+      - name: Commit and push
+        run: |
+          git config user.name "nautilus-bot"
+          git config user.email "nautilus-bot@github"
+          git add passports/ adapters/ nautilus.json scan_result.json || true
+          git diff --cached --quiet || git commit -m \
+            "Auto-register ${{ steps.target.outputs.repo }} via scan_repo"
+          git push

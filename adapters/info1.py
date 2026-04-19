@@ -71,6 +71,7 @@ class Info1Adapter(BaseAdapter):
                 ),
                 metadata={"alpha": +2, "path": "README.md#methodology"},
                 links=["pro2:bidir_train", "meta:hexagram:50"],
+                is_fallback=True,
             ),
             PortalEntry(
                 id="info1:cards",
@@ -83,6 +84,7 @@ class Info1Adapter(BaseAdapter):
                 ),
                 metadata={"alpha": -1, "path": "02-Информационная-система/"},
                 links=["pro2:concept:knowledge"],
+                is_fallback=True,
             ),
         ]
 

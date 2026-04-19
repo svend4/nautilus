@@ -68,6 +68,7 @@ class Pro2Adapter(BaseAdapter):
         return metrics if metrics else None
 
     def _static_entries(self) -> list[PortalEntry]:
+        # is_fallback=True: эти записи возвращаются всегда, не только при совпадении
         entries = [
             PortalEntry(
                 id="pro2:q6",
@@ -81,6 +82,7 @@ class Pro2Adapter(BaseAdapter):
                 ),
                 metadata={"dims": 6, "states": 64},
                 links=["meta:hexagram:all", "info1:alpha:0"],
+                is_fallback=True,
             ),
             PortalEntry(
                 id="pro2:bidir",
@@ -106,6 +108,7 @@ class Pro2Adapter(BaseAdapter):
                     },
                 },
                 links=["info1:methodology", "data7:missing_loop", "data7:theory:transformation"],
+                is_fallback=True,
             ),
             PortalEntry(
                 id="pro2:knowledge_graph",
@@ -120,6 +123,7 @@ class Pro2Adapter(BaseAdapter):
                 ),
                 metadata={"file": "bidir_train.py", "class": "KnowledgeGraph"},
                 links=["data7:concept", "data7:theory:transformation"],
+                is_fallback=True,
             ),
             PortalEntry(
                 id="pro2:adaptive_learning",
@@ -137,6 +141,7 @@ class Pro2Adapter(BaseAdapter):
                     "loss": "L_lm + 0.30*L_domain + 0.20*L_quality + 0.10*L_gate",
                 },
                 links=["data7:missing_loop", "pro2:bidir"],
+                is_fallback=True,
             ),
         ]
 

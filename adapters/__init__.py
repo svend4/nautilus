@@ -6,10 +6,12 @@ from .data2 import Data2Adapter
 from .data7 import Data7Adapter
 from .infosystems import InfoSystemsAdapter
 from .ai_agents import AIAgentsAdapter
+from .auto import AutoAdapter
 
 __all__ = [
     "BaseAdapter", "PortalEntry",
     "Info1Adapter", "Pro2Adapter", "MetaAdapter",
     "Data2Adapter", "Data7Adapter",
     "InfoSystemsAdapter", "AIAgentsAdapter",
+    "AutoAdapter",
 ]
