@@ -30,3 +30,13 @@
 | pro2 | Q6-биты ↔ `[b0..b5]` семантического пространства |
 | info1 | CA-класс I↔IV ↔ α-уровень -3↔+3 |
 | data2 | архетипы ЕТД ↔ CA-классы |
+
+## Bridges (machine-readable)
+
+```json
+[
+  {"target": "pro2",  "direction": "↔", "mapping": "hexagram number (1..64) ↔ Q6-bits [b0..b5] semantic space", "confidence": 0.95, "type": "isomorphism"},
+  {"target": "info1", "direction": "↔", "mapping": "CA-class I↔IV ↔ α-level -3↔+3", "confidence": 0.80, "type": "analogy"},
+  {"target": "data2", "direction": "↔", "mapping": "ETD archetypes ↔ CA-classes", "confidence": 0.70, "type": "analogy"}
+]
+```

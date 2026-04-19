@@ -37,3 +37,12 @@
 |------|-------|
 | pro2 | bidir_train реализует K₀→K∞ цикл |
 | info1 | K₀ (специализация) ↔ α=-4; K∞ (обобщение) ↔ α=+4 |
+
+## Bridges (machine-readable)
+
+```json
+[
+  {"target": "pro2",  "direction": "←", "mapping": "bidir_train (pro2) implements the missing K₀→K∞ loop", "confidence": 0.90, "type": "derivation"},
+  {"target": "info1", "direction": "↔", "mapping": "K₀ (specialization) ↔ α=-4; K∞ (generalization) ↔ α=+4", "confidence": 0.80, "type": "projection"}
+]
+```

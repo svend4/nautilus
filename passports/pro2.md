@@ -39,3 +39,14 @@
 | info1 | глубина концепта ↔ α-уровень |
 | data7 | bidir_train ↔ K₀→K₁→K₂ цикл |
 | data2 | scarab_algorithm ↔ Q6-траектория |
+
+## Bridges (machine-readable)
+
+```json
+[
+  {"target": "meta",  "direction": "↔", "mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)", "confidence": 0.95, "type": "isomorphism"},
+  {"target": "info1", "direction": "→", "mapping": "concept depth → α-level (-4..+4)", "confidence": 0.70, "type": "projection"},
+  {"target": "data7", "direction": "↔", "mapping": "bidir_train cycle ↔ K₀→K₁→K₂ transformation", "confidence": 0.80, "type": "derivation"},
+  {"target": "data2", "direction": "→", "mapping": "scarab_algorithm → Q6-trajectory traversal", "confidence": 0.70, "type": "derivation"}
+]
+```
