@@ -11,6 +11,11 @@ from .obsidian import ObsidianAdapter
 from .arxiv import ArxivAdapter
 from .github_topic import GitHubTopicAdapter
 from .jsonl import JSONLAdapter
+from .graphrag import GraphRAGAdapter
+from .daten22 import Daten22Adapter
+from .legal import LegalAdapter
+from .continuum import ContinuumAdapter
+from .ai_research import AIResearchAdapter
 
 __all__ = [
     "BaseAdapter", "PortalEntry", "fuzzy_match",
@@ -19,4 +24,6 @@ __all__ = [
     "InfoSystemsAdapter", "AIAgentsAdapter",
     "AutoAdapter", "ObsidianAdapter",
     "ArxivAdapter", "GitHubTopicAdapter", "JSONLAdapter",
+    "GraphRAGAdapter", "Daten22Adapter", "LegalAdapter",
+    "ContinuumAdapter", "AIResearchAdapter",
 ]
