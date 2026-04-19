@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>⬡ Q6 Hypercube Map — Nautilus</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: monospace;
+    background: #0d1117;
+    color: #c9d1d9;
+    margin: 0;
+    padding: 16px;
+  }
+  h1 { color: #58a6ff; margin: 0 0 8px; }
+  p.sub { color: #8b949e; font-size: 12px; margin: 0 0 16px; }
+  #controls { margin-bottom: 12px; display: flex; gap: 12px; align-items: center; }
+  #controls label { color: #8b949e; font-size: 13px; }
+  #controls input { background: #161b22; color: #c9d1d9; border: 1px solid #30363d;
+                    padding: 4px 8px; border-radius: 4px; font-family: monospace; }
+  #canvas-wrap { position: relative; }
+  canvas { border: 1px solid #21262d; border-radius: 8px; display: block; }
+  #tooltip {
+    position: absolute; background: #161b22; border: 1px solid #58a6ff;
+    border-radius: 6px; padding: 8px 12px; font-size: 12px;
+    pointer-events: none; display: none; max-width: 280px; z-index: 10;
+  }
+  #tooltip .q6 { color: #58a6ff; font-size: 14px; font-weight: bold; }
+  #tooltip .label { color: #e6edf3; margin: 2px 0; }
+  #tooltip .desc { color: #8b949e; font-size: 11px; }
+  #tooltip .ca { color: #f0883e; }
+  #legend { margin-top: 16px; display: flex; gap: 24px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+</style>
+</head>
+<body>
+<h1>⬡ Q6 Hypercube Map</h1>
+<p class="sub">6-битное семантическое пространство · 64 вершины · 4 CA-класса Вольфрама</p>
+
+<div id="controls">
+  <label>Поиск:
+    <input id="search" type="text" placeholder="котёл, синтез..." style="width:180px">
+  </label>
+  <label>Ось X (бит):
+    <input id="axisX" type="number" min="0" max="5" value="0" style="width:50px">
+  </label>
+  <label>Ось Y (бит):
+    <input id="axisY" type="number" min="0" max="5" value="1" style="width:50px">
+  </label>
+</div>
+
+<div id="canvas-wrap">
+  <canvas id="c" width="900" height="620"></canvas>
+  <div id="tooltip"></div>
+</div>
+
+<div id="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#6b7280"></div>Класс I — Стационарные</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#3fb950"></div>Класс II — Периодические</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f0883e"></div>Класс III — Хаотические</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#58a6ff"></div>Класс IV — Сложные</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f85149; border:2px solid #fff"></div>Совпадение поиска</div>
+</div>
+
+<script>
+// Q6 node data — 64 nodes, each: bits, label, desc, ca_class, adapters
+const NODES = [];
+
+// Full hexagram table (subset with labels, rest are unnamed)
+const HEX = {
+  1:  ["乾","Творчество","I"],
+  2:  ["坤","Исполнение","I"],
+  3:  ["屯","Начальная трудность","II"],
+  4:  ["蒙","Незрелость","II"],
+  5:  ["需","Ожидание","II"],
+  6:  ["訟","Конфликт","III"],
+  7:  ["師","Армия","II"],
+  8:  ["比","Единение","II"],
+  9:  ["小畜","Сдерживание","II"],
+  10: ["履","Поступь","II"],
+  11: ["泰","Мир","II"],
+  12: ["否","Застой","III"],
+  14: ["大有","Великое владение","II"],
+  19: ["臨","Приближение","II"],
+  21: ["噬嗑","Прокусывание","II"],
+  23: ["剥","Разрушение","III"],
+  24: ["復","Возврат","IV"],
+  29: ["坎","Бездна","III"],
+  30: ["離","Огонь","III"],
+  41: ["損","Убывание","II"],
+  42: ["益","Прибавление","II"],
+  49: ["革","Революция","IV"],
+  50: ["鼎","Котёл","IV"],
+  51: ["震","Гром","III"],
+  52: ["艮","Гора","I"],
+  53: ["漸","Постепенность","II"],
+  54: ["豐","Изобилие","II"],
+  57: ["巽","Ветер","II"],
+  58: ["兌","Радость","II"],
+  63: ["既濟","После завершения","IV"],
+  64: ["未濟","До завершения","IV"],
+};
+
+// Build 64 nodes
+for (let i = 0; i < 64; i++) {
+  const bits = i.toString(2).padStart(6, "0");
+  const hexId = i + 1;
+  const hex = HEX[hexId];
+  const label = hex ? `${hex[0]} ${hex[1]}` : `#${hexId}`;
+  const caClass = hex ? hex[2] : "II";
+  NODES.push({ bits, hexId, label, caClass });
+}
+
+const CA_COLORS = { "I": "#6b7280", "II": "#3fb950", "III": "#f0883e", "IV": "#58a6ff" };
+const W = 900, H = 620;
+const MARGIN = 60, CELL_W = (W - 2*MARGIN) / 8, CELL_H = (H - 2*MARGIN) / 8;
+
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+const tooltip = document.getElementById("tooltip");
+
+let axisX = 0, axisY = 1;
+let searchQuery = "";
+let hovered = -1;
+
+function bitAt(bits, i) { return parseInt(bits[5 - i]); }
+
+function getPos(bits) {
+  const bx = bitAt(bits, axisX);
+  const by = bitAt(bits, axisY);
+  // Spread other 4 bits across a 4x4 grid within each cell
+  let others = [];
+  for (let b = 0; b < 6; b++) if (b !== axisX && b !== axisY) others.push(b);
+  const ox = (bitAt(bits, others[0]) * 2 + bitAt(bits, others[1]));
+  const oy = (bitAt(bits, others[2]) * 2 + bitAt(bits, others[3]));
+  const cx = MARGIN + bx * 4 * CELL_W + ox * CELL_W + CELL_W/2;
+  const cy = MARGIN + by * 4 * CELL_H + oy * CELL_H + CELL_H/2;
+  return [cx, cy];
+}
+
+function matches(node) {
+  if (!searchQuery) return false;
+  const q = searchQuery.toLowerCase();
+  return node.label.toLowerCase().includes(q) || node.bits.includes(q);
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Background grid labels
+  ctx.fillStyle = "#30363d";
+  ctx.font = "11px monospace";
+  for (let v = 0; v <= 1; v++) {
+    for (let o = 0; o < 4; o++) {
+      const cx = MARGIN + v * 4 * CELL_W + o * CELL_W;
+      const cy = MARGIN + v * 4 * CELL_H + o * CELL_H;
+      if (v === 0) {
+        ctx.fillText(`b${axisX}=0`, cx + 2, MARGIN - 4);
+      }
+    }
+  }
+
+  // Draw edges between Hamming-1 neighbours
+  ctx.strokeStyle = "rgba(48,54,61,0.5)";
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i < 64; i++) {
+    for (let b = 0; b < 6; b++) {
+      const flipped = NODES[i].bits.split("");
+      flipped[b] = flipped[b] === "0" ? "1" : "0";
+      const j = parseInt(flipped.join(""), 2);
+      if (j > i) {
+        const [x1, y1] = getPos(NODES[i].bits);
+        const [x2, y2] = getPos(NODES[j].bits);
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      }
+    }
+  }
+
+  // Draw nodes
+  for (let i = 0; i < 64; i++) {
+    const n = NODES[i];
+    const [x, y] = getPos(n.bits);
+    const isMatch = matches(n);
+    const isHovered = hovered === i;
+
+    const r = isHovered ? 9 : isMatch ? 8 : 5;
+    const color = isMatch ? "#f85149" : CA_COLORS[n.caClass];
+
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI*2);
+    ctx.fillStyle = color;
+    ctx.fill();
+    if (isHovered || isMatch) {
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    // Label for hovered or matched
+    if (isHovered || isMatch) {
+      ctx.font = "bold 10px monospace";
+      ctx.fillStyle = "#e6edf3";
+      ctx.fillText(n.bits, x - 18, y - 11);
+    }
+  }
+
+  // Axis labels
+  ctx.fillStyle = "#8b949e";
+  ctx.font = "12px monospace";
+  ctx.fillText(`bit${axisX} →`, MARGIN, H - 8);
+  ctx.save();
+  ctx.translate(12, H/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText(`← bit${axisY}`, 0, 0);
+  ctx.restore();
+}
+
+function findNodeAt(mx, my) {
+  let best = -1, bestD = 12;
+  for (let i = 0; i < 64; i++) {
+    const [x, y] = getPos(NODES[i].bits);
+    const d = Math.hypot(mx - x, my - y);
+    if (d < bestD) { bestD = d; best = i; }
+  }
+  return best;
+}
+
+canvas.addEventListener("mousemove", (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const idx = findNodeAt(mx, my);
+  hovered = idx;
+
+  if (idx >= 0) {
+    const n = NODES[idx];
+    const [x, y] = getPos(n.bits);
+    tooltip.innerHTML = `
+      <div class="q6">${n.bits}</div>
+      <div class="label">${n.label}</div>
+      <div class="ca">CA Class ${n.caClass} · Hex #${n.hexId}</div>
+      <div class="desc">Хэмминг-соседи: ${
+        [0,1,2,3,4,5].map(b => {
+          const f = n.bits.split(""); f[b] = f[b]==="0"?"1":"0";
+          return f.join("");
+        }).join(" ")
+      }</div>`;
+    const cx = x + rect.left - canvas.getBoundingClientRect().left;
+    tooltip.style.left = Math.min(cx + 10, W - 290) + "px";
+    tooltip.style.top = Math.max(y - 60, 0) + "px";
+    tooltip.style.display = "block";
+  } else {
+    tooltip.style.display = "none";
+  }
+  draw();
+});
+
+canvas.addEventListener("mouseleave", () => {
+  hovered = -1;
+  tooltip.style.display = "none";
+  draw();
+});
+
+document.getElementById("search").addEventListener("input", (e) => {
+  searchQuery = e.target.value;
+  draw();
+});
+
+document.getElementById("axisX").addEventListener("change", (e) => {
+  axisX = Math.max(0, Math.min(5, parseInt(e.target.value) || 0));
+  if (axisX === axisY) { axisY = (axisX + 1) % 6; document.getElementById("axisY").value = axisY; }
+  draw();
+});
+
+document.getElementById("axisY").addEventListener("change", (e) => {
+  axisY = Math.max(0, Math.min(5, parseInt(e.target.value) || 1));
+  if (axisX === axisY) { axisX = (axisY + 1) % 6; document.getElementById("axisX").value = axisX; }
+  draw();
+});
+
+draw();
+</script>
+</body>
+</html>

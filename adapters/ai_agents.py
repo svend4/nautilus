@@ -14,7 +14,7 @@ AIAgentsAdapter — адаптер для домена ИИ-агентов.
 - AdaptiveLearningOptimizer (мета-обучение)
 """
 
-from .base import BaseAdapter, PortalEntry
+from .base import BaseAdapter, PortalEntry, fuzzy_match
 
 
 class AIAgentsAdapter(BaseAdapter):
@@ -25,7 +25,8 @@ class AIAgentsAdapter(BaseAdapter):
         entries = self._all_entries()
         if q in ("all", "agent", "agents", ""):
             return entries
-        return [e for e in entries if q in e.title.lower() or q in e.content.lower()]
+        return [e for e in entries
+                if fuzzy_match(q, e.title) or fuzzy_match(q, e.content)]
 
     def _all_entries(self) -> list[PortalEntry]:
         return [
@@ -45,6 +46,8 @@ class AIAgentsAdapter(BaseAdapter):
                     "file": "self_train.py",
                     "stages": 3,
                     "agent_type": "self-improving",
+                    "q6": "000001",
+                    "alpha": -3,
                 },
                 links=["pro2:self_train", "data7:theory:transformation"],
             ),
@@ -63,6 +66,8 @@ class AIAgentsAdapter(BaseAdapter):
                     "file": "bidir_train.py",
                     "loops": ["forward", "backward"],
                     "agent_type": "bidirectional",
+                    "q6": "101010",
+                    "alpha": 1,
                 },
                 links=["pro2:bidir", "data7:missing_loop", "infosystems:knowledge_graph"],
             ),
@@ -84,6 +89,8 @@ class AIAgentsAdapter(BaseAdapter):
                     "file": "inference/bridge_inference.py",
                     "class": "AdvancedGenerator",
                     "strategies": 5,
+                    "q6": "010101",
+                    "alpha": 0,
                 },
                 links=["pro2:generate", "pro2:speculative"],
             ),
@@ -105,6 +112,8 @@ class AIAgentsAdapter(BaseAdapter):
                     "file": "train_hmoe_curriculum.py",
                     "phases": 5,
                     "agent_type": "curriculum",
+                    "q6": "110001",
+                    "alpha": 1,
                 },
                 links=["pro2:hmoe", "pro2:domain_routing"],
             ),
@@ -125,6 +134,8 @@ class AIAgentsAdapter(BaseAdapter):
                     "file": "geometry/nautilus.py",
                     "chambers": 7,
                     "agent_type": "hierarchical",
+                    "q6": "111111",
+                    "alpha": 3,
                 },
                 links=["pro2:nautilus", "pro2:six_sources"],
             ),

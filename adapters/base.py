@@ -3,6 +3,7 @@ BaseAdapter — протокол для всех адаптеров Nautilus Por
 Каждый адаптер реализует два метода: fetch() и describe().
 """
 
+import difflib
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
 
@@ -18,6 +19,17 @@ class PortalEntry:
     metadata: dict = field(default_factory=dict)
     links: list = field(default_factory=list)
     is_fallback: bool = False  # True если вернулось из статического fallback
+
+
+def fuzzy_match(query: str, text: str, threshold: float = 0.6) -> bool:
+    """Return True if query fuzzy-matches text (SequenceMatcher ratio >= threshold)."""
+    if not query or not text:
+        return False
+    q, t = query.lower(), text.lower()
+    if q in t:
+        return True
+    ratio = difflib.SequenceMatcher(None, q, t).ratio()
+    return ratio >= threshold
 
 
 class BaseAdapter(ABC):

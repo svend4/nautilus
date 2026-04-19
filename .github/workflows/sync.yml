@@ -84,29 +84,13 @@ jobs:
           python health_check.py > health_report.txt || true
           cat health_report.txt
 
-      - name: Update ecosystem stats in README
+      - name: Generate static snapshot (GitHub Pages)
         run: |
-          python - <<'EOF'
-          from pathlib import Path
-          from portal import NautilusPortal
-          import json, time
+          python snapshot.py --out-dir docs/
+          python visualize.py --out docs/ecosystem.mmd
 
-          portal = NautilusPortal()
-          desc = portal.describe()
-          result = portal.query("knowledge")
-
-          stats = {
-              "adapters": len(portal.adapters),
-              "entries_sample": len(result.entries),
-              "cross_links_sample": len(result.cross_links),
-              "updated": time.strftime("%Y-%m-%d"),
-          }
-
-          Path("ecosystem_stats.json").write_text(
-              json.dumps(stats, ensure_ascii=False, indent=2)
-          )
-          print("Stats:", stats)
-          EOF
+      - name: Update ecosystem stats
+        run: python snapshot.py --stats
 
       - name: Commit changes
         run: |
@@ -114,7 +98,8 @@ jobs:
           git config user.email "sync@nautilus"
           git add passports/ adapters/ nautilus.json \
                   link_report.json health_report.txt \
-                  ecosystem_stats.json cache/ || true
+                  ecosystem_stats.json snapshot.json snapshot.md \
+                  docs/ cache/ || true
           git diff --cached --quiet \
             || git commit -m "chore: weekly ecosystem sync $(date +%Y-%m-%d)"
           git push || echo "Нечего пушить"

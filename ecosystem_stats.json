@@ -1,0 +1,64 @@
+{
+  "generated_at": "2026-04-19T11:58:54Z",
+  "score": 82,
+  "ok": true,
+  "total_entries": 90,
+  "total_cross_links": 127,
+  "adapters_count": 7,
+  "issues": [
+    "⚠️  Только fallback-записи: info1, pro2, meta, data2",
+    "⚠️  Низкий консенсус: knowledge, синтез"
+  ],
+  "coverage_knowledge": 0.43,
+  "adapters": {
+    "info1": {
+      "ok": true,
+      "entries_real": 0,
+      "entries_fallback": 11,
+      "has_q6": true,
+      "response_ms": 69
+    },
+    "pro2": {
+      "ok": true,
+      "entries_real": 0,
+      "entries_fallback": 46,
+      "has_q6": true,
+      "response_ms": 0
+    },
+    "meta": {
+      "ok": true,
+      "entries_real": 0,
+      "entries_fallback": 8,
+      "has_q6": true,
+      "response_ms": 0
+    },
+    "data2": {
+      "ok": true,
+      "entries_real": 0,
+      "entries_fallback": 3,
+      "has_q6": true,
+      "response_ms": 0
+    },
+    "data7": {
+      "ok": true,
+      "entries_real": 4,
+      "entries_fallback": 0,
+      "has_q6": true,
+      "response_ms": 0
+    },
+    "infosystems": {
+      "ok": true,
+      "entries_real": 3,
+      "entries_fallback": 0,
+      "has_q6": true,
+      "response_ms": 0
+    },
+    "ai_agents": {
+      "ok": true,
+      "entries_real": 1,
+      "entries_fallback": 0,
+      "has_q6": true,
+      "response_ms": 0
+    }
+  }
+}

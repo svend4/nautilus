@@ -11,7 +11,7 @@ InfoSystemsAdapter — адаптер для домена информацион
 и доменную маршрутизацию в DomainMoE.
 """
 
-from .base import BaseAdapter, PortalEntry
+from .base import BaseAdapter, PortalEntry, fuzzy_match
 
 
 class InfoSystemsAdapter(BaseAdapter):
@@ -22,7 +22,8 @@ class InfoSystemsAdapter(BaseAdapter):
         entries = self._all_entries()
         if q in ("all", ""):
             return entries
-        return [e for e in entries if q in e.title.lower() or q in e.content.lower()]
+        return [e for e in entries
+                if fuzzy_match(q, e.title) or fuzzy_match(q, e.content)]
 
     def _all_entries(self) -> list[PortalEntry]:
         return [
@@ -43,6 +44,8 @@ class InfoSystemsAdapter(BaseAdapter):
                     "class": "KnowledgeGraph",
                     "nodes": "Concept",
                     "edges": "semantic_link",
+                    "q6": "101010",
+                    "alpha": 1,
                 },
                 links=["pro2:bidir", "data7:theory:transformation"],
             ),
@@ -63,6 +66,8 @@ class InfoSystemsAdapter(BaseAdapter):
                     "n_domains": 6,
                     "domains": ["ai_agents", "infosystems", "knowledge",
                                 "algorithms", "data2", "meta"],
+                    "q6": "110001",
+                    "alpha": 1,
                 },
                 links=["pro2:moe", "pro2:domain_routing"],
             ),
@@ -82,6 +87,8 @@ class InfoSystemsAdapter(BaseAdapter):
                     "vertices": 64,
                     "dimensions": 6,
                     "metric": "Hamming",
+                    "q6": "111111",
+                    "alpha": 3,
                 },
                 links=["pro2:q6", "meta:hexagram", "pro2:biangua"],
             ),
@@ -100,7 +107,7 @@ class InfoSystemsAdapter(BaseAdapter):
                     "- meta: мета-документы (CA-правила, гексаграммы)\n"
                     "+ synthetic: синтетические данные для быстрых тестов"
                 ),
-                metadata={"n_domains": 7, "format": "utf-8 text"},
+                metadata={"n_domains": 7, "format": "utf-8 text", "q6": "010110", "alpha": 0},
                 links=["data2:etd", "meta:ca_rules", "data7:theory:transformation"],
             ),
         ]
