@@ -137,6 +137,7 @@ class PortalEntry:
 | 11 | `infosystems.py` | 125 | 2 — связанный | домен pro2 |
 | 12 | `data7.py` | 121 | 2 — связанный | основной |
 | 13 | `cache.py` | 105 | — | дисковый кэш (TTL 24ч) |
+| 14 | `conversation.py` | ~230 | — | экспорты LLM-сессий |
 | — | `base.py` | 71 | — | протокол |
 
 ### Новые адаптеры (Round 2)
@@ -149,6 +150,12 @@ class PortalEntry:
 
 **JSONLAdapter** (`jsonl.py`) — читает `.jsonl`-файлы (файл или директорию),
 гибкий маппинг полей, fuzzy search.
+
+**ConversationAdapter** (`conversation.py`) — читает экспорты Claude/LLM-сессий
+(`.md`, `.txt`, `.json`, без расширения). Разбивает по заголовкам Markdown или
+абзацам (chunk ≤ 700 символов), автоматически назначает Q6 по ключевым словам
+темы (multi-agent → `110100`, strategy → `111110` и т.д.). Зарегистрирован в
+`NautilusPortal` по умолчанию с путём `docs/`.
 
 ---
 

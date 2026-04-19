@@ -18,6 +18,7 @@ from adapters import (
     InfoSystemsAdapter, AIAgentsAdapter, AutoAdapter,
 )
 from adapters.base import BaseAdapter, PortalEntry
+from adapters.conversation import ConversationAdapter
 
 
 def q6_neighbors(bits: str, max_distance: int = 1) -> list[str]:
@@ -84,8 +85,9 @@ class NautilusPortal:
             "meta":        MetaAdapter(),
             "data2":       Data2Adapter(),
             "data7":       Data7Adapter(),
-            "infosystems": InfoSystemsAdapter(),
-            "ai_agents":   AIAgentsAdapter(),
+            "infosystems":   InfoSystemsAdapter(),
+            "ai_agents":     AIAgentsAdapter(),
+            "conversations": ConversationAdapter(),
         }
         self._load_auto_adapters()
 

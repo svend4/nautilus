@@ -181,6 +181,7 @@ class MyRepoAdapter(BaseAdapter):
 | **GitHubTopicAdapter** | `adapters/github_topic.py` | GitHub repos с топиком `nautilus-compatible` |
 | **JSONLAdapter** | `adapters/jsonl.py` | Локальные `.jsonl` файлы как поток записей |
 | **AutoAdapter** | `adapters/auto.py` | Любой репо с `nautilus.json` в корне |
+| **ConversationAdapter** | `adapters/conversation.py` | Экспорты Claude/LLM-сессий (`.md`, `.txt`, `.json`) |
 
 ```python
 from adapters.obsidian import ObsidianAdapter
@@ -188,6 +189,10 @@ portal.register("obsidian", ObsidianAdapter("/path/to/vault"))
 
 from adapters.jsonl import JSONLAdapter
 portal.register("corpus", JSONLAdapter("data/knowledge.jsonl"))
+
+from adapters.conversation import ConversationAdapter
+portal.register("sessions", ConversationAdapter("docs/"))   # все файлы в папке
+portal.register("session",  ConversationAdapter("exports/analysis.md"))  # один файл
 ```
 
 ---
