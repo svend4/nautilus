@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>⬡ Nautilus — Cross-Link Graph</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: monospace; background: #0d1117; color: #c9d1d9;
+         margin: 0; padding: 0; overflow: hidden; }
+  #toolbar {
+    position: absolute; top: 12px; left: 12px; z-index: 10;
+    background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+    padding: 10px 14px; display: flex; flex-direction: column; gap: 8px;
+    max-width: 240px;
+  }
+  #toolbar h2 { margin: 0 0 4px; color: #58a6ff; font-size: 14px; }
+  #toolbar label { font-size: 12px; color: #8b949e; }
+  #toolbar input, #toolbar select {
+    background: #0d1117; color: #c9d1d9; border: 1px solid #30363d;
+    border-radius: 4px; padding: 3px 7px; font-family: monospace; font-size: 12px;
+    width: 100%;
+  }
+  #toolbar button {
+    background: #238636; color: #fff; border: none; border-radius: 4px;
+    padding: 5px 10px; cursor: pointer; font-size: 12px;
+  }
+  #toolbar button:hover { background: #2ea043; }
+  #stats { font-size: 11px; color: #8b949e; border-top: 1px solid #30363d;
+           padding-top: 6px; margin-top: 4px; }
+  #tooltip {
+    position: absolute; background: #161b22; border: 1px solid #58a6ff;
+    border-radius: 6px; padding: 8px 12px; font-size: 12px;
+    pointer-events: none; display: none; max-width: 260px; z-index: 20;
+  }
+  #tooltip strong { color: #e6edf3; }
+  #tooltip .q6 { color: #8b5cf6; }
+  #tooltip .src { color: #8b949e; }
+  svg { display: block; }
+  .node circle { stroke-width: 1.5; cursor: pointer; transition: r 0.1s; }
+  .node circle:hover { stroke: #fff !important; }
+  .node text { font-size: 10px; fill: #c9d1d9; pointer-events: none; }
+  .link { stroke-opacity: 0.45; }
+  .link.highlight { stroke-opacity: 1; stroke-width: 2.5; }
+  .node.dimmed circle { opacity: 0.2; }
+  .node.dimmed text { opacity: 0.2; }
+  .link.dimmed { opacity: 0.05; }
+</style>
+</head>
+<body>
+<div id="toolbar">
+  <h2>⬡ Cross-Link Graph</h2>
+  <label>API URL
+    <input id="apiUrl" value="http://localhost:8080" placeholder="http://localhost:8080">
+  </label>
+  <label>Запрос
+    <input id="queryInput" value="knowledge" placeholder="knowledge, синтез...">
+  </label>
+  <button onclick="loadData()">Загрузить</button>
+  <label>Сила связей
+    <input id="linkStrength" type="range" min="10" max="300" value="80"
+           oninput="updateForce()">
+  </label>
+  <label>Размер узлов
+    <input id="nodeScale" type="range" min="4" max="20" value="8"
+           oninput="updateNodes()">
+  </label>
+  <div id="stats">Загрузите данные...</div>
+</div>
+<div id="tooltip"></div>
+<svg id="svg"></svg>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"
+  crossorigin="anonymous"></script>
+<script>
+const ADAPTER_COLORS = {
+  info1: "#1f6feb", pro2: "#388bfd", meta: "#8b5cf6",
+  data2: "#10b981", data7: "#f59e0b", infosystems: "#ef4444",
+  ai_agents: "#ec4899",
+};
+const DEFAULT_COLOR = "#6b7280";
+
+let svg, simulation, linkSel, nodeSel;
+let allNodes = [], allLinks = [];
+
+function adapterColor(id) {
+  const adapter = id.split(":")[0];
+  return ADAPTER_COLORS[adapter] || DEFAULT_COLOR;
+}
+
+function init() {
+  const w = window.innerWidth, h = window.innerHeight;
+  svg = d3.select("#svg").attr("width", w).attr("height", h);
+
+  svg.append("defs").append("marker")
+    .attr("id", "arrow")
+    .attr("viewBox", "0 -4 8 8")
+    .attr("refX", 18).attr("refY", 0)
+    .attr("markerWidth", 6).attr("markerHeight", 6)
+    .attr("orient", "auto")
+    .append("path")
+    .attr("d", "M0,-4L8,0L0,4")
+    .attr("fill", "#30363d");
+
+  svg.call(d3.zoom().scaleExtent([0.2, 4])
+    .on("zoom", e => svg.select("g").attr("transform", e.transform)));
+
+  svg.append("g");
+  simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(d => d.id).distance(80))
+    .force("charge", d3.forceManyBody().strength(-200))
+    .force("center", d3.forceCenter(w / 2, h / 2))
+    .force("collision", d3.forceCollide(20));
+}
+
+async function loadData() {
+  const base = document.getElementById("apiUrl").value.trim();
+  const q = document.getElementById("queryInput").value.trim() || "knowledge";
+  document.getElementById("stats").textContent = "Загрузка...";
+
+  try {
+    const res = await fetch(`${base}/api/query?q=${encodeURIComponent(q)}&ranked=0`);
+    const data = await res.json();
+    buildGraph(data);
+  } catch(e) {
+    document.getElementById("stats").textContent = "Ошибка: " + e;
+    // Demo mode with static data
+    buildDemoGraph();
+  }
+}
+
+function buildDemoGraph() {
+  const demoEntries = [
+    {id:"pro2:q6", title:"Q6 Space", metadata:{q6:"010100"}, is_fallback:true, links:["meta:hexagram:all","info1:methodology"]},
+    {id:"meta:hexagram:50", title:"Котёл 鼎", metadata:{q6:"110001"}, is_fallback:true, links:["pro2:q6:110001","info1:alpha:3"]},
+    {id:"info1:methodology", title:"Методология", metadata:{q6:"101010"}, is_fallback:true, links:["pro2:bidir","meta:hexagram:50"]},
+    {id:"data2:etd", title:"ЕТД", metadata:{q6:"111110"}, is_fallback:true, links:["info1:methodology","meta:hexagram:50"]},
+    {id:"data7:theory:transformation", title:"K₀→K₁→K₂", metadata:{q6:"111110"}, is_fallback:false, links:["pro2:bidir","pro2:knowledge_graph"]},
+    {id:"pro2:bidir", title:"Bidir Training", metadata:{q6:"101010"}, is_fallback:true, links:["info1:methodology","data7:missing_loop"]},
+    {id:"infosystems:knowledge_graph", title:"KnowledgeGraph", metadata:{q6:"101010"}, is_fallback:false, links:["pro2:bidir","data7:theory:transformation"]},
+    {id:"ai_agents:bidir_agent", title:"Bidir Agent", metadata:{q6:"101010"}, is_fallback:false, links:["pro2:bidir","infosystems:knowledge_graph"]},
+  ];
+  const crossLinks = [
+    {from:"pro2:q6", to:"meta:hexagram:50", from_repo:"pro2", to_repo:"meta"},
+    {from:"meta:hexagram:50", to:"info1:methodology", from_repo:"meta", to_repo:"info1"},
+    {from:"info1:methodology", to:"pro2:bidir", from_repo:"info1", to_repo:"pro2"},
+    {from:"data2:etd", to:"info1:methodology", from_repo:"data2", to_repo:"info1"},
+    {from:"data7:theory:transformation", to:"pro2:bidir", from_repo:"data7", to_repo:"pro2"},
+    {from:"infosystems:knowledge_graph", to:"pro2:bidir", from_repo:"infosystems", to_repo:"pro2"},
+    {from:"ai_agents:bidir_agent", to:"infosystems:knowledge_graph", from_repo:"ai_agents", to_repo:"infosystems"},
+  ];
+  buildGraph({entries: demoEntries, cross_links: crossLinks});
+}
+
+function buildGraph(data) {
+  const entries = data.entries || [];
+  const crossLinks = data.cross_links || [];
+
+  const nodeMap = new Map();
+  entries.forEach(e => {
+    nodeMap.set(e.id, {
+      id: e.id,
+      title: e.title,
+      q6: (e.metadata || {}).q6 || "",
+      is_fallback: e.is_fallback,
+      adapter: e.id.split(":")[0],
+      degree: 0,
+    });
+  });
+
+  // Add nodes referenced in links but not in entries
+  crossLinks.forEach(l => {
+    if (!nodeMap.has(l.from)) nodeMap.set(l.from, {id:l.from, title:l.from, q6:"", is_fallback:true, adapter:l.from_repo, degree:0});
+    if (!nodeMap.has(l.to))   nodeMap.set(l.to,   {id:l.to,   title:l.to,   q6:"", is_fallback:true, adapter:l.to_repo,   degree:0});
+  });
+
+  allLinks = crossLinks.map(l => ({source: l.from, target: l.to, from_repo: l.from_repo, to_repo: l.to_repo}));
+  allLinks.forEach(l => {
+    if (nodeMap.has(l.source)) nodeMap.get(l.source).degree++;
+    if (nodeMap.has(l.target)) nodeMap.get(l.target).degree++;
+  });
+  allNodes = Array.from(nodeMap.values());
+
+  document.getElementById("stats").textContent =
+    `${allNodes.length} узлов · ${allLinks.length} связей`;
+
+  render();
+}
+
+function render() {
+  const g = svg.select("g");
+  g.selectAll("*").remove();
+
+  const scale = +document.getElementById("nodeScale").value;
+
+  linkSel = g.append("g").selectAll("line")
+    .data(allLinks).enter().append("line")
+    .attr("class", "link")
+    .attr("stroke", d => ADAPTER_COLORS[d.from_repo] || DEFAULT_COLOR)
+    .attr("stroke-width", 1.2)
+    .attr("marker-end", "url(#arrow)");
+
+  nodeSel = g.append("g").selectAll("g")
+    .data(allNodes).enter().append("g")
+    .attr("class", "node")
+    .call(d3.drag()
+      .on("start", dragStart)
+      .on("drag",  dragging)
+      .on("end",   dragEnd))
+    .on("mouseover", showTooltip)
+    .on("mouseout",  hideTooltip)
+    .on("click",     highlight);
+
+  nodeSel.append("circle")
+    .attr("r", d => scale + Math.sqrt(d.degree) * 2)
+    .attr("fill", d => adapterColor(d.id))
+    .attr("stroke", d => d.is_fallback ? "#444" : "#fff")
+    .attr("opacity", d => d.is_fallback ? 0.6 : 1);
+
+  nodeSel.append("text")
+    .attr("dx", d => scale + Math.sqrt(d.degree) * 2 + 3)
+    .attr("dy", "0.35em")
+    .text(d => d.title.slice(0, 22));
+
+  simulation.nodes(allNodes).on("tick", ticked);
+  simulation.force("link").links(allLinks);
+  simulation.alpha(0.8).restart();
+}
+
+function ticked() {
+  linkSel
+    .attr("x1", d => d.source.x).attr("y1", d => d.source.y)
+    .attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+  nodeSel.attr("transform", d => `translate(${d.x},${d.y})`);
+}
+
+function dragStart(event, d) { if (!event.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; }
+function dragging(event, d)  { d.fx = event.x; d.fy = event.y; }
+function dragEnd(event, d)   { if (!event.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }
+
+function updateForce() {
+  const dist = +document.getElementById("linkStrength").value;
+  simulation.force("link").distance(dist);
+  simulation.alpha(0.3).restart();
+}
+
+function updateNodes() {
+  render();
+}
+
+let highlighted = null;
+function highlight(event, d) {
+  if (highlighted === d.id) {
+    highlighted = null;
+    nodeSel.classed("dimmed", false);
+    linkSel.classed("dimmed", false).classed("highlight", false);
+    return;
+  }
+  highlighted = d.id;
+  const connected = new Set([d.id]);
+  allLinks.forEach(l => {
+    const sid = l.source.id || l.source;
+    const tid = l.target.id || l.target;
+    if (sid === d.id || tid === d.id) { connected.add(sid); connected.add(tid); }
+  });
+  nodeSel.classed("dimmed", n => !connected.has(n.id));
+  linkSel.classed("dimmed", l => {
+    const sid = l.source.id || l.source, tid = l.target.id || l.target;
+    return !connected.has(sid) || !connected.has(tid);
+  });
+  linkSel.classed("highlight", l => {
+    const sid = l.source.id || l.source, tid = l.target.id || l.target;
+    return sid === d.id || tid === d.id;
+  });
+}
+
+const tooltip = document.getElementById("tooltip");
+function showTooltip(event, d) {
+  tooltip.innerHTML = `
+    <strong>${d.title}</strong><br>
+    <span class="src">${d.id}</span><br>
+    ${d.q6 ? `<span class="q6">Q6=${d.q6}</span><br>` : ""}
+    Степень: ${d.degree} · ${d.is_fallback ? "fallback" : "real"}
+  `;
+  tooltip.style.display = "block";
+  tooltip.style.left = (event.pageX + 12) + "px";
+  tooltip.style.top  = (event.pageY - 10) + "px";
+}
+function hideTooltip() { tooltip.style.display = "none"; }
+
+window.addEventListener("resize", () => {
+  const w = window.innerWidth, h = window.innerHeight;
+  svg.attr("width", w).attr("height", h);
+  simulation.force("center", d3.forceCenter(w/2, h/2)).alpha(0.2).restart();
+});
+
+init();
+loadData();
+</script>
+</body>
+</html>

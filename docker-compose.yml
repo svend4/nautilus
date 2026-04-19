@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  portal:
+    build: .
+    ports:
+      - "8000:8000"
+    command: python portal.py --serve
+    volumes:
+      - ./cache:/app/cache
+      - ./passports:/app/passports
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - NAUTILUS_CACHE_TTL=${NAUTILUS_CACHE_TTL:-86400}
+    restart: unless-stopped
+
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    command: python api.py --port 8080 --host 0.0.0.0
+    volumes:
+      - ./cache:/app/cache
+      - ./passports:/app/passports
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - NAUTILUS_CACHE_TTL=${NAUTILUS_CACHE_TTL:-86400}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8080/')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  health:
+    build: .
+    command: python health_check.py
+    volumes:
+      - ./cache:/app/cache
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+    profiles: ["tools"]
+
+  snapshot:
+    build: .
+    command: python snapshot.py --out-dir /output
+    volumes:
+      - ./cache:/app/cache
+      - ./docs:/output
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+    profiles: ["tools"]
+
+volumes:
+  cache:
