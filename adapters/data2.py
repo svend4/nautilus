@@ -110,6 +110,7 @@ class Data2Adapter(BaseAdapter):
                 ),
                 metadata={"type": "overview", "volumes": "1-310", "series": "I–V+"},
                 links=["info1:methodology", "meta:hexagram:50", "pro2:bidir"],
+                is_fallback=True,
             ),
             PortalEntry(
                 id="data2:scarab",
@@ -122,6 +123,7 @@ class Data2Adapter(BaseAdapter):
                 ),
                 metadata={"type": "algorithm", "file": "scarab_algorithm.py"},
                 links=["pro2:q6", "meta:hexagram:63"],
+                is_fallback=True,
             ),
             PortalEntry(
                 id="data2:three_spheres",
@@ -134,6 +136,7 @@ class Data2Adapter(BaseAdapter):
                 ),
                 metadata={"archetype": "три сферы", "ca_class": "II", "alpha": -1},
                 links=["meta:ca_class:II", "info1:alpha:-1"],
+                is_fallback=True,
             ),
         ]
 

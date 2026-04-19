@@ -17,6 +17,7 @@ class PortalEntry:
     content: str
     metadata: dict = field(default_factory=dict)
     links: list = field(default_factory=list)
+    is_fallback: bool = False  # True если вернулось из статического fallback
 
 
 class BaseAdapter(ABC):

@@ -89,14 +89,19 @@ class NautilusPortal:
         return links
 
     def _consensus(self, entries: list) -> dict:
-        sources = {e.id.split(":")[0] for e in entries}
-        present = sources & set(self.adapters)
-        cov = len(present) / len(self.adapters)
+        all_sources = {e.id.split(":")[0] for e in entries}
+        real_sources = {e.id.split(":")[0] for e in entries if not e.is_fallback}
+        present_all = all_sources & set(self.adapters)
+        present_real = real_sources & set(self.adapters)
+        cov_real = len(present_real) / len(self.adapters) if self.adapters else 0
+        cov_all = len(present_all) / len(self.adapters) if self.adapters else 0
         return {
-            "present_in": sorted(present),
-            "missing_in": sorted(set(self.adapters) - present),
-            "coverage": round(cov, 2),
-            "agreed": cov >= 1.0,
+            "present_in": sorted(present_real),
+            "present_in_fallback": sorted(present_all - present_real),
+            "missing_in": sorted(set(self.adapters) - present_all),
+            "coverage": round(cov_real, 2),
+            "coverage_with_fallback": round(cov_all, 2),
+            "agreed": cov_real >= 1.0,
         }
 
 

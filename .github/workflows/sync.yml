@@ -1,0 +1,120 @@
+name: Weekly ecosystem sync
+
+# Каждый понедельник в 03:00 UTC пересканирует все репо в registry.
+# Обновляет паспорта, адаптеры, проверяет ссылки, коммитит дельту.
+
+on:
+  schedule:
+    - cron: "0 3 * * 1"   # понедельник 03:00 UTC
+
+  workflow_dispatch:       # ручной запуск
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Invalidate stale cache
+        run: |
+          python - <<'EOF'
+          from pathlib import Path
+          import time, json
+          cache_dir = Path("cache")
+          if not cache_dir.exists():
+              print("cache/ пуст — пропускаем")
+          else:
+              for meta_file in cache_dir.glob("*.meta.json"):
+                  meta = json.loads(meta_file.read_text())
+                  age_h = (time.time() - meta.get("fetched_at", 0)) / 3600
+                  print(f"  {meta.get('repo','?')}: возраст {age_h:.1f}ч")
+                  # Принудительно сбрасываем для пересканирования
+                  meta_file.unlink()
+                  data_file = meta_file.with_suffix("").with_suffix(".json")
+                  if data_file.exists():
+                      data_file.unlink()
+              print("Кэш очищен")
+          EOF
+
+      - name: Rescan all auto repos
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python - <<'EOF'
+          import json
+          from pathlib import Path
+
+          registry = json.loads(Path("nautilus.json").read_text())
+          auto_repos = [
+              e["repo"] for e in registry.get("registry", [])
+              if e.get("adapter") == "auto"
+          ]
+
+          if not auto_repos:
+              print("Нет auto-репо для пересканирования")
+          else:
+              import subprocess
+              for repo in auto_repos:
+                  fmt = repo.split("/")[-1].replace("-", "_")
+                  print(f"\n→ Сканируем {repo}...")
+                  result = subprocess.run(
+                      ["python", "scan_repo.py", repo, "--format", fmt],
+                      capture_output=True, text=True
+                  )
+                  print(result.stdout)
+                  if result.returncode != 0:
+                      print(f"⚠️  Ошибка: {result.stderr[:200]}")
+          EOF
+
+      - name: Validate links
+        run: |
+          python validate_links.py --json > link_report.json || true
+          python validate_links.py || true
+
+      - name: Run health check
+        run: |
+          python health_check.py > health_report.txt || true
+          cat health_report.txt
+
+      - name: Update ecosystem stats in README
+        run: |
+          python - <<'EOF'
+          from pathlib import Path
+          from portal import NautilusPortal
+          import json, time
+
+          portal = NautilusPortal()
+          desc = portal.describe()
+          result = portal.query("knowledge")
+
+          stats = {
+              "adapters": len(portal.adapters),
+              "entries_sample": len(result.entries),
+              "cross_links_sample": len(result.cross_links),
+              "updated": time.strftime("%Y-%m-%d"),
+          }
+
+          Path("ecosystem_stats.json").write_text(
+              json.dumps(stats, ensure_ascii=False, indent=2)
+          )
+          print("Stats:", stats)
+          EOF
+
+      - name: Commit changes
+        run: |
+          git config user.name "nautilus-sync-bot"
+          git config user.email "sync@nautilus"
+          git add passports/ adapters/ nautilus.json \
+                  link_report.json health_report.txt \
+                  ecosystem_stats.json cache/ || true
+          git diff --cached --quiet \
+            || git commit -m "chore: weekly ecosystem sync $(date +%Y-%m-%d)"
+          git push || echo "Нечего пушить"

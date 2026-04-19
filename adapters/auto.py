@@ -13,10 +13,13 @@ import json
 import os
 import urllib.request
 from .base import BaseAdapter, PortalEntry
+from .cache import CacheManager
+
+_cache = CacheManager()
 
 
 class AutoAdapter(BaseAdapter):
-    """Читает nautilus.json из корня любого GitHub-репо."""
+    """Читает nautilus.json из корня любого GitHub-репо. Использует дисковый кэш."""
 
     def __init__(self, repo: str):
         self.name = repo.split("/")[-1]
@@ -28,7 +31,23 @@ class AutoAdapter(BaseAdapter):
         if self._loaded:
             return
         self._loaded = True
-        self._data = self._fetch_nautilus_json()
+        self._data = self._load_with_cache()
+
+    def _load_with_cache(self) -> dict:
+        # 1. Свежий кэш
+        cached = _cache.get(self.REPO)
+        if cached is not None:
+            return cached
+        # 2. Попытка получить из сети
+        fresh = self._fetch_nautilus_json()
+        if fresh:
+            _cache.set(self.REPO, fresh)
+            return fresh
+        # 3. Устаревший кэш (offline-режим)
+        stale = _cache.get_stale(self.REPO)
+        if stale:
+            return stale
+        return {}
 
     def _fetch_nautilus_json(self) -> dict:
         for branch in ("main", "master"):
