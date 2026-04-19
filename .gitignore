@@ -5,3 +5,4 @@ __pycache__/
 *.pt
 *.pth
 cache/
+docs/_raw_sessions.md
