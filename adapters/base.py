@@ -3,9 +3,12 @@ BaseAdapter — протокол для всех адаптеров Nautilus Por
 Каждый адаптер реализует два метода: fetch() и describe().
 """
 
+from __future__ import annotations
+
 import difflib
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
+from typing import Any
 
 
 @dataclass
@@ -14,10 +17,10 @@ class PortalEntry:
     id: str
     title: str
     source: str
-    format_type: str       # "document" | "concept" | "rule"
+    format_type: str          # "document" | "concept" | "rule"
     content: str
-    metadata: dict = field(default_factory=dict)
-    links: list = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
+    links: list[str] = field(default_factory=list)
     is_fallback: bool = False  # True если вернулось из статического fallback
 
 
@@ -60,7 +63,7 @@ class BaseAdapter(ABC):
         ...
 
     @abstractmethod
-    def describe(self) -> dict:
+    def describe(self) -> dict[str, Any]:
         """
         Описание формата репозитория.
         Должен возвращать хотя бы: format, native_unit.

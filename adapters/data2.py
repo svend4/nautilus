@@ -85,7 +85,7 @@ class Data2Adapter(BaseAdapter):
             links=[f"meta:ca_class:{ca_class}", f"pro2:q6:{q6}", f"info1:alpha:{alpha}"],
         )
 
-    def _volume_entry(self, vol_id, title, series, domain, alpha, q6) -> PortalEntry:
+    def _volume_entry(self, vol_id: int, title: str, series: str, domain: str, alpha: int, q6: str) -> PortalEntry:
         return PortalEntry(
             id=f"data2:vol:{vol_id}",
             title=f"Том {vol_id}. {title}",

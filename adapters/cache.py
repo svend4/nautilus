@@ -9,6 +9,7 @@ import json
 import os
 import time
 from pathlib import Path
+from typing import Any, cast
 
 CACHE_DIR = Path(__file__).parent.parent / "cache"
 DEFAULT_TTL = int(os.environ.get("NAUTILUS_CACHE_TTL", 86400))  # 24ч
@@ -38,7 +39,7 @@ class CacheManager:
             meta = json.loads(meta_path.read_text())
             age = time.time() - meta.get("fetched_at", 0)
             if age <= self.ttl:
-                return json.loads(data_path.read_text())
+                return cast(dict[str, Any], json.loads(data_path.read_text()))
         except Exception:
             pass
         return None
@@ -49,7 +50,7 @@ class CacheManager:
         if not data_path.exists():
             return None
         try:
-            return json.loads(data_path.read_text())
+            return cast(dict[str, Any], json.loads(data_path.read_text()))
         except Exception:
             return None
 
@@ -80,7 +81,7 @@ class CacheManager:
             return None
         try:
             meta = json.loads(meta_path.read_text())
-            return (time.time() - meta.get("fetched_at", 0)) / 3600
+            return (time.time() - float(meta.get("fetched_at", 0))) / 3600
         except Exception:
             return None
 

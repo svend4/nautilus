@@ -142,7 +142,7 @@ class MetaAdapter(BaseAdapter):
             entries.append(self._ca_class_entry(ca_class))
         return entries
 
-    def _make_entry(self, hex_id, char, name, desc, ca_class) -> PortalEntry:
+    def _make_entry(self, hex_id: int, char: str, name: str, desc: str, ca_class: str) -> PortalEntry:
         ca_rule = (hex_id - 1) * 4  # примерное соответствие
         q6_bits = format(hex_id - 1, "06b")
         alpha = CA_CLASS_ALPHA.get(ca_class, 0)
