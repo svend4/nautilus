@@ -1,0 +1,1587 @@
+{
+  "saved_at": "2026-04-19T12:27:39Z",
+  "total": 122,
+  "entries": {
+    "info1:methodology": {
+      "id": "info1:methodology",
+      "title": "Методология ⇑⇓↔",
+      "content": "Параллельное двунаправленное развитие. 8 уровней абстракции (α=-4..+4). 74 документа, 1156 связей.",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "q6": "101010",
+      "links": [
+        "meta:hexagram:50",
+        "pro2:bidir"
+      ],
+      "is_fallback": true
+    },
+    "info1:cards": {
+      "id": "info1:cards",
+      "title": "Карточная система",
+      "content": "Карточки как атомарные единицы знания. 8 типов карточек. Аналог концептов Q6 в pro2.",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "q6": "000111",
+      "links": [
+        "pro2:concept:knowledge"
+      ],
+      "is_fallback": true
+    },
+    "info1:alpha:-4": {
+      "id": "info1:alpha:-4",
+      "title": "α=-4 · Код",
+      "content": "Уровень абстракции α=-4: Исходный код, скрипты, конкретные реализации.",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "q6": "000000",
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    "info1:alpha:-3": {
+      "id": "info1:alpha:-3",
+      "title": "α=-3 · Примеры",
+      "content": "Уровень абстракции α=-3: Примеры, туториалы, демонстрации.",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "q6": "000001",
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    "info1:alpha:-2": {
+      "id": "info1:alpha:-2",
+      "title": "α=-2 · Реализация",
+      "content": "Уровень абстракции α=-2: Детали реализации, компоненты, модули.",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "q6": "000011",
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    "info1:alpha:-1": {
+      "id": "info1:alpha:-1",
+      "title": "α=-1 · Спецификации",
+      "content": "Уровень абстракции α=-1: Спецификации, API, форматы данных.",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "q6": "000111",
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    "info1:alpha:0": {
+      "id": "info1:alpha:0",
+      "title": "α=+0 · Концепция",
+      "content": "Уровень абстракции α=0: Концепции, идеи, принципы.",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "q6": "010100",
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    "info1:alpha:1": {
+      "id": "info1:alpha:1",
+      "title": "α=+1 · Руководства",
+      "content": "Уровень абстракции α=1: Руководства, процессы, методики.",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "q6": "010111",
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    "info1:alpha:2": {
+      "id": "info1:alpha:2",
+      "title": "α=+2 · Методология",
+      "content": "Уровень абстракции α=2: Методологии, системные подходы.",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "q6": "101010",
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    "info1:alpha:3": {
+      "id": "info1:alpha:3",
+      "title": "α=+3 · Философия",
+      "content": "Уровень абстракции α=3: Философские основания, аксиомы.",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "q6": "111110",
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    "info1:alpha:4": {
+      "id": "info1:alpha:4",
+      "title": "α=+4 · Онтология",
+      "content": "Уровень абстракции α=4: Онтологии, высший уровень абстракции.",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "q6": "111111",
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6": {
+      "id": "pro2:q6",
+      "title": "Q6 Семантическое пространство",
+      "content": "64 состояния (6-битное пространство). Каждый концепт = координата Q6[b0..b5]. Соответствует 64 гексаграммам И-Цзин.",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "",
+      "links": [
+        "info1:alpha:0",
+        "meta:hexagram:all"
+      ],
+      "is_fallback": true
+    },
+    "pro2:bidir": {
+      "id": "pro2:bidir",
+      "title": "Bidirectional Training ⇑⇓ (замкнутый цикл)",
+      "content": "ВПЕРЁД (специализация→обобщение): Корпус→KnowledgeGraph→PageRank-центры→Q6-анкоры→Variant3GPT. НАЗАД (обобщение→специализация): GPT генерирует→QFilter оценивает→AdaptiveLearning обновляет граф→identify_gaps()→generate_hypotheses()→новый корпус→снова вперёд. Реализует НЕДОСТАЮЩУЮ ПЕТЛЮ из data7/knowl",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "",
+      "links": [
+        "data7:missing_loop",
+        "data7:theory:transformation",
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    "pro2:knowledge_graph": {
+      "id": "pro2:knowledge_graph",
+      "title": "KnowledgeGraph — граф научных знаний",
+      "content": "Аналог data7:KnowledgeGraph. Отличие: рёбра взвешены качеством связи (обновляется AdaptiveLearning). Типы рёбер: causes, extends, contradicts, related_to, is_a, part_of. PageRank-центральность определяет Q6-анкоры для обучения.",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "",
+      "links": [
+        "data7:concept",
+        "data7:theory:transformation"
+      ],
+      "is_fallback": true
+    },
+    "pro2:adaptive_learning": {
+      "id": "pro2:adaptive_learning",
+      "title": "AdaptiveLearning — динамический выбор концептов",
+      "content": "Обновляет веса рёбер графа по результатам генерации GPT. identify_gaps() ↔ domain_triplet_loss (из data7). generate_hypotheses() ↔ self_dialog stage 3. Критерий завершения: L_total = L_lm + α·L_domain + β·L_quality + γ·L_gate.",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "",
+      "links": [
+        "data7:missing_loop",
+        "pro2:bidir"
+      ],
+      "is_fallback": true
+    },
+    "pro2:bidir_train": {
+      "id": "pro2:bidir_train",
+      "title": "bidir_train.py — двунаправленное обучение",
+      "content": "Реализация замкнутого цикла forward+backward. Алиас pro2:bidir.",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "",
+      "links": [
+        "pro2:bidir"
+      ],
+      "is_fallback": true
+    },
+    "pro2:concept:knowledge": {
+      "id": "pro2:concept:knowledge",
+      "title": "Концепт: Знание (Knowledge Graph)",
+      "content": "Узел типа 'knowledge' в Q6-пространстве. Связывает карточки info1 с граф-концептами pro2.",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "000001",
+      "links": [
+        "info1:methodology",
+        "pro2:q6"
+      ],
+      "is_fallback": true
+    },
+    "pro2:moe": {
+      "id": "pro2:moe",
+      "title": "MoE — Mixture of Experts",
+      "content": "Смесь экспертов с доменной маршрутизацией. geometry/ffn.py: DomainMoE, 6 доменов.",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "",
+      "links": [
+        "infosystems:domain_moe",
+        "pro2:domain_routing"
+      ],
+      "is_fallback": true
+    },
+    "pro2:domain_routing": {
+      "id": "pro2:domain_routing",
+      "title": "Domain Routing — доменная маршрутизация",
+      "content": "Маршрутизация токенов к специализированным экспертам по домену. Domain supervision loss.",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "",
+      "links": [
+        "pro2:moe"
+      ],
+      "is_fallback": true
+    },
+    "pro2:biangua": {
+      "id": "pro2:biangua",
+      "title": "BianGuaTransform — навигация в Q6",
+      "content": "Преобразование гексаграмм: переход между категориями Q6-гиперкуба по Хэмминговому расстоянию.",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": true,
+      "links": [
+        "meta:hexagram:all",
+        "pro2:q6"
+      ],
+      "is_fallback": true
+    },
+    "pro2:generate": {
+      "id": "pro2:generate",
+      "title": "AdvancedGenerator — генерация текста",
+      "content": "5 стратегий: greedy, nucleus, beam, speculative, dynamic_temp. inference/bridge_inference.py.",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "",
+      "links": [
+        "pro2:speculative"
+      ],
+      "is_fallback": true
+    },
+    "pro2:speculative": {
+      "id": "pro2:speculative",
+      "title": "Speculative Decoding — ускоренная генерация",
+      "content": "Draft model + verify: быстрая генерация с проверкой крупной моделью.",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "",
+      "links": [
+        "pro2:generate"
+      ],
+      "is_fallback": true
+    },
+    "pro2:hmoe": {
+      "id": "pro2:hmoe",
+      "title": "HMoE — иерархическая смесь экспертов",
+      "content": "Hierarchical MoE: эксперты CONCRETE→DYNAMIC→ABSTRACT. train_hmoe_curriculum.py.",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "",
+      "links": [
+        "pro2:domain_routing",
+        "pro2:moe"
+      ],
+      "is_fallback": true
+    },
+    "pro2:nautilus": {
+      "id": "pro2:nautilus",
+      "title": "NautilusHierarchy — 7-камерная архитектура",
+      "content": "7 камер от микро до макро. Прогрессивная активация. geometry/nautilus.py.",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "",
+      "links": [
+        "pro2:six_sources"
+      ],
+      "is_fallback": true
+    },
+    "pro2:self_train": {
+      "id": "pro2:self_train",
+      "title": "self_train.py — 3-стадийное самообучение",
+      "content": "Stage 0 (Q6 topology) → Stage 1 (RAG-buffer) → Stage 2 (filtered wild).",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "",
+      "links": [
+        "pro2:bidir"
+      ],
+      "is_fallback": true
+    },
+    "pro2:six_sources": {
+      "id": "pro2:six_sources",
+      "title": "Шесть источников (Six Sources)",
+      "content": "Шесть источников данных для обучения Nautilus: корпус, граф, архетипы, гексаграммы, Q6, ЕТД.",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "",
+      "links": [
+        "data2:etd",
+        "pro2:nautilus"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:000000": {
+      "id": "pro2:q6:000000",
+      "title": "Q6=000000 · Ката",
+      "content": "Зафиксированные паттерны движения",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "000000",
+      "links": [
+        "info1:alpha:-3",
+        "meta:hexagram:1"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:000001": {
+      "id": "pro2:q6:000001",
+      "title": "Q6=000001 · Архетипы",
+      "content": "Базовые архетипы движения ЕТД",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "000001",
+      "links": [
+        "info1:alpha:-3",
+        "meta:hexagram:2"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:000010": {
+      "id": "pro2:q6:000010",
+      "title": "Q6=000010 · Геймдизайн",
+      "content": "Игровые паттерны и механики",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "000010",
+      "links": [
+        "info1:alpha:-3",
+        "meta:hexagram:3"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:000011": {
+      "id": "pro2:q6:000011",
+      "title": "Q6=000011 · Петля",
+      "content": "Цикл, периодический паттерн",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "000011",
+      "links": [
+        "info1:alpha:-1",
+        "meta:hexagram:4"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:000100": {
+      "id": "pro2:q6:000100",
+      "title": "Q6=000100 · Алгоритмы",
+      "content": "Алгоритмические паттерны",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "000100",
+      "links": [
+        "info1:alpha:-3",
+        "meta:hexagram:5"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:000110": {
+      "id": "pro2:q6:000110",
+      "title": "Q6=000110 · 7±2",
+      "content": "Мнемоническое ограничение Миллера",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "000110",
+      "links": [
+        "info1:alpha:-1",
+        "meta:hexagram:7"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:000111": {
+      "id": "pro2:q6:000111",
+      "title": "Q6=000111 · Три сферы",
+      "content": "Иерархия МВС/СВС/БВС",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "000111",
+      "links": [
+        "info1:alpha:-1",
+        "meta:hexagram:8"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:001001": {
+      "id": "pro2:q6:001001",
+      "title": "Q6=001001 · Нечётность",
+      "content": "Закон нечётности {1,3,5,7,9}",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "001001",
+      "links": [
+        "info1:alpha:-1",
+        "meta:hexagram:10"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:010010": {
+      "id": "pro2:q6:010010",
+      "title": "Q6=010010 · Шахматка",
+      "content": "Модульная тактическая сетка",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "010010",
+      "links": [
+        "info1:alpha:-1",
+        "meta:hexagram:19"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:010100": {
+      "id": "pro2:q6:010100",
+      "title": "Q6=010100 · Синтез I",
+      "content": "Единая теория синтез I",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "010100",
+      "links": [
+        "info1:alpha:-1",
+        "meta:hexagram:21"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:010111": {
+      "id": "pro2:q6:010111",
+      "title": "Q6=010111 · Возврат",
+      "content": "Поворотная точка, начало нового цикла",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "010111",
+      "links": [
+        "info1:alpha:3",
+        "meta:hexagram:24"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:101000": {
+      "id": "pro2:q6:101000",
+      "title": "Q6=101000 · Синтез II",
+      "content": "Конечный синтез II",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "101000",
+      "links": [
+        "info1:alpha:-1",
+        "meta:hexagram:41"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:110001": {
+      "id": "pro2:q6:110001",
+      "title": "Q6=110001 · Котёл",
+      "content": "Трансформация через огонь",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "110001",
+      "links": [
+        "info1:alpha:3",
+        "meta:hexagram:50"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:110011": {
+      "id": "pro2:q6:110011",
+      "title": "Q6=110011 · Резонанс",
+      "content": "ω_МВС = ω_СВС = ω_БВС → max",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "110011",
+      "links": [
+        "info1:alpha:3",
+        "meta:hexagram:52"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:110100": {
+      "id": "pro2:q6:110100",
+      "title": "Q6=110100 · Теория струн",
+      "content": "Физика высоких энергий",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "110100",
+      "links": [
+        "info1:alpha:3",
+        "meta:hexagram:53"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:111110": {
+      "id": "pro2:q6:111110",
+      "title": "Q6=111110 · Синтез",
+      "content": "Интеграция всех архетипов",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "111110",
+      "links": [
+        "info1:alpha:3",
+        "meta:hexagram:63"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:111111": {
+      "id": "pro2:q6:111111",
+      "title": "Q6=111111 · Финал",
+      "content": "Финальный синтез всех систем",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "111111",
+      "links": [
+        "info1:alpha:3",
+        "meta:hexagram:64"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:000101": {
+      "id": "pro2:q6:000101",
+      "title": "Q6=000101 · Ожидание",
+      "content": "Терпение перед действием",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "000101",
+      "links": [
+        "info1:alpha:-1",
+        "meta:hexagram:6"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:001000": {
+      "id": "pro2:q6:001000",
+      "title": "Q6=001000 · Сдерживание",
+      "content": "Накопление силы через малое терпение",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "001000",
+      "links": [
+        "info1:alpha:-1",
+        "meta:hexagram:9"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:001010": {
+      "id": "pro2:q6:001010",
+      "title": "Q6=001010 · Мир",
+      "content": "Гармония неба и земли",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "001010",
+      "links": [
+        "info1:alpha:-1",
+        "meta:hexagram:11"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:001011": {
+      "id": "pro2:q6:001011",
+      "title": "Q6=001011 · Застой",
+      "content": "Разделение, блокировка",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "001011",
+      "links": [
+        "info1:alpha:1",
+        "meta:hexagram:12"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:001101": {
+      "id": "pro2:q6:001101",
+      "title": "Q6=001101 · Великое владение",
+      "content": "Изобилие и ответственность",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "001101",
+      "links": [
+        "info1:alpha:-1",
+        "meta:hexagram:14"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:010110": {
+      "id": "pro2:q6:010110",
+      "title": "Q6=010110 · Разрушение",
+      "content": "Отслаивание, конец цикла",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "010110",
+      "links": [
+        "info1:alpha:1",
+        "meta:hexagram:23"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:011100": {
+      "id": "pro2:q6:011100",
+      "title": "Q6=011100 · Бездна",
+      "content": "Опасность, которую нужно пройти",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "011100",
+      "links": [
+        "info1:alpha:1",
+        "meta:hexagram:29"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:011101": {
+      "id": "pro2:q6:011101",
+      "title": "Q6=011101 · Огонь",
+      "content": "Прилипание, ясность, зависимость",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "011101",
+      "links": [
+        "info1:alpha:1",
+        "meta:hexagram:30"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:101001": {
+      "id": "pro2:q6:101001",
+      "title": "Q6=101001 · Прибавление",
+      "content": "Рост через щедрость",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "101001",
+      "links": [
+        "info1:alpha:-1",
+        "meta:hexagram:42"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:110000": {
+      "id": "pro2:q6:110000",
+      "title": "Q6=110000 · Революция",
+      "content": "Преобразование в нужный момент",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "110000",
+      "links": [
+        "info1:alpha:3",
+        "meta:hexagram:49"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:110010": {
+      "id": "pro2:q6:110010",
+      "title": "Q6=110010 · Гром",
+      "content": "Пробуждение через потрясение",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "110010",
+      "links": [
+        "info1:alpha:1",
+        "meta:hexagram:51"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:110101": {
+      "id": "pro2:q6:110101",
+      "title": "Q6=110101 · Изобилие",
+      "content": "Полнота накопленной силы",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "110101",
+      "links": [
+        "info1:alpha:-1",
+        "meta:hexagram:54"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:111000": {
+      "id": "pro2:q6:111000",
+      "title": "Q6=111000 · Ветер",
+      "content": "Мягкое проникновение",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "111000",
+      "links": [
+        "info1:alpha:-1",
+        "meta:hexagram:57"
+      ],
+      "is_fallback": true
+    },
+    "pro2:q6:111001": {
+      "id": "pro2:q6:111001",
+      "title": "Q6=111001 · Радость",
+      "content": "Открытость, обмен",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "q6": "111001",
+      "links": [
+        "info1:alpha:-1",
+        "meta:hexagram:58"
+      ],
+      "is_fallback": true
+    },
+    "meta:hexagram:1": {
+      "id": "meta:hexagram:1",
+      "title": "[1] 乾 Творчество",
+      "content": "Чистая созидательная сила",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "000000",
+      "links": [
+        "info1:alpha:-3",
+        "pro2:q6:000000"
+      ],
+      "is_fallback": true
+    },
+    "meta:hexagram:2": {
+      "id": "meta:hexagram:2",
+      "title": "[2] 坤 Исполнение",
+      "content": "Принимающая сила, следование",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "000001",
+      "links": [
+        "info1:alpha:-3",
+        "pro2:q6:000001"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:3": {
+      "id": "meta:hexagram:3",
+      "title": "[3] 屯 Начальная трудность",
+      "content": "Росток пробивается сквозь землю",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "000010",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:000010"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:4": {
+      "id": "meta:hexagram:4",
+      "title": "[4] 蒙 Незрелость",
+      "content": "Учение через опыт",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "000011",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:000011"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:5": {
+      "id": "meta:hexagram:5",
+      "title": "[5] 需 Ожидание",
+      "content": "Терпение перед действием",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "000100",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:000100"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:6": {
+      "id": "meta:hexagram:6",
+      "title": "[6] 訟 Конфликт",
+      "content": "Противостояние требует осторожности",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "000101",
+      "links": [
+        "info1:alpha:1",
+        "pro2:q6:000101"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:7": {
+      "id": "meta:hexagram:7",
+      "title": "[7] 師 Армия",
+      "content": "Организованная сила под руководством",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "000110",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:000110"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:8": {
+      "id": "meta:hexagram:8",
+      "title": "[8] 比 Единение",
+      "content": "Сближение, поиск союзников",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "000111",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:000111"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:9": {
+      "id": "meta:hexagram:9",
+      "title": "[9] 小畜 Сдерживание",
+      "content": "Накопление силы через малое терпение",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "001000",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:001000"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:10": {
+      "id": "meta:hexagram:10",
+      "title": "[10] 履 Поступь",
+      "content": "Движение по опасному пути с осторожностью",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "001001",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:001001"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:11": {
+      "id": "meta:hexagram:11",
+      "title": "[11] 泰 Мир",
+      "content": "Гармония неба и земли",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "001010",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:001010"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:12": {
+      "id": "meta:hexagram:12",
+      "title": "[12] 否 Застой",
+      "content": "Разделение, блокировка",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "001011",
+      "links": [
+        "info1:alpha:1",
+        "pro2:q6:001011"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:14": {
+      "id": "meta:hexagram:14",
+      "title": "[14] 大有 Великое владение",
+      "content": "Изобилие и ответственность",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "001101",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:001101"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:19": {
+      "id": "meta:hexagram:19",
+      "title": "[19] 臨 Приближение",
+      "content": "Нарастание, прибытие, влияние",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "010010",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:010010"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:21": {
+      "id": "meta:hexagram:21",
+      "title": "[21] 噬嗑 Прокусывание",
+      "content": "Решительное устранение препятствия",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "010100",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:010100"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:23": {
+      "id": "meta:hexagram:23",
+      "title": "[23] 剥 Разрушение",
+      "content": "Отслаивание, конец цикла",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "010110",
+      "links": [
+        "info1:alpha:1",
+        "pro2:q6:010110"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:24": {
+      "id": "meta:hexagram:24",
+      "title": "[24] 復 Возврат",
+      "content": "Поворотная точка, начало нового цикла",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "010111",
+      "links": [
+        "info1:alpha:3",
+        "pro2:q6:010111"
+      ],
+      "is_fallback": true
+    },
+    "meta:hexagram:29": {
+      "id": "meta:hexagram:29",
+      "title": "[29] 坎 Бездна",
+      "content": "Опасность, которую нужно пройти",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "011100",
+      "links": [
+        "info1:alpha:1",
+        "pro2:q6:011100"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:30": {
+      "id": "meta:hexagram:30",
+      "title": "[30] 離 Огонь",
+      "content": "Прилипание, ясность, зависимость",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "011101",
+      "links": [
+        "info1:alpha:1",
+        "pro2:q6:011101"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:41": {
+      "id": "meta:hexagram:41",
+      "title": "[41] 損 Убывание",
+      "content": "Уменьшение ради внутреннего роста",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "101000",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:101000"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:42": {
+      "id": "meta:hexagram:42",
+      "title": "[42] 益 Прибавление",
+      "content": "Рост через щедрость",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "101001",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:101001"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:49": {
+      "id": "meta:hexagram:49",
+      "title": "[49] 革 Революция",
+      "content": "Преобразование в нужный момент",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "110000",
+      "links": [
+        "info1:alpha:3",
+        "pro2:q6:110000"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:50": {
+      "id": "meta:hexagram:50",
+      "title": "[50] 鼎 Котёл",
+      "content": "Трансформация через огонь",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "110001",
+      "links": [
+        "info1:alpha:3",
+        "pro2:q6:110001"
+      ],
+      "is_fallback": true
+    },
+    "meta:hexagram:51": {
+      "id": "meta:hexagram:51",
+      "title": "[51] 震 Гром",
+      "content": "Пробуждение через потрясение",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "110010",
+      "links": [
+        "info1:alpha:1",
+        "pro2:q6:110010"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:52": {
+      "id": "meta:hexagram:52",
+      "title": "[52] 艮 Гора",
+      "content": "Неподвижность, медитация",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "110011",
+      "links": [
+        "info1:alpha:-3",
+        "pro2:q6:110011"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:53": {
+      "id": "meta:hexagram:53",
+      "title": "[53] 漸 Постепенность",
+      "content": "Медленный, устойчивый прогресс",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "110100",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:110100"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:54": {
+      "id": "meta:hexagram:54",
+      "title": "[54] 豐 Изобилие",
+      "content": "Полнота накопленной силы",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "110101",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:110101"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:57": {
+      "id": "meta:hexagram:57",
+      "title": "[57] 巽 Ветер",
+      "content": "Мягкое проникновение",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "111000",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:111000"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:58": {
+      "id": "meta:hexagram:58",
+      "title": "[58] 兌 Радость",
+      "content": "Открытость, обмен",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "111001",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:111001"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:63": {
+      "id": "meta:hexagram:63",
+      "title": "[63] 既濟 После завершения",
+      "content": "Равновесие достигнуто",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "111110",
+      "links": [
+        "info1:alpha:3",
+        "pro2:q6:111110"
+      ],
+      "is_fallback": true
+    },
+    "meta:hexagram:64": {
+      "id": "meta:hexagram:64",
+      "title": "[64] 未濟 До завершения",
+      "content": "Движение к новому состоянию",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "111111",
+      "links": [
+        "info1:alpha:3",
+        "pro2:q6:111111"
+      ],
+      "is_fallback": false
+    },
+    "meta:hexagram:all": {
+      "id": "meta:hexagram:all",
+      "title": "Все 64 гексаграммы (обзор)",
+      "content": "Полное пространство 31 гексаграмм в таблице. 4 CA-класса Вольфрама.",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "",
+      "links": [
+        "meta:ca_class:I",
+        "meta:ca_class:II",
+        "meta:ca_class:III",
+        "meta:ca_class:IV"
+      ],
+      "is_fallback": true
+    },
+    "meta:hexagram": {
+      "id": "meta:hexagram",
+      "title": "Гексаграммы И-Цзин",
+      "content": "64 гексаграммы как категориальная онтология. Каждая = вершина Q6-гиперкуба.",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "",
+      "links": [
+        "meta:hexagram:all",
+        "pro2:q6"
+      ],
+      "is_fallback": true
+    },
+    "meta:ca_rules": {
+      "id": "meta:ca_rules",
+      "title": "CA-правила (Клеточные Автоматы)",
+      "content": "256 правил элементарных клеточных автоматов Вольфрама → 4 класса сложности → 64 гексаграммы.",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "",
+      "links": [
+        "meta:ca_class:I",
+        "meta:ca_class:II",
+        "meta:ca_class:III",
+        "meta:ca_class:IV"
+      ],
+      "is_fallback": true
+    },
+    "meta:ca_class:I": {
+      "id": "meta:ca_class:I",
+      "title": "CA-класс I: Стационарные",
+      "content": "Паттерны, сходящиеся к точкам или исчезающие. α=-3. Гексаграммы: 1, 2, 52.",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "",
+      "links": [
+        "info1:alpha:-3"
+      ],
+      "is_fallback": true
+    },
+    "meta:ca_class:II": {
+      "id": "meta:ca_class:II",
+      "title": "CA-класс II: Периодические",
+      "content": "Паттерны с устойчивыми циклами и стабильными структурами. α=-1. Гексаграммы: 3, 4, 5, 7, 8, 9, 10, 11, 14, 19, 21, 41, 42, 53, 54, 57, 58.",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "",
+      "links": [
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    "meta:ca_class:III": {
+      "id": "meta:ca_class:III",
+      "title": "CA-класс III: Хаотические",
+      "content": "Сложные, непредсказуемые паттерны. α=+1. Гексаграммы: 6, 12, 23, 29, 30, 51.",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "",
+      "links": [
+        "info1:alpha:1"
+      ],
+      "is_fallback": true
+    },
+    "meta:ca_class:IV": {
+      "id": "meta:ca_class:IV",
+      "title": "CA-класс IV: Сложные",
+      "content": "Структуры на грани хаоса и порядка (класс Вольфрама IV). α=+3. Гексаграммы: 24, 49, 50, 63, 64.",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "q6": "",
+      "links": [
+        "info1:alpha:3"
+      ],
+      "is_fallback": true
+    },
+    "data2:arch:петля": {
+      "id": "data2:arch:петля",
+      "title": "Архетип: Петля",
+      "content": "Цикл, периодический паттерн",
+      "source": "svend4/data2",
+      "format_type": "archetype",
+      "q6": "000011",
+      "links": [
+        "info1:alpha:-1",
+        "meta:ca_class:II",
+        "pro2:q6:000011"
+      ],
+      "is_fallback": false
+    },
+    "data2:arch:три_сферы": {
+      "id": "data2:arch:три_сферы",
+      "title": "Архетип: Три Сферы",
+      "content": "Иерархия МВС/СВС/БВС",
+      "source": "svend4/data2",
+      "format_type": "archetype",
+      "q6": "000111",
+      "links": [
+        "info1:alpha:-1",
+        "meta:ca_class:II",
+        "pro2:q6:000111"
+      ],
+      "is_fallback": false
+    },
+    "data2:arch:нечётность": {
+      "id": "data2:arch:нечётность",
+      "title": "Архетип: Нечётность",
+      "content": "Закон нечётности {1,3,5,7,9}",
+      "source": "svend4/data2",
+      "format_type": "archetype",
+      "q6": "001001",
+      "links": [
+        "info1:alpha:-1",
+        "meta:ca_class:II",
+        "pro2:q6:001001"
+      ],
+      "is_fallback": false
+    },
+    "data2:arch:7±2": {
+      "id": "data2:arch:7±2",
+      "title": "Архетип: 7±2",
+      "content": "Мнемоническое ограничение Миллера",
+      "source": "svend4/data2",
+      "format_type": "archetype",
+      "q6": "000110",
+      "links": [
+        "info1:alpha:-1",
+        "meta:ca_class:II",
+        "pro2:q6:000110"
+      ],
+      "is_fallback": false
+    },
+    "data2:arch:шахматка": {
+      "id": "data2:arch:шахматка",
+      "title": "Архетип: Шахматка",
+      "content": "Модульная тактическая сетка",
+      "source": "svend4/data2",
+      "format_type": "archetype",
+      "q6": "010010",
+      "links": [
+        "info1:alpha:-1",
+        "meta:ca_class:II",
+        "pro2:q6:010010"
+      ],
+      "is_fallback": false
+    },
+    "data7:theory:transformation": {
+      "id": "data7:theory:transformation",
+      "title": "Теория трансформации знаний K₀→K₁→K₂",
+      "content": "Диссертации ⇄ Энциклопедии. K₀ → decompose → aggregate → K₁ → decompose → synthesize → K₂ → ... Итеративное сжатие и расширение знаний между специализированным и обобщённым полюсами.",
+      "source": "svend4/data7",
+      "format_type": "theory",
+      "q6": "111110",
+      "links": [
+        "pro2:bidir",
+        "pro2:knowledge_graph"
+      ],
+      "is_fallback": false
+    },
+    "data7:missing_loop": {
+      "id": "data7:missing_loop",
+      "title": "Недостающая петля (реализована в pro2)",
+      "content": "# Missing: proposals → decomposer.decompose() → refinement loop\nКомментарий в data7/knowledge_transformer.py.\nЭта петля реализована в pro2/bidir_train.py:\nGPT генерирует гипотезы → граф оценивает → AdaptiveLearning обновляет веса → identify_gaps() → новый корпус → снова вперёд.",
+      "source": "svend4/data7",
+      "format_type": "theory",
+      "q6": "101010",
+      "links": [
+        "pro2:adaptive_learning",
+        "pro2:bidir"
+      ],
+      "is_fallback": false
+    },
+    "data7:concept": {
+      "id": "data7:concept",
+      "title": "Concept — атомарная единица знания",
+      "content": "Базовый класс data7. В pro2 расширен: Concept.hex_idx (Q6-позиция), Concept.pagerank (PageRank-центральность в графе), Concept.depth (специализация 0..1), Concept.novelty (новизна 0..1).",
+      "source": "svend4/data7",
+      "format_type": "schema",
+      "q6": "000001",
+      "links": [
+        "pro2:knowledge_graph",
+        "pro2:q6"
+      ],
+      "is_fallback": false
+    },
+    "data7:analogy_table": {
+      "id": "data7:analogy_table",
+      "title": "Таблица аналогий data7 ↔ pro2",
+      "content": "KnowledgeGraph.compute_centrality()  ↔  hex_weights (мягкое внимание)\nidentify_gaps()                       ↔  domain_triplet_loss (разрыв)\ngenerate_hypotheses()                 ↔  self_dialog stage 3\nAdaptiveLearningOptimizer             ↔  gradient descent на QFilter\nTSP-оптимизация порядка       ",
+      "source": "svend4/data7",
+      "format_type": "bridge",
+      "q6": "110001",
+      "links": [
+        "pro2:bidir",
+        "pro2:knowledge_graph"
+      ],
+      "is_fallback": false
+    },
+    "infosystems:knowledge_graph": {
+      "id": "infosystems:knowledge_graph",
+      "title": "KnowledgeGraph — графовая база знаний",
+      "content": "Граф концептов с PageRank-центральностью. Узлы = Concept(name, hex_idx, pagerank, depth, novelty). Рёбра = семантические связи с весами. Используется в bidir_train.py для двунаправленного обучения: forward (граф→обучение) ↔ backward (генерация→граф).",
+      "source": "svend4/pro2",
+      "format_type": "schema",
+      "q6": "101010",
+      "links": [
+        "data7:theory:transformation",
+        "pro2:bidir"
+      ],
+      "is_fallback": false
+    },
+    "infosystems:domain_moe": {
+      "id": "infosystems:domain_moe",
+      "title": "DomainMoE — доменная маршрутизация экспертов",
+      "content": "Mixture of Experts с доменной специализацией. 6 доменов: ai_agents, infosystems, knowledge, algorithms, data2, meta. Каждый эксперт специализируется на своём домене. Domain supervision loss направляет токены к правильному эксперту.",
+      "source": "svend4/pro2",
+      "format_type": "architecture",
+      "q6": "110001",
+      "links": [
+        "pro2:domain_routing",
+        "pro2:moe"
+      ],
+      "is_fallback": false
+    },
+    "infosystems:q6_ontology": {
+      "id": "infosystems:q6_ontology",
+      "title": "Q6-онтология: 64 гексаграммы как категориальная система",
+      "content": "64 гексаграммы {-1,+1}^6 = универсальная онтология. Каждая вершина гиперкуба = архетипическая категория. Хэмминговое расстояние = семантическое расстояние. BianGuaTransform = навигация (переход между категориями). FactoredQuantizer = проекция текста на ближайшую категорию.",
+      "source": "svend4/pro2",
+      "format_type": "ontology",
+      "q6": "111111",
+      "links": [
+        "meta:hexagram",
+        "pro2:biangua",
+        "pro2:q6"
+      ],
+      "is_fallback": false
+    },
+    "infosystems:corpus_structure": {
+      "id": "infosystems:corpus_structure",
+      "title": "Структура учебного корпуса (6+1 доменов)",
+      "content": "Корпус организован по 6 семантическим доменам:\n- ai_agents: определения ИИ-агентов\n- infosystems: информационные системы и архитектуры\n- knowledge: базы знаний и онтологии\n- algorithms: алгоритмы и структуры данных\n- data2: данные Крюкова (ETD, 310+ томов)\n- meta: мета-документы (CA-правила, гексагр",
+      "source": "svend4/pro2",
+      "format_type": "schema",
+      "q6": "010110",
+      "links": [
+        "data2:etd",
+        "data7:theory:transformation",
+        "meta:ca_rules"
+      ],
+      "is_fallback": false
+    },
+    "ai_agents:self_train": {
+      "id": "ai_agents:self_train",
+      "title": "3-стадийное самообучение (self_train.py)",
+      "content": "Агент самообучения в 3 стадии:\nStage 0 (Q6 topology): фиксированный квантизатор, обучение base model.\nStage 1 (RAG-buffer): модель генерирует, буфер фильтрует, переобучение.\nStage 2 (filtered wild): обучение на отфильтрованных внешних данных.\nКаждая стадия использует curriculum с прогрессивным услож",
+      "source": "svend4/pro2",
+      "format_type": "agent_pattern",
+      "q6": "000001",
+      "links": [
+        "data7:theory:transformation",
+        "pro2:self_train"
+      ],
+      "is_fallback": false
+    },
+    "ai_agents:bidir_agent": {
+      "id": "ai_agents:bidir_agent",
+      "title": "Двунаправленный агент (bidir_train.py)",
+      "content": "Forward loop: KnowledgeGraph → PageRank → отбор концептов → train batch.\nBackward loop: generate → filter → evaluate → update graph.\nЦикл: граф направляет обучение, обучение обогащает граф.\nРеализует 'недостающую петлю' из data7/knowledge_transformer.py.",
+      "source": "svend4/pro2",
+      "format_type": "agent_pattern",
+      "q6": "101010",
+      "links": [
+        "data7:missing_loop",
+        "infosystems:knowledge_graph",
+        "pro2:bidir"
+      ],
+      "is_fallback": false
+    },
+    "ai_agents:generator": {
+      "id": "ai_agents:generator",
+      "title": "AdvancedGenerator — 5 стратегий генерации",
+      "content": "5 стратегий генерации текста:\n1. greedy — argmax (быстро, детерминированно)\n2. nucleus — top-p sampling (разнообразие)\n3. beam — beam search (оптимальность)\n4. speculative — draft + verify (скорость)\n5. dynamic_temp — адаптивная температура (по энтропии)\nКаждая стратегия = поведенческий режим агента",
+      "source": "svend4/pro2",
+      "format_type": "agent_pattern",
+      "q6": "010101",
+      "links": [
+        "pro2:generate",
+        "pro2:speculative"
+      ],
+      "is_fallback": false
+    },
+    "ai_agents:hmoe_curriculum": {
+      "id": "ai_agents:hmoe_curriculum",
+      "title": "HMoE Curriculum — 5-фазное обучение экспертов",
+      "content": "Curriculum обучения иерархических экспертов:\nPhase 1: CONCRETE experts only (GEO, HYDRO).\nPhase 2: + DYNAMIC (AERO, PYRO).\nPhase 3: + ABSTRACT (COSMO, NOOS).\nPhase 4: Unfreeze router, joint training.\nPhase 5: Fine-tune all.\nПрогрессивное раскрытие сложности = мета-обучение.",
+      "source": "svend4/pro2",
+      "format_type": "agent_pattern",
+      "q6": "110001",
+      "links": [
+        "pro2:domain_routing",
+        "pro2:hmoe"
+      ],
+      "is_fallback": false
+    },
+    "ai_agents:nautilus_hierarchy": {
+      "id": "ai_agents:nautilus_hierarchy",
+      "title": "Nautilus — 7-камерная иерархия модулей",
+      "content": "NautilusHierarchy: 7 камер от микро до макро.\nПрогрессивная активация (NautilusScheduler): камеры включаются последовательно по мере обучения.\nEntropy-triggered SYNTH: при высокой неопределённости включается синтезирующий модуль.\nАрхитектура = агент с модульным вниманием.",
+      "source": "svend4/pro2",
+      "format_type": "agent_pattern",
+      "q6": "111111",
+      "links": [
+        "pro2:nautilus",
+        "pro2:six_sources"
+      ],
+      "is_fallback": false
+    },
+    "data2:etd": {
+      "id": "data2:etd",
+      "title": "ЕТД — Единая Теория Движения",
+      "content": "12 архетипов движения × 7 аксиом Крюкова. 310+ томов в 5 сериях. LCI как метрика системы.",
+      "source": "svend4/data2",
+      "format_type": "volume",
+      "q6": "111110",
+      "links": [
+        "info1:methodology",
+        "meta:hexagram:50",
+        "pro2:bidir"
+      ],
+      "is_fallback": true
+    },
+    "data2:scarab": {
+      "id": "data2:scarab",
+      "title": "Scarab Algorithm (фигура-8)",
+      "content": "scarab_algorithm.py — обход Q6-пространства по траектории фигуры-8. Прямой мост к семантическому пространству pro2.",
+      "source": "svend4/data2",
+      "format_type": "volume",
+      "q6": "101010",
+      "links": [
+        "meta:hexagram:63",
+        "pro2:q6"
+      ],
+      "is_fallback": true
+    },
+    "data2:three_spheres": {
+      "id": "data2:three_spheres",
+      "title": "Три Сферы (МВС / СВС / БВС)",
+      "content": "МВС (малая) / СВС (средняя) / БВС (большая) вложенные сферы. Резонанс трёх сфер → максимальная эффективность системы.",
+      "source": "svend4/data2",
+      "format_type": "archetype",
+      "q6": "000111",
+      "links": [
+        "info1:alpha:-1",
+        "meta:ca_class:II"
+      ],
+      "is_fallback": true
+    },
+    "data2:arch:синтез": {
+      "id": "data2:arch:синтез",
+      "title": "Архетип: Синтез",
+      "content": "Интеграция всех архетипов",
+      "source": "svend4/data2",
+      "format_type": "archetype",
+      "q6": "111110",
+      "links": [
+        "info1:alpha:3",
+        "meta:ca_class:IV",
+        "pro2:q6:111110"
+      ],
+      "is_fallback": false
+    },
+    "data2:vol:20": {
+      "id": "data2:vol:20",
+      "title": "Том 20. Единая теория (синтез I)",
+      "content": "Серия I · домен: synthesis",
+      "source": "svend4/data2",
+      "format_type": "volume",
+      "q6": "010100",
+      "links": [
+        "info1:alpha:0",
+        "pro2:q6:010100"
+      ],
+      "is_fallback": false
+    },
+    "data2:vol:40": {
+      "id": "data2:vol:40",
+      "title": "Том 40. Конечный синтез II",
+      "content": "Серия II · домен: synthesis",
+      "source": "svend4/data2",
+      "format_type": "volume",
+      "q6": "101000",
+      "links": [
+        "info1:alpha:1",
+        "pro2:q6:101000"
+      ],
+      "is_fallback": false
+    },
+    "data2:vol:150": {
+      "id": "data2:vol:150",
+      "title": "Том 150. Синтез IV",
+      "content": "Серия IV · домен: synthesis",
+      "source": "svend4/data2",
+      "format_type": "volume",
+      "q6": "111111",
+      "links": [
+        "info1:alpha:3",
+        "pro2:q6:111111"
+      ],
+      "is_fallback": false
+    },
+    "data2:vol:310": {
+      "id": "data2:vol:310",
+      "title": "Том 310. Финальный синтез",
+      "content": "Серия V+ · домен: synthesis",
+      "source": "svend4/data2",
+      "format_type": "volume",
+      "q6": "111111",
+      "links": [
+        "info1:alpha:3",
+        "pro2:q6:111111"
+      ],
+      "is_fallback": false
+    },
+    "data2:vol:4": {
+      "id": "data2:vol:4",
+      "title": "Том 4. Алгоритмы",
+      "content": "Серия I · домен: algorithms",
+      "source": "svend4/data2",
+      "format_type": "volume",
+      "q6": "000100",
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:000100"
+      ],
+      "is_fallback": false
+    }
+  }
+}
