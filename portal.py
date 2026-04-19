@@ -87,7 +87,8 @@ class NautilusPortal:
             "data7":       Data7Adapter(),
             "infosystems":   InfoSystemsAdapter(),
             "ai_agents":     AIAgentsAdapter(),
-            "conversations": ConversationAdapter(),
+            "conversations": ConversationAdapter("docs"),
+            "sessions":      ConversationAdapter("docs/sessions"),
         }
         self._load_auto_adapters()
 
