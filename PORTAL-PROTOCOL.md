@@ -1,10 +1,15 @@
 # Nautilus Portal Protocol
 
-**Version:** 1.1  
-**Status:** Working Draft  
-**Date:** 2026-04-19  
-**Repository:** [svend4/nautilus](https://github.com/svend4/nautilus)  
-**License:** CC BY 4.0  
+**Version:** 1.2
+**Status:** Current
+**Date:** 2026-04-19
+**Repository:** [svend4/nautilus](https://github.com/svend4/nautilus)
+**License:** CC BY 4.0
+
+The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHALL**, **SHALL NOT**,
+**SHOULD**, **SHOULD NOT**, **RECOMMENDED**, **MAY**, and **OPTIONAL** in this
+document are to be interpreted as described in BCP 14 [RFC 2119] [RFC 8174]
+when they appear in all capitals.
 
 ---
 
@@ -40,6 +45,9 @@ reads `.docx`, `.pdf`, and `.xlsx` without converting them into a single format.
 12. [Caching Semantics](#12-caching-semantics)
 13. [Security Considerations](#13-security-considerations)
 14. [Versioning](#14-versioning)
+15. [Bridge Algebra](#15-bridge-algebra)
+16. [Annotations and Protocol 3](#16-annotations-and-protocol-3)
+17. [Extended REST API](#17-extended-rest-api)
 
 ---
 
@@ -99,10 +107,19 @@ Nothing else in the source repository needs to change.
 
 ### 3.3. Consensus as Epistemic Criterion
 
-A concept is considered **agreed** (`consensus.agreed = True`) only when
-all adapters return at least one real (non-fallback) entry for the query.
-Partial consensus (some adapters match, others do not) is reported
-explicitly and treated as a signal for future integration work.
+NPP v1.2 distinguishes two consensus levels (see §10):
+
+- **Universal** (`consensus.universal = True`) — all adapters return a real
+  (non-fallback) entry. Confirmed cross-format fact.
+- **Majority** (`consensus.majority = True`) — at least 50% of adapters return
+  a real entry. Likely pattern, warrants bridging work.
+
+**Absence is information.** A concept missing from an out-of-domain adapter
+(e.g. `soz150` legal adapter does not know «quantum coherence») is NOT a gap —
+it is expected. Adapters MAY declare a domain-relevance hint via
+`describe().q6_range` so that out-of-domain misses do not penalise coverage.
+Implementations SHOULD report `missing_in` split into `missing_in_domain`
+and `out_of_domain` when `q6_range` is declared.
 
 ### 3.4. Q6 as Universal Coordinate
 
@@ -208,8 +225,22 @@ class BaseAdapter(ABC):
         """
         Return repository metadata.
 
-        Required keys: "format", "native_unit"
-        Recommended keys: "total_entries" (or "total_*"), "compatibility"
+        REQUIRED keys:
+          "format"        — format identifier matching nautilus.json
+          "native_unit"   — natural-language description of atomic unit
+
+        RECOMMENDED keys (consumed by health_check.py):
+          "compatibility" — 0..3 integer (Level per §8)
+          "total_*"       — any key prefixed "total_" with an int value,
+                            e.g. "total_concepts", "total_tools"
+          "description"   — one-sentence summary
+          "q6_range"      — list of Q6 strings or "*" indicating domain
+                            coverage; enables in-domain/out-of-domain split
+                            in consensus reporting (§10)
+
+        A conforming adapter MUST return at least the REQUIRED keys.
+        Missing RECOMMENDED keys MUST NOT cause the portal to fail — but
+        health_check.py will report lower scores for such adapters.
         """
 ```
 
@@ -270,7 +301,14 @@ root. This file is the machine-readable registry of participating repositories.
 
 ### 6.2. Required Fields (per registry entry)
 
-`repo`, `adapter`, `format`, `compatibility`, `passport`
+`repo`, `adapter`, `format`, `compatibility`.
+
+The `passport` field is **REQUIRED** for registry entries where
+`compatibility ≥ 1` AND the adapter is bound to a single repository.
+The `passport` field is **OPTIONAL** for generic/parametric adapters
+(`auto`, `obsidian`, `arxiv`, `github_topic`, `jsonl`) which are not
+tied to one specific repository — their contract is defined by the
+adapter class, not by a per-instance passport.
 
 ### 6.3. AutoAdapter Protocol
 
@@ -326,10 +364,14 @@ validated against `passport_schema.json`.
 
 ### 7.3. Bridges
 
-The `bridges` field declares semantic relationships between this repository
-and other formats. Values are natural-language descriptions of the mapping.
-Formal bridge algebra (composition, inversion, transitivity) is deferred
-to NPP v2.0.
+The `bridges` field declares typed semantic relationships between this
+repository and other formats. As of v1.2, bridges are machine-readable
+JSON arrays with formal typing. See **§15 Bridge Algebra** for the full
+schema, the five bridge types, and the operations `invert`, `compose`,
+and `transitive_closure`.
+
+Legacy natural-language bridges (dict of strings) remain readable by
+v1.2 implementations but SHOULD be migrated to the typed form.
 
 ---
 
@@ -346,14 +388,17 @@ requirements of Levels 0–2.
 | **2** | Linked | Q6 coordinates + cross-links | `metadata.q6` populated; `links` non-empty |
 | **3** | Interactive | Live fetch via external API | `fetch()` queries live data source |
 
-### 8.1. Current Ecosystem Distribution
+### 8.1. Current Ecosystem Distribution (v1.2)
 
 | Level | Count | Repositories |
 |-------|------:|-------------|
 | 3 | 1 | pro2 |
-| 2 | 3 | data7, infosystems, ai_agents |
+| 2 | 8 | data7, infosystems, ai_agents, graphrag, daten22, continuum, ai_research, legal |
 | 1 | 3 | info1, meta, data2 |
-| 0 | 0 | — |
+| 0 | 2 | conversations, sessions (transient sources) |
+
+Total registered adapters: **14**. Passports: **12** (generic adapters
+`auto`, `obsidian`, `arxiv`, `github_topic`, `jsonl` are exempt per §6.2).
 
 ---
 
@@ -371,27 +416,67 @@ Q6 ∈ {"000000", "000001", …, "111111"}   # 64 vertices
 
 ### 9.2. Semantic Properties
 
+Q6 is **layered**: some bits carry semantic load, others are organisational.
+Hamming distance is a useful proximity metric precisely because the
+namespace is not random — but it is not a pure ontology either.
+
+| Bits | Role | Axis |
+|------|------|------|
+| `b5 b4` | Semantic | CA-class (I–IV) from Wolfram classification |
+| `b3 b2` | Semantic | Abstraction level (coarse α-projection) |
+| `b1 b0` | Organisational | Intra-class discriminator, assigned by adapter |
+
 - **Hamming distance** between two Q6 addresses is the semantic proximity
   metric. Distance 1 = one bit flip = "semantically adjacent".
 - **Neighborhood query**: given a Q6 address and radius `k`, the portal
   returns all entries within Hamming distance ≤ k using BFS.
-- **CA classification**: Q6 addresses map to Wolfram Cellular Automaton
-  classes (I–IV), providing a second semantic axis.
+- **CA classification**: bits `b5 b4` map to Wolfram Cellular Automaton
+  classes (I–IV), providing the primary semantic axis.
 - **I-Ching correspondence**: all 64 vertices correspond bijectively to the
   64 hexagrams, providing a symbolic namespace.
 
+Implementations MUST NOT assume full Q6 equality implies concept equality —
+two entries with the same Q6 from different adapters are **Q6-collisions**
+(§9.5), not duplicates.
+
 ### 9.3. Per-Format Projection Rules
 
-Each adapter defines a rule mapping its native entities to Q6:
+Each adapter defines a rule mapping its native entities to Q6. The rule
+MAY be deterministic (computable from source data) or curated (assigned
+by the adapter author). Both are conformant; determinism is RECOMMENDED
+but not REQUIRED.
 
-| Adapter | Projection Rule |
-|---------|----------------|
-| info1 | `alpha_level + 4` → top 3 bits |
-| pro2 | native Q6 coordinates |
-| meta | `hex_id − 1 → bin(6)` |
-| data7 | `ordinal % 64 → bin(6)` |
+| Adapter | Projection Rule | Type |
+|---------|----------------|------|
+| info1 | `alpha_level + 4` → top 3 bits | deterministic |
+| pro2 | native Q6 coordinates | source-native |
+| meta | `hex_id − 1 → bin(6)` | deterministic |
+| data7 | `ordinal % 64 → bin(6)` | deterministic |
+| data2 | curated (ETD volume → Q6) | curated |
+| infosystems | `"101001"` (architecture domain) | domain-anchored |
+| ai_agents | `"110100"` (multi-agent / orchestration) | domain-anchored |
+| graphrag | `"110001"` (graph + retrieval) | domain-anchored |
+| daten22 | `"101010"` (architecture / systems) | domain-anchored |
+| legal | `"100010"` (analysis / rules / law) | domain-anchored |
+| continuum | `"110100"` (multi-agent / orchestration) | domain-anchored |
+| ai_research | `"110100"` (multi-agent / methodology) | domain-anchored |
 
-### 9.4. Gap Detection
+**Domain-anchored** means all entries from that adapter share one Q6 base
+address, with intra-adapter variation in bits `b1 b0` only. This is a
+valid conformance pattern for adapters whose knowledge is uniformly located
+in one semantic region.
+
+### 9.4. Q6 Collisions
+
+At 207 entries over 64 vertices, density averages ~3 entries/vertex.
+Multiple entries MAY share a Q6 address. The portal MUST order colliding
+entries by:
+
+1. Relevance score (§5.1), descending
+2. Adapter registration order (deterministic tie-break)
+3. Entry `id` lexicographically (final tie-break)
+
+### 9.5. Gap Detection
 
 Vertices with no real (non-fallback) entries are **gaps**. The gap detector
 (`gap_detection.py`) uses BFS to classify vertices as:
@@ -402,11 +487,13 @@ Vertices with no real (non-fallback) entries are **gaps**. The gap detector
 
 Current state: 14 real / 19 weak / 31 gap (48.4% uncovered).
 
+> Note: §9.5 was renumbered from §9.4 in v1.2 to make room for §9.4 Q6 Collisions.
+
 ---
 
 ## 10. Consensus Algorithm
 
-### 10.1. Definition
+### 10.1. Definition (v1.2)
 
 For a query `q`, the portal queries all registered adapters and computes:
 
@@ -415,10 +502,21 @@ present_in          = [a for a in adapters if any non-fallback entry]
 present_in_fallback = [a for a in adapters if only fallback entries]
 missing_in          = [a for a in adapters if no entries at all]
 
-coverage             = len(present_in) / len(adapters)
-coverage_with_fallback = (len(present_in) + len(present_in_fallback)) / len(adapters)
-agreed               = (coverage >= consensus_threshold)  # default: 1.0
+# Denominator is in-domain adapters only when q6_range is declared (§3.3, §5)
+in_domain_adapters  = [a for a in adapters
+                         if a.q6_range == "*" or query_q6 ∈ a.q6_range]
+
+coverage             = len(present_in ∩ in_domain_adapters) / len(in_domain_adapters)
+coverage_with_fallback = (present + fallback) / in_domain
+
+universal            = (coverage >= 1.0)     # all in-domain adapters agree
+majority             = (coverage >= 0.5)     # ≥ half agree
+agreed               = universal              # backward-compatible alias
 ```
+
+The `agreed` field is retained as an alias for `universal` for v1.1
+backward compatibility. New implementations SHOULD consume `universal`
+and `majority` directly.
 
 ### 10.2. Consensus Record
 
@@ -427,21 +525,28 @@ agreed               = (coverage >= consensus_threshold)  # default: 1.0
   "query": "синтез",
   "present_in": ["pro2", "info1"],
   "present_in_fallback": ["meta", "data2"],
-  "missing_in": ["data7"],
+  "missing_in_domain": ["data7"],
+  "out_of_domain": ["legal", "soz150"],
   "coverage": 0.286,
   "coverage_with_fallback": 0.571,
+  "universal": false,
+  "majority": false,
   "agreed": false
 }
 ```
 
 ### 10.3. Interpretation
 
-| Coverage | Meaning |
-|----------|---------|
-| 1.0 (agreed) | Confirmed cross-format fact |
-| 0.5–1.0 | Likely pattern, warrants bridging |
-| < 0.5 | Hypothesis, present in few formats |
-| 0.0 | Unknown to ecosystem |
+| Coverage | State | Meaning |
+|----------|-------|---------|
+| 1.0 | `universal` | Confirmed cross-format fact, in-domain adapters all agree |
+| 0.5–1.0 | `majority` | Likely pattern, warrants bridging work |
+| < 0.5 | — | Hypothesis, present in few formats |
+| 0.0 | — | Unknown to ecosystem |
+
+Fallback entries are deliberately excluded from `coverage` to prevent
+false-positive consensus. `coverage_with_fallback` is reported separately
+as a diagnostic signal (§12.3) and MUST NOT feed `universal` or `majority`.
 
 ---
 
@@ -450,7 +555,9 @@ agreed               = (coverage >= consensus_threshold)  # default: 1.0
 The reference implementation exposes an HTTP API defined in `openapi.yaml`.
 All endpoints return JSON unless noted.
 
-### 11.1. Endpoints
+### 11.1. Core Endpoints
+
+Core endpoints MUST be implemented by any conforming v1.2 portal:
 
 | Method | Path | Description |
 |--------|------|-------------|
@@ -460,6 +567,18 @@ All endpoints return JSON unless noted.
 | `GET` | `/api/describe` | Adapter descriptions |
 | `GET` | `/api/neighbors` | Q6 Hamming-neighborhood query |
 | `GET` | `/metrics` | Prometheus text metrics |
+
+Extended endpoints (added in v1.2) are OPTIONAL but RECOMMENDED — see
+**§17 Extended REST API**:
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/bridge` | Traverse bridge graph from an entry |
+| `GET` | `/api/bridge_conflicts` | Protocol 3 conflict detection |
+| `GET` | `/api/bridge_summary` | Bridge registry + transitive closure |
+| `GET` | `/api/annotations` | List annotations for a target |
+| `POST` | `/api/annotations` | Add an annotation |
+| `GET` | `/api/flags` | List Protocol 3 `needs_review` flags |
 
 ### 11.2. `/api/query` Parameters
 
@@ -555,10 +674,10 @@ JWT / API-key patterns are recommended (v1.5 roadmap).
 | Version | Status | Notes |
 |---------|--------|-------|
 | v1.0 | Superseded | Original 3-repo proof of concept |
-| **v1.1** | **Current** | 7 repos, REST API, Q6, TF-IDF, mypy clean |
-| v1.2 | Planned | pyproject.toml, E2E tests, rate limiting |
-| v1.5 | Planned | SQLite backend, JWT auth, WebSocket |
-| v2.0 | Future | Formal bridge algebra, temporal model |
+| v1.1 | Superseded | 7 repos, REST API, Q6, TF-IDF, mypy clean |
+| **v1.2** | **Current** | 14 repos, bridge algebra (§15), annotations (§16), extended REST (§17), layered Q6 (§9.2), domain-aware consensus (§10) |
+| v1.5 | Planned | SQLite backend, JWT auth, WebSocket, bridge_path(from, to) |
+| v2.0 | Future | Temporal model, learned Q6 projections, capability negotiation |
 
 ### 14.2. Breaking Changes
 
