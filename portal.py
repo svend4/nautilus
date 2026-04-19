@@ -12,9 +12,10 @@ from typing import Optional
 
 _e = _html.escape  # HTML-экранирование против XSS
 
+from pathlib import Path
 from adapters import (
     Info1Adapter, Pro2Adapter, MetaAdapter, Data2Adapter, Data7Adapter,
-    InfoSystemsAdapter, AIAgentsAdapter,
+    InfoSystemsAdapter, AIAgentsAdapter, AutoAdapter,
 )
 from adapters.base import PortalEntry
 
@@ -38,6 +39,23 @@ class NautilusPortal:
             "infosystems": InfoSystemsAdapter(),
             "ai_agents":   AIAgentsAdapter(),
         }
+        self._load_auto_adapters()
+
+    def _load_auto_adapters(self):
+        """Загружает AutoAdapter для репо с adapter='auto' из nautilus.json."""
+        registry_path = Path(__file__).parent / "nautilus.json"
+        if not registry_path.exists():
+            return
+        try:
+            registry = json.loads(registry_path.read_text())
+            for entry in registry.get("registry", []):
+                if entry.get("adapter") == "auto":
+                    repo = entry["repo"]
+                    name = repo.split("/")[-1]
+                    if name not in self.adapters:
+                        self.adapters[name] = AutoAdapter(repo)
+        except Exception:
+            pass
 
     def query(self, concept: str) -> PortalResult:
         all_entries = []
