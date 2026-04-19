@@ -5,6 +5,7 @@
 **Версия:** v1.1
 **Статус:** β-релиз / production-ready core
 **Дата отчёта:** 2026-04-19
+**Ветка:** `claude/review-nautilus-changes-tdywx`
 **Ветка:** `claude/project-implementation-stage-CzylE`
 
 ---
@@ -17,6 +18,18 @@ Nautilus Portal — единая точка входа для экосистем
 
 | Метрика | Значение |
 |---------|----------|
+| Всего строк Python | ~6 782 |
+| Модулей в корне | 18 |
+| Адаптеров | 13 |
+| Тест-файлов | 4 |
+| Строк тестов | ~769 |
+| Тестов всего | 60 / 60 ✅ |
+| Внешних зависимостей | 0 (только stdlib) |
+| Mypy ошибок | 0 ✅ |
+| Битых ссылок | 0 / 187 ✅ |
+| Паспортов репозиториев | 7 |
+| CI/CD пайплайнов | 4 |
+| Health Score | 82 / 100 |
 | Всего строк Python | ~6 600 |
 | Модулей в корне | 15 |
 | Адаптеров | 13 |
@@ -46,6 +59,34 @@ Nautilus Portal — единая точка входа для экосистем
 ## 2. Архитектурная диаграмма
 
 ```
+┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
+│  info1   │  │   pro2   │  │   meta   │  │  data2   │  │  data7   │
+│ α-уровни │  │ Q6-граф  │  │ CA-прав. │  │  тома    │  │  K₀→K∞  │
+└────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘
+     │              │              │              │              │
+     └──────────────┴──────────────┴──────────────┴──────────────┘
+                              │
+               ┌──────────────▼──────────────┐
+               │  Адаптерный слой (13 адапт.) │
+               │      BaseAdapter API         │
+               └──────────────┬──────────────┘
+                              │
+               ┌──────────────▼──────────────┐
+               │        NautilusPortal        │
+               │  (ranking + consensus + Q6)  │
+               └──────────────┬──────────────┘
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        ▼                     ▼                      ▼
+   ┌─────────┐          ┌──────────┐          ┌──────────┐
+   │   CLI   │          │ REST API │          │   HTML   │
+   │portal.py│          │  api.py  │          │ SPA+D3   │
+   └─────────┘          └──────────┘          └──────────┘
+```
+
+---
+
+## 3. Слои реализации
 ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
 │  info1   │  │   pro2   │  │   meta   │  │  data2/7 │
 │ α-уровни │  │ Q6-граф  │  │ CA-прав. │  │   ...    │
@@ -79,6 +120,25 @@ Nautilus Portal — единая точка входа для экосистем
 |------|-------|-------|----------|
 | Ядро портала | `portal.py` | 533 LoC | ✅ полная |
 | Адаптеры | `adapters/*.py` | ~2 200 LoC | ✅ 13 шт. |
+| Семантика | `tfidf_search.py`, `cluster.py`, `gap_detection.py` | ~782 LoC | ✅ полная |
+| Инфраструктура | `api.py`, `Dockerfile`, `health_check.py` | ~1 050 LoC | ✅ полная |
+| Жизненный цикл | `snapshot.py`, `diff_report.py`, `timeline.py`, `scan_repo.py`, `generate_passport.py` | ~1 402 LoC | ✅ полная |
+| Визуализация | `q6_map.html`, `graph.html`, `visualize.py` | 159 LoC + 3 HTML | ✅ полная |
+| Тесты | `tests/*` | 769 LoC | 🟡 базовая |
+| CI/CD | `.github/workflows/*.yml` | 4 workflow | ✅ настроен |
+
+### Реализовано в Round 1 (коммит a06ebff)
+
+13 возможностей: исправление ссылок, pytest suite, GitHub Actions CI, relevance ranking,
+REST API, Mermaid-диаграммы, Q6-координаты, snapshot, fuzzy search, GitHub Pages,
+SDK, ObsidianAdapter, Q6-визуализация.
+
+### Реализовано в Round 2 (коммиты ca7d90d – b9d5bd1)
+
+16 возможностей: AJAX portal, gap detection, OpenAPI 3.1.0, Q6 neighbors, D3.js граф,
+Docker, ArxivAdapter, GitHubTopicAdapter, JSONLAdapter, timeline, **mypy clean (0 ошибок)**,
+Prometheus /metrics, diff_report, cluster, coverage heatmap, **TF-IDF поиск**.
+
 | Семантика | `tfidf_search.py`, `cluster.py`, `gap_detection.py` | ~780 LoC | ✅ полная |
 | Инфраструктура | `api.py`, `Dockerfile`, `health_check.py` | ~1 050 LoC | ✅ полная |
 | Жизненный цикл | `snapshot.py`, `diff_report.py`, `timeline.py`, `scan_repo.py`, `generate_passport.py` | ~1 400 LoC | ✅ полная |
