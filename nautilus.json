@@ -1,6 +1,6 @@
 {
   "name": "nautilus",
-  "version": "1.1",
+  "version": "1.2",
   "description": "Единая точка входа для экосистемы svend4. Читает все форматы, строит связи, показывает консенсус.",
   "registry": [
     {
@@ -53,6 +53,15 @@
       "compatibility": 2,
       "passport": "passports/ai_agents.md",
       "note": "домен внутри pro2, не отдельный репо"
+    },
+    {
+      "repo": "svend4/data70",
+      "adapter": "jsonl",
+      "name": "data70",
+      "path": "data/data70",
+      "format": "jsonl",
+      "compatibility": 1,
+      "note": "ChatGPT corpus archive — подключить JSONLAdapter после клонирования репо"
     }
   ],
   "consensus_threshold": 1.0,

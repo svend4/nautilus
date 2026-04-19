@@ -27,6 +27,15 @@
 | pro2 | α-уровень ↔ глубина Q6 |
 | meta | α=+4 ↔ гексаграммы класса I (онтология) |
 
+## Bridges (machine-readable)
+
+```json
+[
+  {"target": "pro2", "direction": "↔", "mapping": "α-level ↔ Q6 concept depth", "confidence": 0.70, "type": "projection"},
+  {"target": "meta", "direction": "→", "mapping": "α=+4 → hexagrams class I (ontology)", "confidence": 0.65, "type": "analogy"}
+]
+```
+
 ## Требования к живому чтению
 
 Переменная окружения `GITHUB_TOKEN` — для обхода rate limit GitHub Search API.

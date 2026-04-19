@@ -34,3 +34,13 @@ Backward: generate → filter → evaluate → update graph
 | pro2 | все агенты реализованы в pro2 |
 | data7 | bidir реализует недостающую петлю K₀→K∞ |
 | infosystems | KnowledgeGraph — общий для обоих доменов |
+
+## Bridges (machine-readable)
+
+```json
+[
+  {"target": "pro2",        "direction": "←", "mapping": "all agent implementations reside in pro2", "confidence": 1.00, "type": "embedding"},
+  {"target": "data7",       "direction": "→", "mapping": "bidir_train implements the missing K₀→K∞ loop described in data7", "confidence": 0.90, "type": "derivation"},
+  {"target": "infosystems", "direction": "↔", "mapping": "KnowledgeGraph is shared infrastructure for both ai_agents and infosystems domains", "confidence": 1.00, "type": "embedding"}
+]
+```

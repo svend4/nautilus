@@ -19,6 +19,8 @@ from adapters import (
 )
 from adapters.base import BaseAdapter, PortalEntry
 from adapters.conversation import ConversationAdapter
+from adapters.jsonl import JSONLAdapter
+from bridge_registry import BridgeRegistry
 
 
 def q6_neighbors(bits: str, max_distance: int = 1) -> list[str]:
@@ -90,21 +92,28 @@ class NautilusPortal:
             "conversations": ConversationAdapter("docs"),
             "sessions":      ConversationAdapter("docs/sessions"),
         }
+        self._bridge_registry = BridgeRegistry("passports")
         self._load_auto_adapters()
 
     def _load_auto_adapters(self) -> None:
-        """Загружает AutoAdapter для репо с adapter='auto' из nautilus.json."""
+        """Загружает адаптеры из nautilus.json: auto → AutoAdapter, jsonl → JSONLAdapter."""
         registry_path = Path(__file__).parent / "nautilus.json"
         if not registry_path.exists():
             return
         try:
             registry = json.loads(registry_path.read_text())
             for entry in registry.get("registry", []):
-                if entry.get("adapter") == "auto":
-                    repo = entry["repo"]
-                    name = repo.split("/")[-1]
-                    if name not in self.adapters:
-                        self.adapters[name] = AutoAdapter(repo)
+                adapter_type = entry.get("adapter")
+                repo = entry.get("repo", "")
+                name = entry.get("name") or repo.split("/")[-1]
+                if name in self.adapters:
+                    continue
+                if adapter_type == "auto":
+                    self.adapters[name] = AutoAdapter(repo)
+                elif adapter_type == "jsonl":
+                    path = entry.get("path", "")
+                    if path and Path(path).exists():
+                        self.adapters[name] = JSONLAdapter(path)
         except Exception:
             pass
 
@@ -159,8 +168,10 @@ class NautilusPortal:
                     sr = e.id.split(":")[0]
                     tr = link_id.split(":")[0]
                     if sr != tr:
+                        bridge_ann = self._bridge_registry.annotate_link(sr, tr)
                         links.append({"from": e.id, "to": link_id,
-                                      "from_repo": sr, "to_repo": tr})
+                                      "from_repo": sr, "to_repo": tr,
+                                      **bridge_ann})
         return links
 
     def _consensus(self, entries: list) -> dict:
