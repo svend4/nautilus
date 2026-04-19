@@ -3,11 +3,14 @@ Nautilus Portal — движок портала для nautilus/ репо.
 Использует адаптеры из adapters/ вместо монолитного portal.py.
 """
 
+import html as _html
 import json
 import sys
 import argparse
 from dataclasses import dataclass
 from typing import Optional
+
+_e = _html.escape  # HTML-экранирование против XSS
 
 from adapters import (
     Info1Adapter, Pro2Adapter, MetaAdapter, Data2Adapter, Data7Adapter,
@@ -87,25 +90,25 @@ def render_html(result: PortalResult, portal: "NautilusPortal") -> str:
 
     entries_html = ""
     for e in result.entries:
-        repo = e.id.split(":")[0].upper()
+        repo = _e(e.id.split(":")[0].upper())
         links_html = ""
         if e.links:
             links_html = "<div class='links'>→ " + ", ".join(
-                f"<code>{l}</code>" for l in e.links[:4]
+                f"<code>{_e(l)}</code>" for l in e.links[:4]
             ) + "</div>"
         entries_html += f"""
         <div class="entry">
             <div class="repo-tag">{repo}</div>
-            <div class="title">{e.title}</div>
-            <div class="content">{e.content[:200]}</div>
+            <div class="title">{_e(e.title)}</div>
+            <div class="content">{_e(e.content[:200])}</div>
             {links_html}
         </div>"""
 
     cross_html = ""
     for lnk in result.cross_links[:10]:
         cross_html += (
-            f"<li><code>{lnk['from']}</code> → <code>{lnk['to']}</code> "
-            f"<span class='repos'>({lnk['from_repo']} ↔ {lnk['to_repo']})</span></li>"
+            f"<li><code>{_e(lnk['from'])}</code> → <code>{_e(lnk['to'])}</code> "
+            f"<span class='repos'>({_e(lnk['from_repo'])} ↔ {_e(lnk['to_repo'])})</span></li>"
         )
 
     adapters_list = " · ".join(portal.adapters.keys())
@@ -114,7 +117,7 @@ def render_html(result: PortalResult, portal: "NautilusPortal") -> str:
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<title>⬡ Nautilus Portal — {result.query}</title>
+<title>⬡ Nautilus Portal — {_e(result.query)}</title>
 <style>
   body {{ font-family: monospace; background: #0d1117; color: #c9d1d9; margin: 0; padding: 20px; }}
   h1 {{ color: #58a6ff; }}
@@ -144,14 +147,14 @@ def render_html(result: PortalResult, portal: "NautilusPortal") -> str:
 <body>
 <h1>⬡ Nautilus Portal</h1>
 <form class="query-form" method="get">
-  <input name="q" value="{result.query}" placeholder="запрос...">
+  <input name="q" value="{_e(result.query)}" placeholder="запрос...">
   <button type="submit">Найти</button>
 </form>
 
 <div class="consensus">
   <span class="coverage">{coverage_pct}% покрытие</span> &nbsp;·&nbsp;
-  найдено в: <strong>{present or '—'}</strong>
-  {f'&nbsp;·&nbsp; отсутствует: {missing}' if missing else ''}
+  найдено в: <strong>{_e(present) or '—'}</strong>
+  {f'&nbsp;·&nbsp; отсутствует: {_e(missing)}' if missing else ''}
 </div>
 
 <div>{entries_html}</div>
