@@ -37,6 +37,19 @@ class NautilusPortal:
 ### Алгоритм ранжирования (`_relevance_score`, строка 45)
 
 ```python
+| Метод | Расположение | Назначение |
+|-------|--------------|------------|
+| `query()` | `portal.py:108` | Мультиадаптерный поиск с ранжированием |
+| `query_neighbors()` | `portal.py:127` | Поиск по Q6-соседям (Hamming-метрика) |
+| `_consensus()` | `portal.py:163` | Расчёт покрытия с учётом fallback |
+| `_cross_links()` | `portal.py:149` | Извлечение межрепозиторных связей |
+| `register()` | `portal.py:124` | Динамическая регистрация адаптера |
+| `_load_auto_adapters()` | `portal.py:92` | Авто-загрузка из `nautilus.json` |
+
+### Алгоритм ранжирования (`_relevance_score`)
+
+```python
+# portal.py:45-68
 score = 0.0
 if q == title_l:           score += 1.0   # точное совпадение заголовка
 elif q in title_l:         score += 0.7   # подстрока заголовка
@@ -50,10 +63,12 @@ if entry.is_fallback:      score *= 0.5   # штраф за fallback
 
 `q6_neighbors(bits, max_distance)` (строка 23) — BFS по 6-битному кубу,
 возвращает все вершины в пределах Хэмминг-расстояния.
+Функция `q6_neighbors(bits, max_distance)` (`portal.py:23`) — BFS по 6-битному кубу, возвращает все вершины в пределах Хэмминг-расстояния.
 
 ### Консенсус-модель
 
 ```python
+# portal.py:170-177
 {
     "present_in":             [...],  # реальные источники
     "present_in_fallback":    [...],  # только заглушки
@@ -95,6 +110,13 @@ class PortalEntry:
     content: str
     metadata: dict[str, Any] = {}
     links: list[str] = []           # кросс-ссылки
+    id: str                              # "format:slug"
+    title: str
+    source: str                          # GitHub slug
+    format_type: str                     # document|concept|rule
+    content: str
+    metadata: dict[str, Any] = {}
+    links: list[str] = []                # кросс-ссылки
     is_fallback: bool = False
 ```
 
@@ -161,6 +183,40 @@ class PortalEntry:
 - Текущее состояние: 14 real / 19 weak / **31 gap** (48.4%)
 - Класс II наиболее уязвим: 31/50 непокрытых (62%)
 - Приоритетные вершины: `010001`, `100001`, `100010`
+| 13 | `cache.py` | 105 | — | декоратор-обёртка |
+| — | `base.py` | 71 | — | протокол |
+
+### Pro2Adapter — флагман уровня 3
+
+- Живой поиск по `bidir_train_v2_log.json`
+- Парсинг `self_improvement_report.txt` с регекспами (метрики `CD`, `VT`, `CR`, `DB`)
+- Таблица `_Q6_LABELS` — 6-битные паттерны → семантические метки (64 состояния)
+- Fallback на статические записи при ошибке
+
+### Fuzzy-matching
+
+Общая утилита `fuzzy_match()` (`adapters/base.py:27`) — `difflib.SequenceMatcher` с настраиваемым порогом. Используется в обёртках адаптеров для толерантности к опечаткам.
+
+---
+
+## 3. Семантический слой (~780 LoC)
+
+### TF-IDF поиск (`tfidf_search.py`, 259 LoC)
+
+- Полнотекстовый индекс без numpy/scipy
+- Хранение: `snapshots/tfidf_index.json` (109 КБ)
+- Токенизация, стоп-слова, нормализация TF-IDF
+- Косинусная близость запроса к документам
+
+### Кластеризация (`cluster.py`, 240 LoC)
+
+- Группировка концептов по Q6 Hamming-расстоянию
+- Выявление семантических кластеров в 6-битном кубе
+
+### Gap-detection (`gap_detection.py`, 283 LoC)
+
+- Обнаружение пустых ячеек в Q6-пространстве
+- Отчёт о непокрытых координатах по адаптерам
 
 ---
 
@@ -188,6 +244,14 @@ nautilus_adapter_entries{adapter="info1"} 74
 nautilus_adapter_entries{adapter="data2"} 310
 nautilus_cache_age_hours{repo="svend4_pro2"} 0.12
 ```
+| `GET /api/health` | состояние экосистемы |
+| `GET /api/links` | валидация ссылок |
+| `GET /api/describe` | описание адаптеров |
+| `GET /metrics` | Prometheus-метрики |
+
+- CORS включён (`Access-Control-Allow-Origin: *`)
+- TTL-кеш для `/metrics` (30 сек) чтобы не долбить health_check
+- Базируется на stdlib `http.server`
 
 ### SDK (`nautilus_sdk.py`, 189 LoC)
 
@@ -218,6 +282,36 @@ nautilus_cache_age_hours{repo="svend4_pro2"} 0.12
 - `mypy.ini` с `disallow_untyped_defs = true`
 - Маркер `adapters/py.typed` (PEP 561)
 - **0 mypy-ошибок** в 11 файлах (коммит `ca7d90d`)
+### OpenAPI (`openapi.yaml`)
+
+Формальная спецификация REST API.
+
+### CI/CD пайплайны (`.github/workflows/`, 4 workflow)
+
+| Файл | Назначение |
+|------|------------|
+| `ci.yml` | тесты + mypy на каждый push |
+| `sync.yml` | синхронизация снапшотов |
+| `register_nautilus.yml` | авто-регистрация репо через webhook |
+| `auto_update.yml` | обновление реестра при событии `repo_registered` |
+
+### Контейнеризация
+
+- `Dockerfile` — образ
+- `docker-compose.yml` — оркестрация
+- `bootstrap.sh` — установочный скрипт
+
+### Мониторинг
+
+- `health_check.py` (261 LoC) — проверка живости адаптеров
+- `validate_links.py` (161 LoC) — валидация кросс-ссылок
+- Prometheus `/metrics` — интеграция со стандартным мониторингом
+
+### Типобезопасность
+
+- `mypy.ini` — строгий конфиг
+- Маркер `adapters/py.typed`
+- **0 mypy-ошибок** во всём проекте (коммит `4731776`)
 
 ---
 
@@ -229,6 +323,9 @@ nautilus_cache_age_hours{repo="svend4_pro2"} 0.12
 - `diff_report.py` (234 LoC) — дельты: новые/удалённые/изменённые записи + Q6-дельта
 - `snapshots/latest_diff_baseline.json` — последний baseline (122 записи)
 - `timeline.py` (250 LoC) — хронология изменений (git log + mtime + cache age)
+- `snapshots/latest_diff_baseline.json` (54 КБ) — последний baseline
+- `diff_report.py` (234 LoC) — дельты между снапшотами
+- `timeline.py` (250 LoC) — хронология изменений
 
 ### Онбординг новых репо
 
@@ -254,6 +351,13 @@ nautilus_cache_age_hours{repo="svend4_pro2"} 0.12
 - Force-directed граф кросс-ссылок
 - Узлы: адаптеры, рёбра: кросс-ссылки
 - Клик для подсветки подграфа, hover-тултип
+## 6. Безопасность
+
+- **XSS-защита:** `_html.escape` во всех rendered полях (`portal.py:13`, коммит `ac981c9`)
+- **Нет eval/exec** в кодовой базе
+- **Нет secrets** в коде (GITHUB_TOKEN через env)
+- **Timeout 5 сек** на все HTTP-запросы к GitHub API
+- **Fallback при ошибках** — адаптеры не бросают исключения
 
 ---
 
@@ -267,6 +371,12 @@ nautilus_cache_age_hours{repo="svend4_pro2"} 0.12
 | `pyproject.toml` / PyPI | ❌ | средняя |
 | Kubernetes/Helm | ❌ только compose | низкая |
 | Coverage-отчёты в CI | ❌ | средняя |
+| Реальная БД | ❌ только in-memory + статика | низкая (достаточно для MVP) |
+| Аутентификация API | ❌ публичный доступ | средняя |
+| RBAC | ❌ | низкая |
+| pip/npm-пакет | ❌ нет `pyproject.toml` | средняя |
+| Kubernetes/Helm | ❌ только compose | низкая |
+| Coverage-отчёты | ❌ | средняя |
 | E2E-тесты | ❌ только unit | средняя |
 | Rate limiting на API | ❌ | средняя |
 

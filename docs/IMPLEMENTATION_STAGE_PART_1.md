@@ -6,6 +6,7 @@
 **Статус:** β-релиз / production-ready core
 **Дата отчёта:** 2026-04-19
 **Ветка:** `claude/review-nautilus-changes-tdywx`
+**Ветка:** `claude/project-implementation-stage-CzylE`
 
 ---
 
@@ -29,6 +30,15 @@ Nautilus Portal — единая точка входа для экосистем
 | Паспортов репозиториев | 7 |
 | CI/CD пайплайнов | 4 |
 | Health Score | 82 / 100 |
+| Всего строк Python | ~6 600 |
+| Модулей в корне | 15 |
+| Адаптеров | 13 |
+| Тест-файлов | 4 |
+| Строк тестов | ~415 |
+| Внешних зависимостей | 0 (только stdlib) |
+| Mypy ошибок | 0 |
+| Паспортов репозиториев | 7 |
+| CI/CD пайплайнов | 4 |
 
 ### Самодостаточность
 
@@ -77,6 +87,34 @@ Nautilus Portal — единая точка входа для экосистем
 ---
 
 ## 3. Слои реализации
+┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
+│  info1   │  │   pro2   │  │   meta   │  │  data2/7 │
+│ α-уровни │  │ Q6-граф  │  │ CA-прав. │  │   ...    │
+└────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘
+     │              │              │              │
+     └──────────────┴──────────────┴──────────────┘
+                         │
+              ┌──────────▼──────────┐
+              │  Адаптерный слой    │
+              │  (BaseAdapter API)  │
+              └──────────┬──────────┘
+                         │
+              ┌──────────▼──────────┐
+              │   NautilusPortal    │
+              │  (ranking+consensus)│
+              └──────────┬──────────┘
+                         │
+        ┌────────────────┼────────────────┐
+        ▼                ▼                ▼
+   ┌─────────┐     ┌──────────┐     ┌──────────┐
+   │   CLI   │     │ HTTP API │     │   HTML   │
+   │portal.py│     │  api.py  │     │ render   │
+   └─────────┘     └──────────┘     └──────────┘
+```
+
+---
+
+## 3. Слои реализации (краткий обзор)
 
 | Слой | Файлы | Объём | Зрелость |
 |------|-------|-------|----------|
@@ -100,5 +138,12 @@ SDK, ObsidianAdapter, Q6-визуализация.
 16 возможностей: AJAX portal, gap detection, OpenAPI 3.1.0, Q6 neighbors, D3.js граф,
 Docker, ArxivAdapter, GitHubTopicAdapter, JSONLAdapter, timeline, **mypy clean (0 ошибок)**,
 Prometheus /metrics, diff_report, cluster, coverage heatmap, **TF-IDF поиск**.
+
+| Семантика | `tfidf_search.py`, `cluster.py`, `gap_detection.py` | ~780 LoC | ✅ полная |
+| Инфраструктура | `api.py`, `Dockerfile`, `health_check.py` | ~1 050 LoC | ✅ полная |
+| Жизненный цикл | `snapshot.py`, `diff_report.py`, `timeline.py`, `scan_repo.py`, `generate_passport.py` | ~1 400 LoC | ✅ полная |
+| Визуализация | `*.html`, `visualize.py` | 159 LoC + 3 HTML | ✅ полная |
+| Тесты | `tests/*` | 415 LoC | 🟡 базовая |
+| CI/CD | `.github/workflows/*.yml` | 4 workflow | ✅ настроен |
 
 **Подробности по слоям — в Части 2.**
