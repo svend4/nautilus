@@ -3,10 +3,17 @@
 api.py — REST API для Nautilus Portal.
 
 Эндпоинты:
-  GET  /api/query?q=<query>[&ranked=1]  — поиск концептов
-  GET  /api/health                       — состояние экосистемы
-  GET  /api/links                        — валидация ссылок
-  GET  /api/describe                     — описание адаптеров
+  GET  /api/query?q=<query>[&ranked=1]         — поиск концептов
+  GET  /api/health                              — состояние экосистемы
+  GET  /api/links                               — валидация ссылок
+  GET  /api/describe                            — описание адаптеров
+  GET  /api/neighbors?q6=<bits>&dist=<n>        — Q6-соседи
+  GET  /api/bridge?id=<entry_id>&hops=<n>       — обход графа bridges
+  GET  /api/bridge_conflicts                    — Protocol 3: конфликты
+  GET  /api/bridge_summary                      — сводка bridges + closure
+  GET  /api/annotations?target=<id>[&vis=...][&author=...] — аннотации к записи
+  POST /api/annotations                         — добавить аннотацию (JSON body)
+  GET  /api/flags[?severity=warning]            — Protocol 3: флаги для ревью
 
 Использование:
   python api.py              # порт 8080
@@ -23,6 +30,7 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 from typing import Any
+import html as _html
 
 from portal import NautilusPortal
 
@@ -93,6 +101,47 @@ def handle_health(portal: NautilusPortal) -> dict:
 def handle_links(portal: NautilusPortal) -> dict:
     from validate_links import validate
     return validate(portal)
+
+
+def handle_bridge(portal: NautilusPortal, params: dict) -> dict:
+    """GET /api/bridge?id=<entry_id>&hops=<n> — traverse bridge graph."""
+    entry_id = params.get("id", ["pro2:bidir"])[0]
+    hops = max(1, min(int(params.get("hops", ["1"])[0]), 3))
+    t0 = time.monotonic()
+    result = portal.query_by_bridge(entry_id, hops)
+    elapsed_ms = round((time.monotonic() - t0) * 1000)
+    return {
+        "entry_id": entry_id,
+        "max_hops": hops,
+        "elapsed_ms": elapsed_ms,
+        "total": len(result.entries),
+        "repos_reached": sorted({e.id.split(":")[0] for e in result.entries}),
+        "cross_links": result.cross_links[:20],
+        "entries": [
+            {"id": e.id, "title": e.title,
+             "q6": e.metadata.get("q6", ""),
+             "repo": e.id.split(":")[0],
+             "is_fallback": e.is_fallback}
+            for e in result.entries[:30]
+        ],
+    }
+
+
+def handle_bridge_conflicts(portal: NautilusPortal) -> dict:
+    """GET /api/bridge_conflicts — Protocol 3 conflict detection."""
+    t0 = time.monotonic()
+    conflicts = portal.bridge_conflicts()
+    elapsed_ms = round((time.monotonic() - t0) * 1000)
+    return {
+        "elapsed_ms": elapsed_ms,
+        "total_conflicts": len(conflicts),
+        "conflicts": conflicts,
+    }
+
+
+def handle_bridge_summary(portal: NautilusPortal) -> dict:
+    """GET /api/bridge_summary — full bridge registry overview."""
+    return portal.bridge_summary()
 
 
 def handle_neighbors(portal: NautilusPortal, params: dict) -> dict:
@@ -191,6 +240,50 @@ def handle_metrics(portal: NautilusPortal) -> str:
     return "\n".join(lines)
 
 
+def handle_annotations_get(portal: NautilusPortal, params: dict) -> dict:
+    """GET /api/annotations?target=<id>[&vis=...][&author=...]"""
+    target = params.get("target", [""])[0]
+    if not target:
+        return {"error": "target parameter required"}, 400
+    vis = params.get("vis", [None])[0]
+    author = params.get("author", [None])[0]
+    anns = portal.annotations_for(target, visibility=vis, author=author)
+    return {"target": target, "total": len(anns), "annotations": anns}
+
+
+def handle_annotations_post(portal: NautilusPortal, body: bytes) -> dict:
+    """POST /api/annotations — add annotation from JSON body."""
+    try:
+        data = json.loads(body.decode())
+    except Exception:
+        return {"error": "invalid JSON"}, 400
+    target = data.get("target", "").strip()
+    author = data.get("author", "").strip()
+    content = data.get("content", "").strip()
+    if not target or not author or not content:
+        return {"error": "target, author, content are required"}, 400
+    ann_id = portal.annotate(
+        target=target,
+        author=_html.escape(author),
+        content=_html.escape(content),
+        visibility=data.get("visibility", "private"),
+        tags=data.get("tags", []),
+        thread_parent=data.get("thread_parent"),
+    )
+    return {"id": ann_id, "target": target}
+
+
+def handle_flags(portal: NautilusPortal, params: dict) -> dict:
+    """GET /api/flags[?severity=warning] — Protocol 3 flags."""
+    severity = params.get("severity", [None])[0]
+    flags = portal.get_flags(severity)
+    return {
+        "total": len(flags),
+        "severity_filter": severity,
+        "flags": flags,
+    }
+
+
 def handle_describe(portal: NautilusPortal) -> dict:
     return portal.describe()
 
@@ -222,6 +315,20 @@ def _make_handler(portal: NautilusPortal) -> type:
                     _json_response(self, handle_describe(portal))
                 elif path == "/api/neighbors":
                     _json_response(self, handle_neighbors(portal, params))
+                elif path == "/api/bridge":
+                    _json_response(self, handle_bridge(portal, params))
+                elif path == "/api/bridge_conflicts":
+                    _json_response(self, handle_bridge_conflicts(portal))
+                elif path == "/api/bridge_summary":
+                    _json_response(self, handle_bridge_summary(portal))
+                elif path == "/api/annotations":
+                    result = handle_annotations_get(portal, params)
+                    if isinstance(result, tuple):
+                        _json_response(self, result[0], result[1])
+                    else:
+                        _json_response(self, result)
+                elif path == "/api/flags":
+                    _json_response(self, handle_flags(portal, params))
                 elif path == "/metrics":
                     _text_response(self, handle_metrics(portal),
                                    content_type="text/plain; version=0.0.4; charset=utf-8")
@@ -234,9 +341,31 @@ def _make_handler(portal: NautilusPortal) -> type:
                             "/api/links",
                             "/api/describe",
                             "/api/neighbors?q6=110001&dist=1",
+                            "/api/bridge?id=pro2:bidir&hops=2",
+                            "/api/bridge_conflicts",
+                            "/api/bridge_summary",
+                            "/api/annotations?target=<id>",
+                            "/api/flags",
                             "/metrics",
                         ],
                     })
+                else:
+                    _json_response(self, {"error": f"Unknown endpoint: {path}"}, 404)
+            except Exception as ex:
+                _json_response(self, {"error": str(ex)}, 500)
+
+        def do_POST(self) -> None:
+            parsed = urlparse(self.path)
+            path = parsed.path.rstrip("/")
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+            try:
+                if path == "/api/annotations":
+                    result = handle_annotations_post(portal, body)
+                    if isinstance(result, tuple):
+                        _json_response(self, result[0], result[1])
+                    else:
+                        _json_response(self, result, 201)
                 else:
                     _json_response(self, {"error": f"Unknown endpoint: {path}"}, 404)
             except Exception as ex:

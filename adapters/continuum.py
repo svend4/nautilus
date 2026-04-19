@@ -28,7 +28,7 @@ _CONCEPTS = [
      "входной контекст, выходной контекст, метаданные (timestamp, cost, tokens). "
      "Шаги формируют DAG выполнения, не линейную цепочку.",
      "110100",
-     ["continuum:core", "continuum:dag", "daten22:daten22:planner"],
+     ["continuum:core", "continuum:dag", "daten22:planner"],
      ["step", "atomic", "dag", "execution"]),
 
     ("continuum:state_machine",
@@ -80,7 +80,7 @@ _CONCEPTS = [
      "BridgeRegistry конфликты → BRANCH step для human review. "
      "Ближайший аналог: daten22 Planner, но с AI-steps вместо задач.",
      "110100",
-     ["continuum:core", "continuum:dag", "daten22:daten22:planner"],
+     ["continuum:core", "continuum:dag", "daten22:planner"],
      ["nautilus", "integration", "meta-coordinator", "portal"]),
 ]
 
@@ -103,7 +103,7 @@ class ContinuumAdapter(BaseAdapter):
                     content=content,
                     metadata={"q6": q6, "tags": tags},
                     links=links,
-                    is_fallback=not bool(q),
+                    is_fallback=False,
                 ))
 
         if not results:
@@ -119,7 +119,7 @@ class ContinuumAdapter(BaseAdapter):
             )
             return [e]
 
-        return results[:6]
+        return results
 
     def describe(self) -> dict:
         return {

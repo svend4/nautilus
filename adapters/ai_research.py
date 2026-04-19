@@ -108,7 +108,7 @@ _CONCEPTS = [
      "(3) Critic model — отдельная модель оценивает ответы.",
      "110100",
      "info30",
-     ["ai_research:react", "ai_agents:bidir"],
+     ["ai_research:react", "ai_agents:bidir_agent"],
      ["reflection", "critique", "self-improvement", "constitutional-ai"]),
 
     # --- info100: синтез, перспективы ---
@@ -170,7 +170,7 @@ class AIResearchAdapter(BaseAdapter):
                     content=content,
                     metadata={"q6": q6, "tags": tags, "sub_repo": source_repo},
                     links=links,
-                    is_fallback=not bool(q),
+                    is_fallback=False,
                 ))
 
         if not results:
@@ -186,7 +186,7 @@ class AIResearchAdapter(BaseAdapter):
             return results
 
         if not q:
-            return results[:5]
+            return results
 
         return results[:8]
 

@@ -93,6 +93,23 @@ def check_consensus(portal: NautilusPortal) -> dict[str, Any]:
     return results
 
 
+def check_bridges(portal: NautilusPortal) -> dict[str, Any]:
+    """Check bridge registry stats and Protocol-3 conflicts."""
+    try:
+        summary = portal.bridge_summary()
+        conflicts = portal.bridge_conflicts()
+        return {
+            "total_bridges":          summary["total_bridges"],
+            "adapters_with_bridges":  summary["adapters_with_bridges"],
+            "by_type":                summary["by_type"],
+            "conflict_count":         len(conflicts),
+            "conflicts":              conflicts[:5],  # первые 5 для отчёта
+            "ok": len(conflicts) == 0,
+        }
+    except Exception as ex:
+        return {"error": str(ex), "ok": False}
+
+
 def check_cache() -> dict:
     try:
         from adapters.cache import CacheManager
@@ -204,6 +221,24 @@ def print_report(data: dict[str, Any]) -> None:
         if r['missing']:
             print(f"     отсутствует: {', '.join(r['missing'])}")
 
+    bridges = data.get("bridges", {})
+    print()
+    print("── Bridges ────────────────────────────────────────")
+    if "error" in bridges:
+        print(f"  ⚠️  {bridges['error']}")
+    else:
+        total = bridges.get("total_bridges", 0)
+        n_adapters = len(bridges.get("adapters_with_bridges", []))
+        conflicts = bridges.get("conflict_count", 0)
+        by_type = bridges.get("by_type", {})
+        type_str = "  ".join(f"{t}={n}" for t, n in sorted(by_type.items()))
+        status = "✅" if conflicts == 0 else "⚠️ "
+        print(f"  {status} {total} bridges в {n_adapters} адаптерах  [{type_str}]")
+        if conflicts:
+            print(f"  ⚠️  Protocol 3: {conflicts} конфликтов")
+            for cf in bridges.get("conflicts", [])[:3]:
+                print(f"    · {cf.get('from_repo')}↔{cf.get('to_repo')}: {cf.get('reason','')[:60]}")
+
     print()
     print("── Кэш ────────────────────────────────────────────")
     if "error" in cache:
@@ -232,11 +267,15 @@ def main() -> None:
 
     portal = NautilusPortal()
 
-    adapter_results  = check_adapters(portal)
-    passport_results = check_passports()
+    adapter_results   = check_adapters(portal)
+    passport_results  = check_passports()
     consensus_results = check_consensus(portal)
-    cache_results    = check_cache()
-    sc, issues       = score(adapter_results, passport_results, consensus_results)
+    bridge_results    = check_bridges(portal)
+    cache_results     = check_cache()
+    sc, issues        = score(adapter_results, passport_results, consensus_results)
+
+    if not bridge_results.get("ok") and bridge_results.get("conflict_count", 0) > 0:
+        issues.append(f"⚠️  Bridge конфликты (Protocol 3): {bridge_results['conflict_count']}")
 
     data = {
         "timestamp":  time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime()),
@@ -245,6 +284,7 @@ def main() -> None:
         "adapters":   adapter_results,
         "passports":  passport_results,
         "consensus":  consensus_results,
+        "bridges":    bridge_results,
         "cache":      cache_results,
     }
 
