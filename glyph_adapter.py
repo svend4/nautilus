@@ -12,15 +12,11 @@ GlyphAwareEmbedding — адаптер SOLAN → NautilusMoME (Шаг 4).
   python -c "from nautilus.glyph_adapter import run_xerox_test; ..."
 """
 
-import sys
-from pathlib import Path
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-# Путь к GlyphTokenizer
-sys.path.insert(0, str(Path(__file__).parent.parent))
-from yijing_transformer.tokenizer.glyph_tokenizer import GlyphTokenizer
+from tokenizer.glyph_tokenizer import GlyphTokenizer
 
 
 class GlyphAwareEmbedding(nn.Module):

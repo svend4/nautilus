@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Nautilus Passport Schema v1.0",
+  "description": "Паспорт репозитория для подключения к Nautilus Portal",
+  "type": "object",
+  "required": ["repo", "format", "native_unit", "compatibility"],
+  "properties": {
+    "repo": {
+      "type": "string",
+      "description": "GitHub slug: owner/repo-name",
+      "pattern": "^[\\w-]+/[\\w-]+$",
+      "examples": ["svend4/info1", "svend4/meta"]
+    },
+    "format": {
+      "type": "string",
+      "description": "Уникальный идентификатор формата (короткое имя)",
+      "examples": ["info1", "meta", "my-format"]
+    },
+    "native_unit": {
+      "type": "string",
+      "description": "Что является атомарной единицей хранения",
+      "examples": ["Markdown-документ", "JSON-запись", "CA-правило"]
+    },
+    "compatibility": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3,
+      "description": "0=обнаруживаемый · 1=читаемый · 2=связанный · 3=интерактивный"
+    },
+    "description": {
+      "type": "string",
+      "description": "Краткое описание репозитория (1-2 предложения)"
+    },
+    "total_items": {
+      "type": ["integer", "string"],
+      "description": "Примерное количество единиц (число или строка типа '310+')"
+    },
+    "abstraction_range": {
+      "type": "string",
+      "description": "Диапазон абстракции если применимо (например 'α -4..+4')"
+    },
+    "q6_key": {
+      "type": "string",
+      "description": "Как концепты репо отображаются на Q6 (6-бит)",
+      "examples": ["hex_id - 1 → bin(6)", "alpha → depth parameter"]
+    },
+    "bridges": {
+      "type": "object",
+      "description": "Связи с другими репозиториями экосистемы",
+      "additionalProperties": {
+        "type": "string",
+        "description": "Описание связи"
+      },
+      "examples": [
+        {"pro2": "alpha-уровень ↔ глубина Q6-концепта"},
+        {"meta": "онтология ↔ гексаграммы класса I"}
+      ]
+    },
+    "adapter_file": {
+      "type": "string",
+      "description": "Имя файла адаптера в nautilus/adapters/",
+      "examples": ["info1.py", "meta.py"]
+    },
+    "access": {
+      "type": "object",
+      "description": "Как получить данные",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["github_api", "local_files", "static", "http_api"],
+          "description": "Тип доступа к данным"
+        },
+        "requires_token": {
+          "type": "boolean",
+          "description": "Нужен ли GITHUB_TOKEN или другой токен"
+        },
+        "fallback": {
+          "type": "string",
+          "description": "Что делать если данные недоступны"
+        }
+      }
+    },
+    "example_queries": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "3-5 запросов, которые дают хорошие результаты",
+      "examples": [["knowledge", "синтез", "алгоритм"]]
+    }
+  }
+}
