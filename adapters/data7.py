@@ -10,7 +10,7 @@ data7 = теоретическая база:
 поэтому адаптер описывает его теоретические концепты.
 """
 
-from .base import BaseAdapter, PortalEntry
+from .base import BaseAdapter, PortalEntry, fuzzy_match
 
 
 class Data7Adapter(BaseAdapter):
@@ -22,7 +22,8 @@ class Data7Adapter(BaseAdapter):
         entries = self._all_entries()
         if q in ("knowledge", "all", ""):
             return entries
-        return [e for e in entries if q in e.title.lower() or q in e.content.lower()]
+        return [e for e in entries
+                if fuzzy_match(q, e.title) or fuzzy_match(q, e.content)]
 
     def _all_entries(self) -> list[PortalEntry]:
         return [
@@ -41,6 +42,8 @@ class Data7Adapter(BaseAdapter):
                     "file": "knowledge_transformation_theory.md",
                     "cycle": "K₀→K₁→K₂",
                     "poles": ["dissertations", "encyclopedias"],
+                    "q6": "111110",
+                    "alpha": 3,
                 },
                 links=["pro2:bidir", "pro2:knowledge_graph"],
             ),
@@ -60,6 +63,8 @@ class Data7Adapter(BaseAdapter):
                     "file": "knowledge_transformer.py",
                     "status": "missing_in_data7",
                     "implemented_in": "pro2/bidir_train.py",
+                    "q6": "101010",
+                    "alpha": 1,
                 },
                 links=["pro2:bidir", "pro2:adaptive_learning"],
             ),
@@ -75,7 +80,12 @@ class Data7Adapter(BaseAdapter):
                     "Concept.depth (специализация 0..1), "
                     "Concept.novelty (новизна 0..1)."
                 ),
-                metadata={"class": "Concept", "extended_in": "pro2/bidir_train.py"},
+                metadata={
+                    "class": "Concept",
+                    "extended_in": "pro2/bidir_train.py",
+                    "q6": "000001",
+                    "alpha": -3,
+                },
                 links=["pro2:knowledge_graph", "pro2:q6"],
             ),
             PortalEntry(
@@ -90,7 +100,12 @@ class Data7Adapter(BaseAdapter):
                     "AdaptiveLearningOptimizer             ↔  gradient descent на QFilter\n"
                     "TSP-оптимизация порядка               ↔  BFS-путь по biangua-графу"
                 ),
-                metadata={"type": "analogy_table", "source_file": "bidir_train.py docstring"},
+                metadata={
+                    "type": "analogy_table",
+                    "source_file": "bidir_train.py docstring",
+                    "q6": "110001",
+                    "alpha": 1,
+                },
                 links=["pro2:bidir", "pro2:knowledge_graph"],
             ),
         ]

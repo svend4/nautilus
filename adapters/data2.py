@@ -108,7 +108,8 @@ class Data2Adapter(BaseAdapter):
                     "12 архетипов движения × 7 аксиом Крюкова. "
                     "310+ томов в 5 сериях. LCI как метрика системы."
                 ),
-                metadata={"type": "overview", "volumes": "1-310", "series": "I–V+"},
+                metadata={"type": "overview", "volumes": "1-310", "series": "I–V+",
+                          "q6": "111110", "alpha": 3},
                 links=["info1:methodology", "meta:hexagram:50", "pro2:bidir"],
                 is_fallback=True,
             ),
@@ -121,7 +122,8 @@ class Data2Adapter(BaseAdapter):
                     "scarab_algorithm.py — обход Q6-пространства по траектории фигуры-8. "
                     "Прямой мост к семантическому пространству pro2."
                 ),
-                metadata={"type": "algorithm", "file": "scarab_algorithm.py"},
+                metadata={"type": "algorithm", "file": "scarab_algorithm.py",
+                          "q6": "101010", "alpha": 1},
                 links=["pro2:q6", "meta:hexagram:63"],
                 is_fallback=True,
             ),
@@ -134,7 +136,8 @@ class Data2Adapter(BaseAdapter):
                     "МВС (малая) / СВС (средняя) / БВС (большая) вложенные сферы. "
                     "Резонанс трёх сфер → максимальная эффективность системы."
                 ),
-                metadata={"archetype": "три сферы", "ca_class": "II", "alpha": -1},
+                metadata={"archetype": "три сферы", "ca_class": "II", "alpha": -1,
+                          "q6": "000111"},
                 links=["meta:ca_class:II", "info1:alpha:-1"],
                 is_fallback=True,
             ),

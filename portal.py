@@ -7,7 +7,7 @@ import html as _html
 import json
 import sys
 import argparse
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 _e = _html.escape  # HTML-экранирование против XSS
@@ -18,6 +18,32 @@ from adapters import (
     InfoSystemsAdapter, AIAgentsAdapter, AutoAdapter,
 )
 from adapters.base import PortalEntry
+
+
+def _relevance_score(entry, query: str) -> float:
+    """Score an entry's relevance to query (0.0–1.0, higher = more relevant)."""
+    q = query.lower()
+    score = 0.0
+    if not q:
+        return 0.5 if not entry.is_fallback else 0.1
+
+    title_l = entry.title.lower()
+    content_l = entry.content.lower()
+    # Exact match in title gets highest score
+    if q == title_l:
+        score += 1.0
+    elif q in title_l:
+        score += 0.7
+    if q in content_l:
+        score += 0.3
+    if q in entry.id.lower():
+        score += 0.4
+    # Cross-links indicate richer connectivity
+    score += min(len(entry.links) * 0.05, 0.2)
+    # Penalize fallback entries
+    if entry.is_fallback:
+        score *= 0.5
+    return min(score, 1.0)
 
 
 @dataclass
@@ -57,10 +83,12 @@ class NautilusPortal:
         except Exception:
             pass
 
-    def query(self, concept: str) -> PortalResult:
+    def query(self, concept: str, ranked: bool = True) -> PortalResult:
         all_entries = []
         for adapter in self.adapters.values():
             all_entries.extend(adapter.fetch(concept))
+        if ranked:
+            all_entries.sort(key=lambda e: _relevance_score(e, concept), reverse=True)
         return PortalResult(
             query=concept,
             entries=all_entries,
