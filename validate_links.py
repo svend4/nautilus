@@ -16,10 +16,12 @@ import json
 import sys
 import argparse
 from collections import defaultdict
+from typing import Any
 from portal import NautilusPortal
+from adapters.base import PortalEntry
 
 
-def collect_all_entries(portal: NautilusPortal) -> dict[str, list]:
+def collect_all_entries(portal: NautilusPortal) -> dict[str, PortalEntry]:
     """Получить все записи от всех адаптеров по широкому запросу."""
     all_entries = {}
     broad_queries = ["knowledge", "all", "", "синтез", "алгоритм",
@@ -42,9 +44,9 @@ def validate(portal: NautilusPortal) -> dict:
     # (некоторые ссылки вида "meta:hexagram:all" — групповые)
     known_prefixes = {e_id.rsplit(":", 1)[0] for e_id in known_ids}
 
-    broken = []
+    broken: list[dict[str, Any]] = []
     valid_count = 0
-    links_by_adapter = defaultdict(lambda: {"valid": 0, "broken": []})
+    links_by_adapter: dict[str, dict[str, Any]] = defaultdict(lambda: {"valid": 0, "broken": []})
 
     for entry_id, entry in entries.items():
         adapter = entry_id.split(":")[0]
@@ -96,7 +98,7 @@ def validate(portal: NautilusPortal) -> dict:
     }
 
 
-def print_report(report: dict, show_fix: bool = False):
+def print_report(report: dict, show_fix: bool = False) -> None:
     total = report["total_links"]
     valid = report["valid_links"]
     errors = report["errors"]
@@ -136,7 +138,7 @@ def print_report(report: dict, show_fix: bool = False):
         print(f"  {adapter:15s}: {stats['valid']} ок  {status}")
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Nautilus Link Validator")
     parser.add_argument("--fix", action="store_true", help="Показать подсказки по исправлению")
     parser.add_argument("--json", action="store_true", help="JSON-вывод")
