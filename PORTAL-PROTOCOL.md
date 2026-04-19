@@ -699,6 +699,237 @@ Breaking changes increment the major version component of the protocol.
 
 ---
 
+## 15. Bridge Algebra
+
+Bridges are typed, machine-readable semantic relationships between
+adapters. As of v1.2, the natural-language `bridges` dict from v1.1 is
+superseded by a typed JSON array declared in each passport.
+
+### 15.1. Bridge Record Schema
+
+```json
+{
+  "target":      "pro2",
+  "type":        "isomorphism",
+  "description": "Q6-bits [b0..b5] ↔ hexagram number 1..64",
+  "confidence":  0.95,
+  "bidirectional": true
+}
+```
+
+REQUIRED fields: `target`, `type`, `description`.
+OPTIONAL fields: `confidence` (0.0–1.0, default 1.0), `bidirectional`
+(default `false`), `example` (concrete from/to illustration).
+
+### 15.2. Bridge Types
+
+| Type | Description | Invertible? |
+|------|-------------|:---:|
+| `isomorphism` | Bijective correspondence; A ↔ B structurally identical | ✓ |
+| `projection` | Lossy; A → subset of B | ✗ |
+| `embedding` | A ⊂ B fully contained | partial |
+| `analogy` | Structural similarity without strict mapping | ✓ |
+| `derivation` | B computable from A deterministically | ✗ |
+
+### 15.3. Operations
+
+Implementations MUST support three algebraic operations over the
+bridge graph:
+
+**invert(bridge) → bridge**
+  Flips direction. `confidence` × 0.95 (reflecting evidence decay on
+  auto-derivation). Sets `_inverted = true` metadata flag.
+
+**compose(ab, bc) → ac | None**
+  Chains two bridges A→B and B→C into A→C. Returns `None` if
+  `ab.target ≠ bc.source`. Composed bridge has `type = "derivation"`
+  and `confidence = min(ab.confidence, bc.confidence)`.
+
+**transitive_closure(source, max_hops) → list[bridge]**
+  Breadth-first traversal from `source` adapter across the bridge
+  graph, including auto-inverted edges. Returns reachable adapters
+  with their shortest-path confidence and hop count. `max_hops`
+  MUST be bounded (default 3) to prevent exponential blowup.
+
+### 15.4. Protocol 3 Conflict Detection
+
+`detect_conflicts(entries) → list[BridgeConflict]` inspects the
+portal's entry set and emits a `BridgeConflict` record whenever:
+
+- Two adapters declare the **same concept** (by normalised title)
+  but assign it Q6 addresses with Hamming distance > 0, OR
+- Two adapters declare bridges to each other with inconsistent
+  types (e.g. A declares `isomorphism` to B, B declares `analogy`
+  to A).
+
+```json
+{
+  "entry_a":  "pro2:hexagram_42",
+  "entry_b":  "meta:rule_110100",
+  "from_repo": "pro2",
+  "to_repo":   "meta",
+  "reason":    "Q6 coordinate mismatch: 110100 vs 110001",
+  "severity":  "warning"
+}
+```
+
+Severity: `info` (Hamming ≤ 1), `warning` (Hamming = 2), `error`
+(Hamming > 2 or bridge-type mismatch).
+
+Conflicts feed the annotation system (§16) as automatic
+`needs_review` flags authored by the portal itself.
+
+---
+
+## 16. Annotations and Protocol 3
+
+Annotations are a first-class overlay on `PortalEntry` records, allowing
+any participant — human user or adapter-agent — to attach notes, flags,
+and links to any entry independent of its source format.
+
+### 16.1. Annotation Record
+
+```python
+@dataclass
+class Annotation:
+    id: str               # "annot:<12-hex-chars>"
+    target: str           # PortalEntry id being annotated
+    author: str           # user name | adapter name | "assistant"
+    content: str          # annotation body
+    visibility: str       # "private" | "team" | "public"
+    created_at: float     # Unix timestamp
+    tags: list[str]       # free-form tags
+    thread_parent: str    # parent annotation id (threading)
+```
+
+`id` MUST be globally unique and opaque. Adapters MUST NOT parse `id`
+beyond the `annot:` prefix.
+
+### 16.2. Visibility
+
+| Level | Semantics |
+|-------|-----------|
+| `private` | Visible only to the author |
+| `team` | Visible within a trust group (implementation-defined) |
+| `public` | Visible to any portal consumer |
+
+Visibility is advisory at the protocol level — enforcement is the
+deployment's responsibility. Public portals MUST filter `private` and
+`team` annotations from unauthenticated responses.
+
+### 16.3. Protocol 3: Agent-Authored Flags
+
+**Protocol 3** is the subset of the annotation system where an
+adapter-agent automatically creates annotations to signal issues
+requiring human attention.
+
+```python
+portal.flag_for_review(
+    target="legal:dsgvo_art15",
+    author="legal",
+    reason="GDPR personal-data handling requires review",
+    severity="warning",   # "info" | "warning" | "error"
+)
+```
+
+Protocol 3 flags MUST have:
+
+- `tags` containing `"needs_review"` and the severity level
+- `visibility = "team"` (default; deployments MAY override)
+- `content` prefixed with `[SEVERITY] ` for log-friendly parsing
+
+### 16.4. Storage
+
+`AnnotationStore` MUST support two backends:
+
+- **Persistent** — SQLite by default; other durable backends are
+  implementation-defined. File MUST be excluded from VCS.
+- **In-memory** — for tests and ephemeral deployments. Selected
+  when the store is constructed with `db_path=None`.
+
+### 16.5. Conversation Branches (Forward-Compatibility)
+
+The protocol reserves the `ConversationBranch` record for git-like
+branching of conversations. v1.2 defines the data schema and store
+methods but does not mandate REST exposure. Implementations MAY add
+`/api/branches` endpoints; v1.5 is expected to standardise them.
+
+---
+
+## 17. Extended REST API
+
+v1.2 adds six OPTIONAL endpoints. A conforming v1.2 portal SHOULD
+implement all six; minimal deployments MAY implement only the core
+six (§11.1).
+
+### 17.1. Bridge Endpoints
+
+```
+GET /api/bridge?id=<entry_id>&hops=<n>    default n=1, max 3
+```
+
+Returns the entry graph reachable from `entry_id` through ≤ `hops`
+bridge steps. Response: `PortalResult` shape with `query = "bridge:<id>±<n>"`.
+
+```
+GET /api/bridge_conflicts
+```
+
+Returns list of `BridgeConflict` records (§15.4). Empty list means
+no conflicts detected.
+
+```
+GET /api/bridge_summary
+```
+
+Returns `{adapters_with_bridges, total_bridges, by_type,
+transitive_closure}` where `transitive_closure` is a per-adapter
+map of reachable targets with hop count and confidence.
+
+### 17.2. Annotation Endpoints
+
+```
+GET  /api/annotations?target=<entry_id>[&vis=<level>][&author=<name>]
+```
+
+Returns annotations for `target`. Filters are AND-combined. Private
+annotations MUST be filtered out unless the request is authenticated
+as the author (authentication is deployment-defined).
+
+```
+POST /api/annotations
+Content-Type: application/json
+
+{
+  "target":     "pro2:bidir",
+  "author":     "svend4",
+  "content":    "…",
+  "visibility": "private",
+  "tags":       ["wip"]
+}
+```
+
+REQUIRED body fields: `target`, `author`, `content`. The portal MUST
+sanitise `author` and `content` against XSS before storage.
+Response: `{"id": "annot:…", "target": "…"}` with HTTP 201.
+
+```
+GET /api/flags[?severity=<level>]
+```
+
+Returns Protocol 3 annotations (tag `needs_review`), optionally
+filtered by severity. Ordered by `created_at` descending.
+
+### 17.3. CORS and Authentication
+
+Extended endpoints inherit §11.4 CORS requirements. Write operations
+(`POST /api/annotations`) SHOULD be authenticated in public
+deployments — see §13.5. The reference implementation does not
+enforce authentication; deployments exposing write endpoints publicly
+MUST add authentication.
+
+---
+
 ## Appendix A: Minimal Conforming Adapter
 
 ```python
@@ -750,7 +981,22 @@ class MinimalAdapter(BaseAdapter):
 | Model Context Protocol (Anthropic MCP) | Tool-calling protocol for AI; NPP is query-federation for humans + AI |
 | Linked Data / RDF | Mandates canonical URIs; NPP preserves native formats |
 | OpenAPI | REST API description; NPP uses OpenAPI for its own REST surface |
+| Backstage (Spotify) | Push-model service catalog via `catalog-info.yaml`; NPP is pull-model — portal reads adapters. Closest in spirit, architecturally opposite. |
+| IPLD / IPFS | Content-addressed federation with canonical hashing; NPP is query-time translation, identity via `{adapter}:{slug}`. |
+| Bazel workspaces | Build-system federation via `WORKSPACE` files; NPP is knowledge federation — related framing, different domain. |
+
+### Contrast with Backstage
+
+Backstage aggregates engineering metadata by having each service
+register a YAML manifest which Backstage scrapes on a schedule
+(push model). NPP inverts this: adapters are active readers that
+translate source data into `PortalEntry` records on query
+(pull model). Push scales linearly with source count; pull scales
+with query rate. NPP chose pull because knowledge sources (info1,
+pro2, etc.) change on human edit cycles and rarely need real-time
+propagation, whereas a portal may serve many query shapes from the
+same underlying data.
 
 ---
 
-*Nautilus Portal Protocol v1.1 · svend4/nautilus · 2026-04-19*
+*Nautilus Portal Protocol v1.2 · svend4/nautilus · 2026-04-19*
