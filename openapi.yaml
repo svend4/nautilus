@@ -1,0 +1,338 @@
+openapi: "3.1.0"
+info:
+  title: Nautilus Portal API
+  description: |
+    REST API для экосистемы Nautilus — единой точки входа для репозиториев svend4.
+    Предоставляет поиск по Q6-пространству, консенсусное покрытие и диагностику.
+  version: "1.0.0"
+  contact:
+    name: Nautilus Portal
+    url: https://github.com/svend4/nautilus
+
+servers:
+  - url: http://localhost:8080
+    description: Локальный сервер (api.py)
+
+tags:
+  - name: search
+    description: Поиск концептов по экосистеме
+  - name: health
+    description: Состояние адаптеров и системы
+  - name: meta
+    description: Метаинформация об адаптерах
+
+paths:
+  /api/query:
+    get:
+      tags: [search]
+      summary: Поиск концептов
+      description: |
+        Ищет концепты во всех подключённых адаптерах.
+        Возвращает записи, ранжированные по релевантности, с консенсусным покрытием.
+      operationId: query
+      parameters:
+        - name: q
+          in: query
+          description: Поисковый запрос
+          required: false
+          schema:
+            type: string
+            default: knowledge
+            example: синтез
+        - name: ranked
+          in: query
+          description: Сортировать по релевантности (0 = отключить)
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+            default: 1
+      responses:
+        "200":
+          description: Результаты поиска
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueryResult"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/health:
+    get:
+      tags: [health]
+      summary: Состояние экосистемы
+      description: |
+        Запускает полную диагностику: проверяет адаптеры, паспорта,
+        консенсус и вычисляет интегральный score 0–100.
+      operationId: health
+      responses:
+        "200":
+          description: Отчёт о состоянии
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthReport"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/links:
+    get:
+      tags: [health]
+      summary: Валидация кросс-ссылок
+      description: Проверяет все entry.links на валидность (адаптер существует, запись найдена).
+      operationId: links
+      responses:
+        "200":
+          description: Отчёт валидации ссылок
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LinksReport"
+        "500":
+          $ref: "#/components/responses/Error"
+
+  /api/describe:
+    get:
+      tags: [meta]
+      summary: Описание адаптеров
+      description: Возвращает describe() для каждого зарегистрированного адаптера.
+      operationId: describe
+      responses:
+        "200":
+          description: Описание всех адаптеров
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: "#/components/schemas/AdapterDescription"
+
+  /metrics:
+    get:
+      tags: [health]
+      summary: Prometheus метрики
+      description: Экспортирует метрики в формате text/plain для Prometheus scrape.
+      operationId: metrics
+      responses:
+        "200":
+          description: Prometheus text format
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: |
+                  # HELP nautilus_health_score Overall ecosystem health score 0-100
+                  nautilus_health_score 82
+                  nautilus_entries_total{adapter="pro2"} 46
+
+components:
+  schemas:
+    PortalEntry:
+      type: object
+      required: [id, title, source, format_type, content, metadata, links, is_fallback]
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор записи в формате adapter:slug
+          example: "pro2:q6"
+        title:
+          type: string
+          example: "Q6 Семантическое пространство"
+        source:
+          type: string
+          description: GitHub репозиторий-источник
+          example: "svend4/pro2"
+        format_type:
+          type: string
+          enum: [document, concept, rule, theory, schema, archetype, volume,
+                 agent_pattern, ontology, architecture, bridge]
+          example: concept
+        content:
+          type: string
+          description: Содержание (до 300 символов в API-ответе)
+        metadata:
+          type: object
+          description: Произвольные метаданные адаптера
+          properties:
+            q6:
+              type: string
+              pattern: "^[01]{6}$"
+              description: Q6-координата в 6-битном пространстве
+              example: "110001"
+            alpha:
+              type: integer
+              minimum: -4
+              maximum: 4
+              description: Уровень абстракции α
+        links:
+          type: array
+          items:
+            type: string
+          description: Кросс-ссылки на записи других адаптеров
+          example: ["meta:hexagram:50", "info1:methodology"]
+        is_fallback:
+          type: boolean
+          description: true если запись возвращена из статического fallback
+
+    Consensus:
+      type: object
+      properties:
+        coverage:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          description: Доля адаптеров с реальными (не fallback) результатами
+        coverage_with_fallback:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+        present_in:
+          type: array
+          items:
+            type: string
+          description: Адаптеры с реальными результатами
+        present_in_fallback:
+          type: array
+          items:
+            type: string
+        missing_in:
+          type: array
+          items:
+            type: string
+          description: Адаптеры без результатов
+        agreed:
+          type: boolean
+
+    CrossLink:
+      type: object
+      properties:
+        from:
+          type: string
+        to:
+          type: string
+        from_repo:
+          type: string
+        to_repo:
+          type: string
+
+    QueryResult:
+      type: object
+      required: [query, elapsed_ms, total, entries, cross_links, consensus]
+      properties:
+        query:
+          type: string
+        elapsed_ms:
+          type: integer
+          description: Время выполнения запроса в миллисекундах
+        total:
+          type: integer
+        consensus:
+          $ref: "#/components/schemas/Consensus"
+        entries:
+          type: array
+          items:
+            $ref: "#/components/schemas/PortalEntry"
+        cross_links:
+          type: array
+          items:
+            $ref: "#/components/schemas/CrossLink"
+
+    AdapterHealth:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        entries_total:
+          type: integer
+        entries_real:
+          type: integer
+        entries_fallback:
+          type: integer
+        has_q6:
+          type: boolean
+        has_links:
+          type: boolean
+        response_ms:
+          type: integer
+        error:
+          type: string
+
+    HealthReport:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        score:
+          type: integer
+          minimum: 0
+          maximum: 100
+        ok:
+          type: boolean
+        issues:
+          type: array
+          items:
+            type: string
+        adapters:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/AdapterHealth"
+
+    BrokenLink:
+      type: object
+      properties:
+        link:
+          type: string
+        source:
+          type: string
+        adapter_exists:
+          type: boolean
+        severity:
+          type: string
+          enum: [error, warning]
+        note:
+          type: string
+
+    LinksReport:
+      type: object
+      properties:
+        total_entries:
+          type: integer
+        total_links:
+          type: integer
+        valid_links:
+          type: integer
+        errors:
+          type: integer
+        warnings:
+          type: integer
+        ok:
+          type: boolean
+        broken:
+          type: array
+          items:
+            $ref: "#/components/schemas/BrokenLink"
+
+    AdapterDescription:
+      type: object
+      properties:
+        repo:
+          type: string
+        format:
+          type: string
+        native_unit:
+          type: string
+      additionalProperties: true
+
+  responses:
+    Error:
+      description: Внутренняя ошибка сервера
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string

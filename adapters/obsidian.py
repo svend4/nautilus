@@ -51,7 +51,7 @@ def _extract_tags(text: str) -> list[str]:
 def _guess_q6(meta: dict, tags: list) -> str:
     """Guess Q6 coordinate from frontmatter or tags."""
     if "q6" in meta:
-        return meta["q6"]
+        return str(meta["q6"])
     if "alpha" in meta:
         alpha_map = {"-4": "000000", "-3": "000001", "-2": "000011",
                      "-1": "000111", "0": "010100", "1": "010111",
@@ -72,7 +72,7 @@ class ObsidianAdapter(BaseAdapter):
 
     name = "obsidian"
 
-    def __init__(self, vault_path: str = None, max_depth: int = None):
+    def __init__(self, vault_path: str | None = None, max_depth: int | None = None):
         env_path = os.environ.get("NAUTILUS_OBSIDIAN_VAULT")
         env_depth = os.environ.get("NAUTILUS_OBSIDIAN_DEPTH")
 

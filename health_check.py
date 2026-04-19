@@ -13,11 +13,12 @@ import sys
 import time
 import argparse
 from pathlib import Path
+from typing import Any
 from portal import NautilusPortal
 
 
-def check_adapters(portal: NautilusPortal) -> dict:
-    results = {}
+def check_adapters(portal: NautilusPortal) -> dict[str, Any]:
+    results: dict[str, Any] = {}
     for name, adapter in portal.adapters.items():
         t0 = time.monotonic()
         try:
@@ -38,10 +39,10 @@ def check_adapters(portal: NautilusPortal) -> dict:
     return results
 
 
-def check_passports() -> dict:
+def check_passports() -> dict[str, Any]:
     passport_dir = Path("passports")
     registry_path = Path("nautilus.json")
-    results = {}
+    results: dict[str, Any] = {}
 
     if not registry_path.exists():
         return {"error": "nautilus.json не найден"}
@@ -69,8 +70,8 @@ def check_passports() -> dict:
     return results
 
 
-def check_consensus(portal: NautilusPortal) -> dict:
-    test_queries = {
+def check_consensus(portal: NautilusPortal) -> dict[str, Any]:
+    test_queries: dict[str, Any] = {
         "knowledge": {"expected_min_coverage": 0.5},
         "синтез":    {"expected_min_coverage": 0.3},
         "bidir":     {"expected_min_coverage": 0.2},
@@ -105,7 +106,7 @@ def check_cache() -> dict:
         return {"error": str(ex)}
 
 
-def score(adapter_results, passport_results, consensus_results) -> tuple[int, list]:
+def score(adapter_results: dict[str, Any], passport_results: dict[str, Any], consensus_results: dict[str, Any]) -> tuple[int, list[str]]:
     """Возвращает (score 0-100, список проблем)."""
     issues = []
     points = 100
@@ -149,7 +150,7 @@ def score(adapter_results, passport_results, consensus_results) -> tuple[int, li
     return max(0, points), issues
 
 
-def print_report(data: dict):
+def print_report(data: dict[str, Any]) -> None:
     adapters = data["adapters"]
     passports = data["passports"]
     consensus = data["consensus"]
@@ -222,7 +223,7 @@ def print_report(data: dict):
     print()
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Nautilus Health Check")
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--strict", action="store_true",

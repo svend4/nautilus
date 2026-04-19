@@ -32,6 +32,13 @@
   #legend { margin-top: 16px; display: flex; gap: 24px; flex-wrap: wrap; }
   .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
   .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+  #heatmap-bar { display: none; margin-top: 12px; align-items: center; gap: 12px; font-size: 12px; color: #8b949e; }
+  #heat-gradient { width: 160px; height: 10px; border-radius: 4px;
+    background: linear-gradient(to right, #21262d, #f0883e, #3fb950); }
+  .btn { background: #21262d; color: #c9d1d9; border: 1px solid #30363d;
+         padding: 4px 10px; border-radius: 4px; cursor: pointer; font-family: monospace; font-size: 12px; }
+  .btn:hover { border-color: #58a6ff; color: #58a6ff; }
+  .btn.active { background: #0d419d; border-color: #58a6ff; color: #c9d1d9; }
 </style>
 </head>
 <body>
@@ -48,6 +55,18 @@
   <label>Ось Y (бит):
     <input id="axisY" type="number" min="0" max="5" value="1" style="width:50px">
   </label>
+  <button class="btn" id="heatToggle" onclick="toggleHeatmap()">🌡 Тепловая карта</button>
+  <label id="apiLabel" style="display:none;color:#8b949e;font-size:12px">API:
+    <input id="apiUrl" type="text" value="http://localhost:8080" style="width:170px;background:#161b22;color:#c9d1d9;border:1px solid #30363d;padding:3px 6px;border-radius:4px;font-family:monospace;font-size:11px">
+    <button class="btn" onclick="fetchCoverage()" style="margin-left:4px">↺ Загрузить</button>
+  </label>
+</div>
+<div id="heatmap-bar">
+  <span>Плотность:</span>
+  <span>0</span>
+  <div id="heat-gradient"></div>
+  <span id="heatMax">max</span>
+  <span id="heatStatus" style="color:#f0883e"></span>
 </div>
 
 <div id="canvas-wrap">
@@ -55,12 +74,19 @@
   <div id="tooltip"></div>
 </div>
 
-<div id="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:#6b7280"></div>Класс I — Стационарные</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#3fb950"></div>Класс II — Периодические</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#f0883e"></div>Класс III — Хаотические</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#58a6ff"></div>Класс IV — Сложные</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#f85149; border:2px solid #fff"></div>Совпадение поиска</div>
+<div id="legend-ca" style="display:flex;gap:24px;flex-wrap:wrap;margin-top:16px">
+  <div class="legend-item" style="display:flex;align-items:center;gap:6px;font-size:12px"><div class="legend-dot" style="background:#6b7280;width:12px;height:12px;border-radius:50%"></div>Класс I — Стационарные</div>
+  <div class="legend-item" style="display:flex;align-items:center;gap:6px;font-size:12px"><div class="legend-dot" style="background:#3fb950;width:12px;height:12px;border-radius:50%"></div>Класс II — Периодические</div>
+  <div class="legend-item" style="display:flex;align-items:center;gap:6px;font-size:12px"><div class="legend-dot" style="background:#f0883e;width:12px;height:12px;border-radius:50%"></div>Класс III — Хаотические</div>
+  <div class="legend-item" style="display:flex;align-items:center;gap:6px;font-size:12px"><div class="legend-dot" style="background:#58a6ff;width:12px;height:12px;border-radius:50%"></div>Класс IV — Сложные</div>
+  <div class="legend-item" style="display:flex;align-items:center;gap:6px;font-size:12px"><div class="legend-dot" style="background:#f85149;border:2px solid #fff;width:12px;height:12px;border-radius:50%"></div>Совпадение поиска</div>
+</div>
+<div id="legend-heat" style="display:none;gap:24px;flex-wrap:wrap;margin-top:16px">
+  <div class="legend-item" style="display:flex;align-items:center;gap:6px;font-size:12px"><div class="legend-dot" style="background:#21262d;border:1px solid #444;width:12px;height:12px;border-radius:50%"></div>0 записей — пусто</div>
+  <div class="legend-item" style="display:flex;align-items:center;gap:6px;font-size:12px"><div class="legend-dot" style="background:#6b3500;width:12px;height:12px;border-radius:50%"></div>1–2 записи</div>
+  <div class="legend-item" style="display:flex;align-items:center;gap:6px;font-size:12px"><div class="legend-dot" style="background:#f0883e;width:12px;height:12px;border-radius:50%"></div>3–5 записей</div>
+  <div class="legend-item" style="display:flex;align-items:center;gap:6px;font-size:12px"><div class="legend-dot" style="background:#3fb950;width:12px;height:12px;border-radius:50%"></div>6+ записей</div>
+  <div class="legend-item" style="display:flex;align-items:center;gap:6px;font-size:12px"><div class="legend-dot" style="background:#f85149;border:2px solid #fff;width:12px;height:12px;border-radius:50%"></div>Совпадение поиска</div>
 </div>
 
 <script>
@@ -123,6 +149,76 @@ const tooltip = document.getElementById("tooltip");
 let axisX = 0, axisY = 1;
 let searchQuery = "";
 let hovered = -1;
+let heatmapMode = false;
+let coverage = {}; // q6_bits → entry_count
+
+// Pre-populate with static coverage data from cluster.py output
+const STATIC_COVERAGE = {
+  "000000":2,"000001":9,"000010":2,"000011":5,"000100":2,"000101":2,"000110":2,"000111":4,
+  "001001":2,"001010":1,"001100":1,"001111":1,"010000":1,"010011":2,"010100":9,"010101":3,
+  "010110":3,"011000":1,"011001":1,"011100":3,"011110":2,"100100":2,"101000":2,"101010":4,
+  "110001":8,"110011":3,"110100":4,"110101":2,"111000":1,"111001":2,"111010":2,"111100":3,
+  "111101":1,"111110":5,"111111":8
+};
+
+function heatColor(count, maxCount) {
+  if (count === 0) return "#21262d";
+  const t = Math.min(count / Math.max(maxCount, 1), 1.0);
+  if (t < 0.15) return "#6b3500";
+  if (t < 0.5)  return `hsl(${Math.round(30 + t * 80)}, 90%, ${Math.round(20 + t * 25)}%)`;
+  return `hsl(${Math.round(110 + t * 30)}, 80%, ${Math.round(35 + t * 15)}%)`;
+}
+
+function toggleHeatmap() {
+  heatmapMode = !heatmapMode;
+  const btn = document.getElementById("heatToggle");
+  btn.classList.toggle("active", heatmapMode);
+  document.getElementById("apiLabel").style.display = heatmapMode ? "flex" : "none";
+  document.getElementById("heatmap-bar").style.display = heatmapMode ? "flex" : "none";
+  document.getElementById("legend-ca").style.display = heatmapMode ? "none" : "flex";
+  document.getElementById("legend-heat").style.display = heatmapMode ? "flex" : "none";
+  if (heatmapMode && Object.keys(coverage).length === 0) {
+    coverage = Object.assign({}, STATIC_COVERAGE);
+    updateHeatStats();
+  }
+  draw();
+}
+
+function updateHeatStats() {
+  const vals = Object.values(coverage).filter(v => v > 0);
+  const maxV = vals.length ? Math.max(...vals) : 0;
+  document.getElementById("heatMax").textContent = maxV + " макс";
+  const covered = Object.keys(coverage).filter(k => coverage[k] > 0).length;
+  document.getElementById("heatStatus").textContent = `${covered}/64 вершин покрыто`;
+}
+
+async function fetchCoverage() {
+  const apiUrl = document.getElementById("apiUrl").value.replace(/\/$/, "");
+  document.getElementById("heatStatus").textContent = "Загружаю...";
+  const newCoverage = {};
+  const queries = ["", "knowledge", "синтез", "алгоритм", "agent", "theory", "concept", "data", "rule", "all"];
+  try {
+    for (const q of queries) {
+      const resp = await fetch(`${apiUrl}/api/query?q=${encodeURIComponent(q)}&ranked=0`);
+      if (!resp.ok) continue;
+      const data = await resp.json();
+      for (const e of data.entries || []) {
+        const q6 = (e.metadata || {}).q6;
+        if (typeof q6 === "string" && q6.length === 6 && /^[01]+$/.test(q6)) {
+          newCoverage[q6] = (newCoverage[q6] || 0) + 1;
+        }
+      }
+    }
+    coverage = newCoverage;
+    updateHeatStats();
+    draw();
+  } catch(err) {
+    document.getElementById("heatStatus").textContent = "⚠️ API недоступен — показаны статические данные";
+    coverage = Object.assign({}, STATIC_COVERAGE);
+    updateHeatStats();
+    draw();
+  }
+}
 
 function bitAt(bits, i) { return parseInt(bits[5 - i]); }
 
@@ -181,14 +277,22 @@ function draw() {
   }
 
   // Draw nodes
+  const maxCount = heatmapMode ? Math.max(1, ...Object.values(coverage)) : 1;
   for (let i = 0; i < 64; i++) {
     const n = NODES[i];
     const [x, y] = getPos(n.bits);
     const isMatch = matches(n);
     const isHovered = hovered === i;
+    const count = heatmapMode ? (coverage[n.bits] || 0) : 0;
 
-    const r = isHovered ? 9 : isMatch ? 8 : 5;
-    const color = isMatch ? "#f85149" : CA_COLORS[n.caClass];
+    let r, color;
+    if (heatmapMode) {
+      r = isHovered ? 11 : isMatch ? 10 : Math.max(3, 5 + Math.round(count / maxCount * 7));
+      color = isMatch ? "#f85149" : heatColor(count, maxCount);
+    } else {
+      r = isHovered ? 9 : isMatch ? 8 : 5;
+      color = isMatch ? "#f85149" : CA_COLORS[n.caClass];
+    }
 
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI*2);
@@ -200,7 +304,16 @@ function draw() {
       ctx.stroke();
     }
 
-    // Label for hovered or matched
+    // Count label in heatmap mode for non-empty vertices
+    if (heatmapMode && count > 0 && !isHovered) {
+      ctx.font = "bold 9px monospace";
+      ctx.fillStyle = "#e6edf3";
+      ctx.textAlign = "center";
+      ctx.fillText(count, x, y + 3);
+      ctx.textAlign = "left";
+    }
+
+    // Bit-string label for hovered or matched
     if (isHovered || isMatch) {
       ctx.font = "bold 10px monospace";
       ctx.fillStyle = "#e6edf3";
@@ -238,10 +351,15 @@ canvas.addEventListener("mousemove", (e) => {
   if (idx >= 0) {
     const n = NODES[idx];
     const [x, y] = getPos(n.bits);
+    const cnt = coverage[n.bits] || 0;
+    const heatLine = heatmapMode
+      ? `<div class="ca" style="color:#f0883e">Записей: ${cnt}${cnt === 0 ? " (пусто)" : ""}</div>`
+      : "";
     tooltip.innerHTML = `
       <div class="q6">${n.bits}</div>
       <div class="label">${n.label}</div>
       <div class="ca">CA Class ${n.caClass} · Hex #${n.hexId}</div>
+      ${heatLine}
       <div class="desc">Хэмминг-соседи: ${
         [0,1,2,3,4,5].map(b => {
           const f = n.bits.split(""); f[b] = f[b]==="0"?"1":"0";

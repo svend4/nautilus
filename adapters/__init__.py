@@ -8,6 +8,9 @@ from .infosystems import InfoSystemsAdapter
 from .ai_agents import AIAgentsAdapter
 from .auto import AutoAdapter
 from .obsidian import ObsidianAdapter
+from .arxiv import ArxivAdapter
+from .github_topic import GitHubTopicAdapter
+from .jsonl import JSONLAdapter
 
 __all__ = [
     "BaseAdapter", "PortalEntry", "fuzzy_match",
@@ -15,4 +18,5 @@ __all__ = [
     "Data2Adapter", "Data7Adapter",
     "InfoSystemsAdapter", "AIAgentsAdapter",
     "AutoAdapter", "ObsidianAdapter",
+    "ArxivAdapter", "GitHubTopicAdapter", "JSONLAdapter",
 ]
