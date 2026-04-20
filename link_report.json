@@ -1,0 +1,60 @@
+Собираем все записи... 216 записей
+{
+  "total_entries": 216,
+  "total_links": 317,
+  "valid_links": 317,
+  "broken": [],
+  "errors": 0,
+  "warnings": 0,
+  "by_adapter": {
+    "infosystems": {
+      "valid": 10,
+      "broken": []
+    },
+    "graphrag": {
+      "valid": 21,
+      "broken": []
+    },
+    "pro2": {
+      "valid": 87,
+      "broken": []
+    },
+    "ai_agents": {
+      "valid": 11,
+      "broken": []
+    },
+    "daten22": {
+      "valid": 12,
+      "broken": []
+    },
+    "data7": {
+      "valid": 8,
+      "broken": []
+    },
+    "meta": {
+      "valid": 76,
+      "broken": []
+    },
+    "data2": {
+      "valid": 35,
+      "broken": []
+    },
+    "continuum": {
+      "valid": 17,
+      "broken": []
+    },
+    "ai_research": {
+      "valid": 22,
+      "broken": []
+    },
+    "info1": {
+      "valid": 12,
+      "broken": []
+    },
+    "legal": {
+      "valid": 6,
+      "broken": []
+    }
+  },
+  "ok": true
+}

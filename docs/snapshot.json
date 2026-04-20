@@ -1,0 +1,4034 @@
+{
+  "generated_at": "2026-04-20T04:10:43Z",
+  "total_entries": 152,
+  "total_cross_links": 136,
+  "adapters": {
+    "info1": {
+      "total": 11,
+      "real": 0,
+      "fallback": 11,
+      "q6": 11
+    },
+    "pro2": {
+      "total": 46,
+      "real": 0,
+      "fallback": 46,
+      "q6": 33
+    },
+    "meta": {
+      "total": 11,
+      "real": 0,
+      "fallback": 11,
+      "q6": 4
+    },
+    "data2": {
+      "total": 10,
+      "real": 7,
+      "fallback": 3,
+      "q6": 10
+    },
+    "data7": {
+      "total": 4,
+      "real": 4,
+      "fallback": 0,
+      "q6": 4
+    },
+    "infosystems": {
+      "total": 3,
+      "real": 3,
+      "fallback": 0,
+      "q6": 3
+    },
+    "ai_agents": {
+      "total": 5,
+      "real": 5,
+      "fallback": 0,
+      "q6": 5
+    },
+    "graphrag": {
+      "total": 4,
+      "real": 2,
+      "fallback": 2,
+      "q6": 4
+    },
+    "daten22": {
+      "total": 2,
+      "real": 1,
+      "fallback": 1,
+      "q6": 2
+    },
+    "legal": {
+      "total": 3,
+      "real": 2,
+      "fallback": 1,
+      "q6": 3
+    },
+    "continuum": {
+      "total": 2,
+      "real": 1,
+      "fallback": 1,
+      "q6": 2
+    },
+    "ai_research": {
+      "total": 4,
+      "real": 2,
+      "fallback": 2,
+      "q6": 4
+    },
+    "conv": {
+      "total": 47,
+      "real": 47,
+      "fallback": 0,
+      "q6": 47
+    }
+  },
+  "entries": [
+    {
+      "id": "ai_agents:bidir_agent",
+      "title": "Двунаправленный агент (bidir_train.py)",
+      "source": "svend4/pro2",
+      "format_type": "agent_pattern",
+      "content": "Forward loop: KnowledgeGraph → PageRank → отбор концептов → train batch.\nBackward loop: generate → filter → evaluate → update graph.\nЦикл: граф направляет обучение, обучение обогащает граф.\nРеализует 'недостающую петлю' из data7/knowledge_transformer.py.",
+      "metadata": {
+        "file": "bidir_train.py",
+        "loops": [
+          "forward",
+          "backward"
+        ],
+        "agent_type": "bidirectional",
+        "q6": "101010",
+        "alpha": 1
+      },
+      "links": [
+        "pro2:bidir",
+        "data7:missing_loop",
+        "infosystems:knowledge_graph"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "ai_agents:generator",
+      "title": "AdvancedGenerator — 5 стратегий генерации",
+      "source": "svend4/pro2",
+      "format_type": "agent_pattern",
+      "content": "5 стратегий генерации текста:\n1. greedy — argmax (быстро, детерминированно)\n2. nucleus — top-p sampling (разнообразие)\n3. beam — beam search (оптимальность)\n4. speculative — draft + verify (скорость)\n5. dynamic_temp — адаптивная температура (по энтропии)\nКаждая стратегия = поведенческий режим агента.",
+      "metadata": {
+        "file": "inference/bridge_inference.py",
+        "class": "AdvancedGenerator",
+        "strategies": 5,
+        "q6": "010101",
+        "alpha": 0
+      },
+      "links": [
+        "pro2:generate",
+        "pro2:speculative"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "ai_agents:hmoe_curriculum",
+      "title": "HMoE Curriculum — 5-фазное обучение экспертов",
+      "source": "svend4/pro2",
+      "format_type": "agent_pattern",
+      "content": "Curriculum обучения иерархических экспертов:\nPhase 1: CONCRETE experts only (GEO, HYDRO).\nPhase 2: + DYNAMIC (AERO, PYRO).\nPhase 3: + ABSTRACT (COSMO, NOOS).\nPhase 4: Unfreeze router, joint training.\nPhase 5: Fine-tune all.\nПрогрессивное раскрытие сложности = мета-обучение.",
+      "metadata": {
+        "file": "train_hmoe_curriculum.py",
+        "phases": 5,
+        "agent_type": "curriculum",
+        "q6": "110001",
+        "alpha": 1
+      },
+      "links": [
+        "pro2:hmoe",
+        "pro2:domain_routing"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "ai_agents:nautilus_hierarchy",
+      "title": "Nautilus — 7-камерная иерархия модулей",
+      "source": "svend4/pro2",
+      "format_type": "agent_pattern",
+      "content": "NautilusHierarchy: 7 камер от микро до макро.\nПрогрессивная активация (NautilusScheduler): камеры включаются последовательно по мере обучения.\nEntropy-triggered SYNTH: при высокой неопределённости включается синтезирующий модуль.\nАрхитектура = агент с модульным вниманием.",
+      "metadata": {
+        "file": "geometry/nautilus.py",
+        "chambers": 7,
+        "agent_type": "hierarchical",
+        "q6": "111111",
+        "alpha": 3
+      },
+      "links": [
+        "pro2:nautilus",
+        "pro2:six_sources"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "ai_agents:self_train",
+      "title": "3-стадийное самообучение (self_train.py)",
+      "source": "svend4/pro2",
+      "format_type": "agent_pattern",
+      "content": "Агент самообучения в 3 стадии:\nStage 0 (Q6 topology): фиксированный квантизатор, обучение base model.\nStage 1 (RAG-buffer): модель генерирует, буфер фильтрует, переобучение.\nStage 2 (filtered wild): обучение на отфильтрованных внешних данных.\nКаждая стадия использует curriculum с прогрессивным усложнением.",
+      "metadata": {
+        "file": "self_train.py",
+        "stages": 3,
+        "agent_type": "self-improving",
+        "q6": "000001",
+        "alpha": -3
+      },
+      "links": [
+        "pro2:self_train",
+        "data7:theory:transformation"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "ai_research:agentic_workflow",
+      "title": "Agentic Workflow — паттерны оркестрации",
+      "source": "svend4/info100",
+      "format_type": "concept",
+      "content": "4 базовых паттерна (Anthropic, 2024): (1) Prompt Chaining — шаги последовательно, (2) Routing — выбор ветки, (3) Parallelization — параллельные субзадачи, (4) Orchestrator-Subagents — иерархия (= Nautilus). Сложные системы = комбинация паттернов.",
+      "metadata": {
+        "q6": "110100",
+        "tags": [
+          "workflow",
+          "orchestration",
+          "anthropic",
+          "patterns",
+          "agentic"
+        ]
+      },
+      "links": [
+        "ai_research:mas",
+        "ai_agents:self_train",
+        "continuum:dag"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "ai_research:mas",
+      "title": "Multi-Agent Systems (MAS) — классификация",
+      "source": "svend4/info4",
+      "format_type": "concept",
+      "content": "Три архитектуры MAS: (1) Hierarchical — мета-агент координирует суб-агентов (= Nautilus Portal pattern), (2) Peer-to-peer — агенты равноправны, договариваются, (3) Market-based — агенты конкурируют за задачи через торги. Nautilus использует Hierarchical + Market (relevance ranking).",
+      "metadata": {
+        "q6": "110100",
+        "tags": [
+          "mas",
+          "multi-agent",
+          "hierarchical",
+          "peer-to-peer",
+          "market"
+        ],
+        "sub_repo": "info4"
+      },
+      "links": [
+        "ai_research:react",
+        "ai_agents:self_train"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "ai_research:nautilus_pattern",
+      "title": "Nautilus как реализация агентного паттерна",
+      "source": "svend4/info100",
+      "format_type": "concept",
+      "content": "Nautilus Portal реализует Orchestrator-Subagents паттерн (Anthropic 2024): NautilusPortal = Orchestrator, BaseAdapter = Subagent contract, fetch() = subagent call, PortalEntry = message protocol. Дополнительно: Q6-routing (семантическая маршрутизация), BridgeRegistry (typed cross-agent links), consensus (voting). Уникальность: явная семантическая координата каждого агента.",
+      "metadata": {
+        "q6": "110100",
+        "tags": [
+          "nautilus",
+          "orchestrator",
+          "subagents",
+          "q6",
+          "unique"
+        ]
+      },
+      "links": [
+        "ai_research:agentic_workflow",
+        "ai_research:mas"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "ai_research:tool_use",
+      "title": "Tool Use — вызов внешних инструментов",
+      "source": "svend4/info4",
+      "format_type": "concept",
+      "content": "Паттерн: LLM получает список инструментов (function signatures), решает какой вызвать, получает результат, продолжает рассуждение. Виды: calculator, web_search, code_exec, API_call, database_query. Ключевые вопросы: выбор инструмента, обработка ошибок, retry-логика.",
+      "metadata": {
+        "q6": "110100",
+        "tags": [
+          "tools",
+          "function-calling",
+          "llm",
+          "api"
+        ],
+        "sub_repo": "info4"
+      },
+      "links": [
+        "ai_research:react",
+        "ai_research:function_calling"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "continuum:core",
+      "title": "Continuum — детерминированный AI-рантайм",
+      "source": "svend4/meta1",
+      "format_type": "concept",
+      "content": "Continuum — архитектура AI-рантайма с детерминированным выполнением: каждый шаг (step) полностью воспроизводим при одинаковых входных данных. Устраняет недетерминизм LLM через explicit state machine + snapshot/restore. Ключевое отличие от AutoGen/CrewAI: нет скрытого состояния.",
+      "metadata": {
+        "q6": "110100"
+      },
+      "links": [
+        "continuum:step",
+        "continuum:state_machine",
+        "ai_agents:self_train"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "continuum:step",
+      "title": "Step — атомарная единица выполнения",
+      "source": "svend4/meta1",
+      "format_type": "concept",
+      "content": "Step = (input_state, action, output_state, metadata). Каждый step имеет: явный тип (LLM_CALL | TOOL_USE | BRANCH | MERGE), входной контекст, выходной контекст, метаданные (timestamp, cost, tokens). Шаги формируют DAG выполнения, не линейную цепочку.",
+      "metadata": {
+        "q6": "110100",
+        "tags": [
+          "step",
+          "atomic",
+          "dag",
+          "execution"
+        ]
+      },
+      "links": [
+        "continuum:core",
+        "continuum:dag",
+        "daten22:planner"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ADAPTER_ROADMAP:0:Карта_адаптеров__потенциальные_источники",
+      "title": "Карта адаптеров: потенциальные источники для Nautilus",
+      "source": "docs/ADAPTER_ROADMAP",
+      "format_type": "conversation",
+      "content": "**Источник:** анализ 70 репозиториев svend4 (docs/sessions/repos_analysis.md)  \n**Дата:** 2026-04-19  \n\nРепозитории распределены по 4 кластерам. Те, что уже имеют адаптер, отмечены ✅.\nПриоритет для нового адаптера определяется: уникальностью данных × Q6-покрытием × доступностью.\n\n---",
+      "metadata": {
+        "q6": "100101",
+        "file": "ADAPTER_ROADMAP",
+        "section": 0
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ADAPTER_ROADMAP:10:Кластер_4__Archives___Experiments___8_ре",
+      "title": "Кластер 4: Archives & Experiments (≈8 репо)",
+      "source": "docs/ADAPTER_ROADMAP",
+      "format_type": "conversation",
+      "content": "Тема: корпуса, теория движения, MMORPG-симулятор, энциклопедии.  \nQ6-координата кластера: **`010100`** (исследование / теория)\n\n| Репо | Статус | Данные | Приоритет |\n|------|--------|--------|-----------|\n| `data2` ⭐1 | Public | ЕТД Крюкова, робототехника | ✅ адаптер есть |\n| `data7` ⭐1 | Public | Диссертации, энциклопедии, MMORPG | ✅ адаптер есть |\n| `data70` | Public | ChatGPT corpus archive | 🟡 средний — JSONLAdapter |\n| `info` | Public | Базовая информационная ОС | 🟢 низкий — архивировать |",
+      "metadata": {
+        "q6": "010100",
+        "file": "ADAPTER_ROADMAP",
+        "section": 10
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ADAPTER_ROADMAP:11:Сводная_таблица_приоритетов",
+      "title": "Сводная таблица приоритетов",
+      "source": "docs/ADAPTER_ROADMAP",
+      "format_type": "conversation",
+      "content": "| Приоритет | Репо | Усилие | Результат |\n|-----------|------|--------|-----------|\n| 🔴 1 | `infom` / GraphRAG | 3-4ч | Новый Q6-кластер `110001`, покрытие +5% |\n| 🔴 2 | `daten22` (FTS4-RAG) | 2-3ч | JSONLAdapter или новый адаптер |\n| 🔴 3 | `soz150` / Writing OS | 4-6ч | Первый юридический/гуманитарный адаптер |\n| 🟡 4 | `meta1` / Continuum | 3-4ч | Уникальная ниша, ArxivAdapter-стиль |\n| 🟡 5 | `info3/4/30/100` | 2-3ч | Объединить в один `ai_research` адаптер |\n| 🟢 6 | `data70` | 30мин | `JSONLAd",
+      "metadata": {
+        "q6": "100101",
+        "file": "ADAPTER_ROADMAP",
+        "section": 11
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ADAPTER_ROADMAP:1:Кластер_1__Legal___Sozialrecht__11_репо_",
+      "title": "Кластер 1: Legal / Sozialrecht (11 репо)",
+      "source": "docs/ADAPTER_ROADMAP",
+      "format_type": "conversation",
+      "content": "Тема: социальное право, юридические документы, бюджеты, права граждан.  \nQ6-координата кластера: **`100010`** (анализ / правила / право)\n\n| Репо | Статус | Данные | Приоритет адаптера |\n|------|--------|--------|--------------------|\n| `soz150` / Writing OS | Public | 300+ инструментов, JavaScript | 🔴 высокий — уникальный |\n| `info50` | Public | Персональный бюджет | 🟡 средний |\n| `soz120`, `soz50`, `soz7`, `soz140` | Private | Юридические документы | 🟢 низкий — private |\n| `soz4`, `soz5`, `soz1",
+      "metadata": {
+        "q6": "100101",
+        "file": "ADAPTER_ROADMAP",
+        "section": 1
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ADAPTER_ROADMAP:2:adapters_legal_py___читает_soz150_через_",
+      "title": "adapters/legal.py — читает soz150 через GitHub API или локальные файлы",
+      "source": "docs/ADAPTER_ROADMAP",
+      "format_type": "conversation",
+      "content": "class LegalAdapter(BaseAdapter):\n    name = \"legal\"\n    # format_type = \"document\"\n    # Q6: документы по закону → область 100010-100011\n    # bridges: {\"info1\": \"α-уровень ↔ степень сложности закона\"}\n```\n\n**Humanites Extension:** этот кластер требует дополнительных metadata-ключей:\n`jurisdiction`, `valid_from`, `language`, `gdpr_contains_personal_data`.\n\n---",
+      "metadata": {
+        "q6": "110001",
+        "file": "ADAPTER_ROADMAP",
+        "section": 2
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ADAPTER_ROADMAP:4:Кластер_2__Information_OS___Rationalisat",
+      "title": "Кластер 2: Information OS / Rationalisation (≈20 репо) (2)",
+      "source": "docs/ADAPTER_ROADMAP",
+      "format_type": "conversation",
+      "content": "| Репо | Статус | Данные | Приоритет |\n|------|--------|--------|-----------|\n| `daten` ⭐1 | Public | Internet Function OS (Python) | 🔴 высокий — flagship |\n| `daten4` ⭐1 | Public | Dynamic planner с AI | 🔴 высокий |\n| `daten22` | Public | SQLite FTS4 RAG + 16 архетипов | 🔴 высокий — уникально |\n| `universal-file-storage-mcp` ⭐1 | Public | MCP Registry, TypeScript | 🔴 высокий — shipping-ready |\n| `daten1`, `daten5`, `daten7`, `daten12`, `daten14` | Public | Дубли / фрагменты | 🟢 низкий |\n| `date",
+      "metadata": {
+        "q6": "100101",
+        "file": "ADAPTER_ROADMAP",
+        "section": 4
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ADAPTER_ROADMAP:5:adapters_infoOS_py___читает_daten_daten4",
+      "title": "adapters/infoOS.py — читает daten/daten4/daten22",
+      "source": "docs/ADAPTER_ROADMAP",
+      "format_type": "conversation",
+      "content": "class InfoOSAdapter(BaseAdapter):\n    name = \"infoOS\"\n    # format_type = \"concept\"\n    # Q6: рационализация / архитектура → 101010, 101011\n    # bridges: {\"pro2\": \"Function Registry ↔ Q6-граф концептов\"}\n```\n\n---",
+      "metadata": {
+        "q6": "101010",
+        "file": "ADAPTER_ROADMAP",
+        "section": 5
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ADAPTER_ROADMAP:6:Кластер_3__AI___Agents___Novel_Architect",
+      "title": "Кластер 3: AI / Agents / Novel Architectures (≈13 репо)",
+      "source": "docs/ADAPTER_ROADMAP",
+      "format_type": "conversation",
+      "content": "Тема: AI-агенты, нейросетевые архитектуры, граф-RAG, локальный inference.  \nQ6-координата кластера: **`110100`** (мультиагент / оркестрация)",
+      "metadata": {
+        "q6": "110100",
+        "file": "ADAPTER_ROADMAP",
+        "section": 6
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ADAPTER_ROADMAP:7:Кластер_3__AI___Agents___Novel_Architect",
+      "title": "Кластер 3: AI / Agents / Novel Architectures (≈13 репо) (2)",
+      "source": "docs/ADAPTER_ROADMAP",
+      "format_type": "conversation",
+      "content": "| Репо | Статус | Данные | Приоритет |\n|------|--------|--------|-----------|\n| `pro2` ⭐1 | Public | Q6-граф, YiJing-Transformer | ✅ адаптер есть |\n| `meta` ⭐1 | Public | 256 CA-правил, гексаграммы | ✅ адаптер есть |\n| `infom` / GraphRAG | Public | Graph RAG реализация | 🔴 высокий — горячая тема |\n| `meta1` / Continuum | Public | Детерминированный AI рантайм | 🔴 высокий — уникально |\n| `in4` | Public | Home AI clusters / prima.cpp | 🟡 средний |\n| `in4n` | Public | Вариант in4 | 🟡 средний |\n| `in",
+      "metadata": {
+        "q6": "101010",
+        "file": "ADAPTER_ROADMAP",
+        "section": 7
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ADAPTER_ROADMAP:8:Кластер_3__AI___Agents___Novel_Architect",
+      "title": "Кластер 3: AI / Agents / Novel Architectures (≈13 репо) (3)",
+      "source": "docs/ADAPTER_ROADMAP",
+      "format_type": "conversation",
+      "content": "**Что нужно для адаптера `graphrag`:**\n```python",
+      "metadata": {
+        "q6": "101010",
+        "file": "ADAPTER_ROADMAP",
+        "section": 8
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ADAPTER_ROADMAP:9:adapters_graphrag_py___читает_infom___Gr",
+      "title": "adapters/graphrag.py — читает infom / GraphRAG",
+      "source": "docs/ADAPTER_ROADMAP",
+      "format_type": "conversation",
+      "content": "class GraphRAGAdapter(BaseAdapter):\n    name = \"graphrag\"\n    # format_type = \"concept\"\n    # Q6: граф-знаний → 110001 (семантика / онтология)\n    # bridges: {\"data7\": \"graph traversal ↔ K₀→K∞\",\n    #           \"pro2\": \"GraphRAG nodes ↔ Q6 vertices\"}\n```\n\n---",
+      "metadata": {
+        "q6": "010100",
+        "file": "ADAPTER_ROADMAP",
+        "section": 9
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:AGENT_ARCHITECTURE_ANALOGY:10:Уровень_3___Специалисты_и_их_домены",
+      "title": "Уровень 3 — Специалисты и их домены",
+      "source": "docs/AGENT_ARCHITECTURE_ANALOGY",
+      "format_type": "conversation",
+      "content": "| Адаптер | Домен знаний | Q6 | Что умеет |\n|---------|-------------|-----|-----------|\n| `Info1Adapter` | Теория информации, уровни α | `101010` | Иерархические концепты |\n| `Pro2Adapter` | Q6-граф, I-Цзин, YiJing-трансформер | `110100` | Семантические связи |\n| `MetaAdapter` | 256 CA-правил, гексаграммы | `110001` | Паттерн-матчинг |\n| `Data2Adapter` | ЕТД Крюкова, робототехника | `010100` | Формальные теории |\n| `Data7Adapter` | Диссертации, энциклопедии, MMORPG | `010100` | Архивный поиск |\n",
+      "metadata": {
+        "q6": "110100",
+        "file": "AGENT_ARCHITECTURE_ANALOGY",
+        "section": 10
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:AGENT_ARCHITECTURE_ANALOGY:13:adapters_base_py_14",
+      "title": "adapters/base.py:14",
+      "source": "docs/AGENT_ARCHITECTURE_ANALOGY",
+      "format_type": "conversation",
+      "content": "@dataclass\nclass PortalEntry:\n    id: str               # \"pro2:hexagram_42\" — уникальный ID в пространстве портала\n    title: str            # человекочитаемый заголовок\n    source: str           # репо-источник\n    format_type: str      # \"document\" | \"concept\" | \"rule\"\n    content: str          # полный текст\n    metadata: dict        # q6, tags, language, jurisdiction, ...\n    links: list[str]      # перекрёстные ссылки на другие PortalEntry\n    is_fallback: bool     # True = нет реальных да",
+      "metadata": {
+        "q6": "010100",
+        "file": "AGENT_ARCHITECTURE_ANALOGY",
+        "section": 13
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:AGENT_ARCHITECTURE_ANALOGY:1:Прямое_отображение__теория___код",
+      "title": "Прямое отображение: теория → код",
+      "source": "docs/AGENT_ARCHITECTURE_ANALOGY",
+      "format_type": "conversation",
+      "content": "| Концепт из ai_distributed_teams | Nautilus-компонент | Файл |\n|----------------------------------|-------------------|------|\n| Мета-агент-координатор | `NautilusPortal` | `portal.py:80` |\n| Контракт суб-агента | `BaseAdapter` (абстрактный класс) | `adapters/base.py:38` |\n| Суб-агент, прикреплённый к специалисту | `Info1Adapter`, `Pro2Adapter`, `MetaAdapter`, ... | `adapters/*.py` |\n| Специалист / домен знаний | Репозитории `info1`, `pro2`, `meta`, `data2`, `data7` | `nautilus.json` |\n| Станда",
+      "metadata": {
+        "q6": "110100",
+        "file": "AGENT_ARCHITECTURE_ANALOGY",
+        "section": 1
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:AGENT_ARCHITECTURE_ANALOGY:25:Что_пока_не_реализовано_из_теории",
+      "title": "Что пока не реализовано из теории",
+      "source": "docs/AGENT_ARCHITECTURE_ANALOGY",
+      "format_type": "conversation",
+      "content": "| Теоретический концепт | Статус в Nautilus | Следующий шаг |\n|-----------------------|-------------------|---------------|\n| Переключение agent.mode (ментор ↔ критик) | Только через `is_fallback` | Добавить `phase` parameter в `fetch()` |\n| Межагентная коммуникация (суб-агенты говорят друг с другом) | Только через `links` в PortalEntry | Annotation system (см. `double_triangle_foundation.md:292`) |\n| Персистентная память проекта | Нет | `snapshots/` + adapter для истории запросов |\n| Branching ",
+      "metadata": {
+        "q6": "010101",
+        "file": "AGENT_ARCHITECTURE_ANALOGY",
+        "section": 25
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:AGENT_ARCHITECTURE_ANALOGY:26:Вывод",
+      "title": "Вывод",
+      "source": "docs/AGENT_ARCHITECTURE_ANALOGY",
+      "format_type": "conversation",
+      "content": "Nautilus реализует **уровни 1-2** из описанной теории:\n- Мета-координатор (`NautilusPortal`) — работает.\n- Суб-агенты с контрактом (`BaseAdapter`) — работают.\n- Конкурс и консенсус — работают.\n- Q6-навигация (семантическая маршрутизация) — уникальная черта, не описанная в стандартных\n  agent-frameworks.\n\n**Уровни 3-4** (реальная межагентная коммуникация, branching memory, phase-aware режимы)\nтребуют отдельной реализации. Они описаны в `double_triangle_foundation.md` и являются\nестественным продо",
+      "metadata": {
+        "q6": "010101",
+        "file": "AGENT_ARCHITECTURE_ANALOGY",
+        "section": 26
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:AGENT_ARCHITECTURE_ANALOGY:27:Вывод__2_",
+      "title": "Вывод (2)",
+      "source": "docs/AGENT_ARCHITECTURE_ANALOGY",
+      "format_type": "conversation",
+      "content": "*Смежные документы:*\n- `docs/sessions/ai_distributed_teams.md` — исходная теория агентной иерархии (Q6=110100)\n- `docs/sessions/double_triangle_foundation.md` — Double-Triangle и features для уровней 3-4 (Q6=110001)\n- `PORTAL-PROTOCOL.md` §4, §6 — формальная спецификация BaseAdapter и консенсус-алгоритма\n- `docs/ADAPTER_ROADMAP.md` — следующие адаптеры-специалисты для добавления",
+      "metadata": {
+        "q6": "010100",
+        "file": "AGENT_ARCHITECTURE_ANALOGY",
+        "section": 27
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:AGENT_ARCHITECTURE_ANALOGY:4:portal_py_80",
+      "title": "portal.py:80",
+      "source": "docs/AGENT_ARCHITECTURE_ANALOGY",
+      "format_type": "conversation",
+      "content": "class NautilusPortal:\n    def __init__(self) -> None:\n        self.adapters = {          # реестр суб-агентов\n            \"info1\":  Info1Adapter(),\n            \"pro2\":   Pro2Adapter(),\n            \"meta\":   MetaAdapter(),\n            \"data2\":  Data2Adapter(),\n            \"data7\":  Data7Adapter(),\n            ...\n        }\n\ndef query(self, concept: str) -> PortalResult:\n        all_entries = []\n        for adapter in self.adapters.values():\n            all_entries.extend(adapter.fetch(concept))  ",
+      "metadata": {
+        "q6": "110001",
+        "file": "AGENT_ARCHITECTURE_ANALOGY",
+        "section": 4
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ANNOTATION_SYSTEM:5:REST_API",
+      "title": "REST API",
+      "source": "docs/ANNOTATION_SYSTEM",
+      "format_type": "conversation",
+      "content": "```bash\nGET  /api/annotations?target=pro2:bidir           все аннотации к записи\nGET  /api/annotations?target=...&vis=team         фильтр по видимости\nPOST /api/annotations                              добавить аннотацию\n     {\"target\":\"pro2:bidir\",\"author\":\"svend4\",\"content\":\"...\"}\nGET  /api/flags                                   все Protocol-3 флаги\nGET  /api/flags?severity=error                    только критические\n```\n\n---",
+      "metadata": {
+        "q6": "000001",
+        "file": "ANNOTATION_SYSTEM",
+        "section": 5
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:BRIDGES_FORMALIZATION:19:Обновл_нный_паспорт_pro2__пример_миграци",
+      "title": "Обновлённый паспорт pro2 (пример миграции)",
+      "source": "docs/BRIDGES_FORMALIZATION",
+      "format_type": "conversation",
+      "content": "```json\n{\n  \"repo\": \"svend4/pro2\",\n  \"format\": \"pro2\",\n  \"native_unit\": \"Q6-концепт с 6-битной координатой\",\n  \"compatibility\": 3,\n  \"bridges\": [\n    {\n      \"target\": \"meta\",\n      \"direction\": \"↔\",\n      \"mapping\": \"Q6-bits [b0..b5] ↔ hexagram number (1..64)\",\n      \"confidence\": 0.95,\n      \"type\": \"isomorphism\"\n    },\n    {\n      \"target\": \"info1\",\n      \"direction\": \"→\",\n      \"mapping\": \"concept depth ↔ α-level (-4..+4)\",\n      \"confidence\": 0.7,\n      \"type\": \"projection\"\n    },\n    {\n   ",
+      "metadata": {
+        "q6": "010100",
+        "file": "BRIDGES_FORMALIZATION",
+        "section": 19
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:BRIDGES_FORMALIZATION:21:Будущая_реализация_Protocol_3_для_bridge",
+      "title": "Будущая реализация Protocol 3 для bridges",
+      "source": "docs/BRIDGES_FORMALIZATION",
+      "format_type": "conversation",
+      "content": "@dataclass\nclass BridgeConflict:\n    entry_a: str    # \"pro2:hexagram_42\"\n    entry_b: str    # \"meta:rule_110100\"\n    reason: str     # \"Q6 coordinate mismatch: 110100 vs 110001\"\n    severity: str   # \"info\" | \"warning\" | \"error\"\n```\n\nЭто сигнал для человека: мосты «согласны» или «конфликтуют» по данному концепту.\n\n---",
+      "metadata": {
+        "q6": "010101",
+        "file": "BRIDGES_FORMALIZATION",
+        "section": 21
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:BRIDGES_FORMALIZATION:23:Дорожная_карта__2_",
+      "title": "Дорожная карта (2)",
+      "source": "docs/BRIDGES_FORMALIZATION",
+      "format_type": "conversation",
+      "content": "*Смежные документы:*\n- `PORTAL-PROTOCOL.md §7.3` — текущее определение bridges (v1.1)\n- `docs/sessions/double_triangle_foundation.md` — источник Double-Triangle модели (Q6=110001)\n- `docs/AGENT_ARCHITECTURE_ANALOGY.md` — как bridges встраиваются в агентную иерархию\n- `passports/pro2.md` — пример существующего паспорта с bridges",
+      "metadata": {
+        "q6": "101010",
+        "file": "BRIDGES_FORMALIZATION",
+        "section": 23
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:BRIDGES_FORMALIZATION:4:Мосты_к_другим_репо_________passports_pr",
+      "title": "Мосты к другим репо       ← passports/pro2.md",
+      "source": "docs/BRIDGES_FORMALIZATION",
+      "format_type": "conversation",
+      "content": "| Цель  | Связь |\n|-------|-------|\n| meta  | Q6-биты `[b0..b5]` ↔ номер гексаграммы |\n| info1 | глубина концепта ↔ α-уровень |\n| data7 | bidir_train ↔ K₀→K₁→K₂ цикл |\n| data2 | scarab_algorithm ↔ Q6-траектория |\n```\n\nПроблемы текущего подхода:\n1. Нет машиночитаемого формата — только markdown-таблица.\n2. Нет типизации (bidirectional? directed? approximate?).\n3. Нет оценки надёжности (сильная связь или гипотеза?).\n4. Нет операций над bridges (compose, invert, traverse).\n\n---",
+      "metadata": {
+        "q6": "010101",
+        "file": "BRIDGES_FORMALIZATION",
+        "section": 4
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:BRIDGES_FORMALIZATION:5:Структура_одного_Bridge",
+      "title": "Структура одного Bridge",
+      "source": "docs/BRIDGES_FORMALIZATION",
+      "format_type": "conversation",
+      "content": "```json\n{\n  \"target\": \"meta\",\n  \"direction\": \"bidirectional\",\n  \"mapping\": \"Q6-bits [b0..b5] ↔ hexagram number (1..64)\",\n  \"confidence\": 0.95,\n  \"type\": \"isomorphism\",\n  \"example\": {\n    \"from\": {\"q6\": \"110100\", \"concept\": \"оркестрация\"},\n    \"to\":   {\"hexagram\": 42, \"name\": \"Увеличение\"}\n  }\n}\n```",
+      "metadata": {
+        "q6": "010100",
+        "file": "BRIDGES_FORMALIZATION",
+        "section": 5
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:BRIDGES_FORMALIZATION:7:Типы_отображений___type__",
+      "title": "Типы отображений (`type`)",
+      "source": "docs/BRIDGES_FORMALIZATION",
+      "format_type": "conversation",
+      "content": "| Тип | Описание | Пример |\n|-----|----------|--------|\n| `isomorphism` | Взаимно однозначное соответствие | Q6 ↔ гексаграмма |\n| `projection` | Lossy: A → часть B | α-уровень → Q6 первые 3 бита |\n| `embedding` | B полностью входит в A | soz150-инструменты ⊂ info1-иерархия |\n| `analogy` | Структурная аналогия без изоморфизма | CA-правила ~ правовые нормы |\n| `derivation` | B вычисляется из A детерминировано | bidir_train → K₀→K∞ |\n\n---",
+      "metadata": {
+        "q6": "000000",
+        "file": "BRIDGES_FORMALIZATION",
+        "section": 7
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:BRIDGES_FORMALIZATION:9:adapters_base_py_14___текущий_PortalEntr",
+      "title": "adapters/base.py:14 — текущий PortalEntry",
+      "source": "docs/BRIDGES_FORMALIZATION",
+      "format_type": "conversation",
+      "content": "@dataclass\nclass PortalEntry:\n    id: str           # \"pro2:hexagram_42\"\n    links: list[str]  # [\"meta:hexagram_42\", \"info1:concept_orchestration\"]\n    ...\n```\n\n**Правило именования ссылок:** `{target_adapter}:{target_id}`.\n\nМета-координатор превращает это в граф:\n\n```python",
+      "metadata": {
+        "q6": "110100",
+        "file": "BRIDGES_FORMALIZATION",
+        "section": 9
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:SESSIONS_GUIDE:0:Руководство_по_работе_с_сессионными_доку",
+      "title": "Руководство по работе с сессионными документами",
+      "source": "docs/SESSIONS_GUIDE",
+      "format_type": "conversation",
+      "content": "Эта папка содержит **8 тематических документов**, автоматически извлечённых из\nбольшой Claude-сессии (42 обмена, ~1 МБ) с помощью `split_sessions.py`.\n\n---",
+      "metadata": {
+        "q6": "000001",
+        "file": "SESSIONS_GUIDE",
+        "section": 0
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:SESSIONS_GUIDE:10:portal_уже_содержит_sessions_адаптер__do",
+      "title": "portal уже содержит sessions-адаптер (docs/sessions/)",
+      "source": "docs/SESSIONS_GUIDE",
+      "format_type": "conversation",
+      "content": "result = portal.query(\"multi-agent orchestration\")\n\nprint(f\"Найдено: {len(result.entries)} записей из {len(result.sources)} источников\")\nfor e in result.entries[:5]:\n    print(f\"  [{e.metadata.get('q6','?')}]  {e.title}  ← {e.source}\")",
+      "metadata": {
+        "q6": "110100",
+        "file": "SESSIONS_GUIDE",
+        "section": 10
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:SESSIONS_GUIDE:1:Файлы_и_темы",
+      "title": "Файлы и темы",
+      "source": "docs/SESSIONS_GUIDE",
+      "format_type": "conversation",
+      "content": "| Файл | Тема | Обменов | Q6 |\n|------|------|--------:|-----|\n| `anthropic_vacancies.md` | 436 вакансий Anthropic в 16 кластерах | 1 | `100101` |\n| `profile_role_matching.md` | Маппинг профиля svend4 на роли Anthropic | 3 | `111110` |\n| `repos_analysis.md` | Анализ 70 GitHub-репозиториев, 4 кластера | 7 | `100101` |\n| `ai_distributed_teams.md` | AI-управляемые команды: Вариант C + MMORPG | 5 | `110100` |\n| `protocol_spec.md` | PORTAL-PROTOCOL.md v1.1 формальная спецификация | 5 | `010101` |\n| `",
+      "metadata": {
+        "q6": "100101",
+        "file": "SESSIONS_GUIDE",
+        "section": 1
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:SESSIONS_GUIDE:23:Q6_навигация_по_темам",
+      "title": "Q6-навигация по темам",
+      "source": "docs/SESSIONS_GUIDE",
+      "format_type": "conversation",
+      "content": "Используйте Q6-расстояние для поиска «соседних» тем:\n\n| Q6 | Тема сессии | Семантически близко к |\n|----|-------------|----------------------|\n| `110100` | AI-команды, агенты | `ai_agents` адаптер, bidir_train |\n| `101010` | Nautilus разработка | `data7`, архитектурные концепты |\n| `111110` | Маппинг профиля | стратегия, синтез, α+4 в info1 |\n| `100101` | Анализ / оценка | CA-класс IV (сложность), data2 |\n| `010101` | Спецификация протокола | pro2 Q6-граф, code-level |\n| `110001` | Double-Triang",
+      "metadata": {
+        "q6": "101010",
+        "file": "SESSIONS_GUIDE",
+        "section": 23
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:SESSIONS_GUIDE:2:Файлы_и_темы__2_",
+      "title": "Файлы и темы (2)",
+      "source": "docs/SESSIONS_GUIDE",
+      "format_type": "conversation",
+      "content": "---",
+      "metadata": {
+        "q6": "000000",
+        "file": "SESSIONS_GUIDE",
+        "section": 2
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:SESSIONS_GUIDE:6:Топ_10_результатов___JSON_вывод",
+      "title": "Топ-10 результатов + JSON-вывод",
+      "source": "docs/SESSIONS_GUIDE",
+      "format_type": "conversation",
+      "content": "python tfidf_search.py \"agent architecture\" --top 10 --json\n```\n\nРезультат включает:\n- `[0.XXX]` — релевантность (cosine similarity)\n- `Q6=XXXXXX` — тематическая координата раздела\n- ID источника: `conv:ai_distributed_teams:6:...`\n\n---",
+      "metadata": {
+        "q6": "101010",
+        "file": "SESSIONS_GUIDE",
+        "section": 6
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:SESSIONS_GUIDE:8:Поиск_в_сессионных_файлах",
+      "title": "Поиск в сессионных файлах",
+      "source": "docs/SESSIONS_GUIDE",
+      "format_type": "conversation",
+      "content": "sessions = ConversationAdapter(\"docs/sessions/\")\nresults = sessions.fetch(\"мета-агент команда\")\n\nfor r in results:\n    print(f\"[{r.metadata['q6']}]  {r.title}\")\n    print(f\"  Файл: {r.metadata['file']}\")\n    print(f\"  {r.content[:200]}\")\n    print()\n```\n\n---",
+      "metadata": {
+        "q6": "110100",
+        "file": "SESSIONS_GUIDE",
+        "section": 8
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:SESSIONS_GUIDE:9:Способ_3___Мультиадаптерный_запрос_через",
+      "title": "Способ 3 — Мультиадаптерный запрос через NautilusPortal",
+      "source": "docs/SESSIONS_GUIDE",
+      "format_type": "conversation",
+      "content": "Самый мощный вариант: **сравнивает сессионные данные с основной базой** знаний\n(pro2, info1, meta, data2, data7).\n\n```python\nfrom portal import NautilusPortal\n\nportal = NautilusPortal()",
+      "metadata": {
+        "q6": "110001",
+        "file": "SESSIONS_GUIDE",
+        "section": 9
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ai_distributed_teams:11:Ответ_по_существу",
+      "title": "Ответ по существу",
+      "source": "docs/ai_distributed_teams",
+      "format_type": "conversation",
+      "content": "Ваша идея с двухуровневой агентной архитектурой (мета-координатор + персональные кураторы-двойники) — это технически реализуемая и концептуально сильная модель. Более того, она **ближе к тому, как реально будет выглядеть AI-managed work в ближайшие 3-5 лет**, чем большинство существующих proof-of-concepts. Разберу её по слоям.",
+      "metadata": {
+        "q6": "101010",
+        "file": "ai_distributed_teams",
+        "section": 11
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ai_distributed_teams:13:Метафора_автозавода_и_где_она_ломается__",
+      "title": "Метафора автозавода и где она ломается (2)",
+      "source": "docs/ai_distributed_teams",
+      "format_type": "conversation",
+      "content": "**Эта часть модели — реалистична прямо сейчас**. Для задач типа «напиши функцию на PHP, которая делает X с заданным API contract» — да, агент может принимать N решений от N разработчиков, гонять тесты, принимать лучшее. Это уже работает в GitHub Copilot Workspace и Cursor Background Agents. Масштабировать до команды — вопрос инженерии.",
+      "metadata": {
+        "q6": "110001",
+        "file": "ai_distributed_teams",
+        "section": 13
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ai_distributed_teams:16:Спектр_задач__на_котором_эта_модель_масш",
+      "title": "Спектр задач, на котором эта модель масштабируется",
+      "source": "docs/ai_distributed_teams",
+      "format_type": "conversation",
+      "content": "Я бы разделил задачи на четыре уровня и показал, где работает что.\n\n**Уровень 1 — полностью формализуемые задачи**. Reimplement known algorithm, migrate database schema, fix specific bug with known repro, add authentication to existing API. Здесь ваша модель работает **идеально**. Мета-агент раздаёт задачи, суб-агенты проверяют результат против unit tests и specs, фрилансеры-исполнители взаимозаменяемы. Конвейерная метафора прямо переносится. Современные инструменты близки к этому: Devin AI, Cur",
+      "metadata": {
+        "q6": "110100",
+        "file": "ai_distributed_teams",
+        "section": 16
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ai_distributed_teams:17:Спектр_задач__на_котором_эта_модель_масш",
+      "title": "Спектр задач, на котором эта модель масштабируется (2)",
+      "source": "docs/ai_distributed_teams",
+      "format_type": "conversation",
+      "content": "**Уровень 2 — структурированные, но open-ended задачи**. Design new microservice with given business requirements, build new feature with multiple acceptable implementations, refactor legacy module. Здесь модель работает, но нужен **архитектурный надзор сверху**. Мета-агент не может сам решить, какую архитектуру выбрать, он должен консультироваться с senior-архитектором (человеком) или с сильной reasoning LLM. Суб-агенты играют роль code-review + testing, но не могут подменить design judgment.",
+      "metadata": {
+        "q6": "110100",
+        "file": "ai_distributed_teams",
+        "section": 17
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ai_distributed_teams:18:Спектр_задач__на_котором_эта_модель_масш",
+      "title": "Спектр задач, на котором эта модель масштабируется (3)",
+      "source": "docs/ai_distributed_teams",
+      "format_type": "conversation",
+      "content": "**Уровень 3 — креативные инженерные задачи**. New ML architecture, novel protocol design, R&D prototype. Здесь модель **радикально меняется**. Суб-агенты перестают быть «строгими демонами-критиками» и становятся **brainstorming partners**. Они **не могут судить** качество — они могут предлагать варианты, искать паттерны, делать literature review. Решение принимают люди, коллективно, и спонтанная коммуникация между ними важнее любой формальной координации.",
+      "metadata": {
+        "q6": "101010",
+        "file": "ai_distributed_teams",
+        "section": 18
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ai_distributed_teams:1:AI_управляемые_команды__тезис___MMORPG_в",
+      "title": "AI-управляемые команды: тезис + MMORPG-вариант (2)",
+      "source": "docs/ai_distributed_teams",
+      "format_type": "conversation",
+      "content": "# Консенсус с основной базой знаний:\n    portal.query(\"{концепт}\")   # сравнивает с info1, pro2, meta, data2, data7\n\n# Прямая работа:\n    adapter = ConversationAdapter(\"docs/sessions/\")\n    results = adapter.fetch(\"{запрос}\")\n    for r in results:\n        print(r.title, r.metadata[\"q6\"])\n\n======================================================================= -->\n\n---",
+      "metadata": {
+        "q6": "010100",
+        "file": "ai_distributed_teams",
+        "section": 1
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ai_distributed_teams:20:Почему_двойственность__ангел_хранитель__",
+      "title": "Почему двойственность «ангел-хранитель + строгий демон» — гениальная деталь",
+      "source": "docs/ai_distributed_teams",
+      "format_type": "conversation",
+      "content": "Эта часть вашей мысли — не орнамент, это **ядро дизайна**, и она незаслуженно редко формулируется в AI-agents литературе. Развёрну почему.\n\nСуществующие personal AI coaches (Cursor, Copilot, ChatGPT) работают как **помощники-соучастники**. Они соглашаются с пользователем, помогают реализовать то, что пользователь уже решил делать. Это создаёт известную проблему: **confirmation bias + hallucinated consensus**. Пользователь пишет плохой код, AI помогает сделать этот плохой код быстрее. AI никогда ",
+      "metadata": {
+        "q6": "010101",
+        "file": "ai_distributed_teams",
+        "section": 20
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ai_distributed_teams:22:Почему_двойственность__ангел_хранитель__",
+      "title": "Почему двойственность «ангел-хранитель + строгий демон» — гениальная деталь (3)",
+      "source": "docs/ai_distributed_teams",
+      "format_type": "conversation",
+      "content": "Реализация этого в AI-агенте требует **явного state machine** — агент должен знать, в какой фазе проекта он сейчас, и переключать персону. Большинство существующих agent-frameworks этого не делают, они работают в одном режиме. Ваша идея предлагает **конкретный архитектурный инвариант**: `agent.mode = \"mentor\" if phase in [\"ideation\", \"drafting\"] else \"critic\" if phase in [\"review\", \"validation\"]`. Это нетривиальное проектное решение с реальной новизной.",
+      "metadata": {
+        "q6": "101010",
+        "file": "ai_distributed_teams",
+        "section": 22
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ai_distributed_teams:23:Архитектурные_слои__которых_вы_не_обозна",
+      "title": "Архитектурные слои, которых вы не обозначили, но которые обязательны",
+      "source": "docs/ai_distributed_teams",
+      "format_type": "conversation",
+      "content": "Чтобы ваша модель работала, нужны ещё два слоя, о которых имеет смысл упомянуть.\n\n**Слой памяти и координации между суб-агентами**. Если у каждого из пяти фрилансеров свой AI-куратор, эти пять кураторов **должны между собой общаться**. Иначе они дублируют работу, дают противоречивые советы, пропускают integration-bugs. Нужна архитектура shared context — общая память проекта, к которой все пять агентов имеют доступ, плюс протокол коммуникации между ними. Это близко к MCP (Model Context Protocol о",
+      "metadata": {
+        "q6": "101010",
+        "file": "ai_distributed_teams",
+        "section": 23
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ai_distributed_teams:25:Что_существует_сейчас_в_этом_пространств",
+      "title": "Что существует сейчас в этом пространстве",
+      "source": "docs/ai_distributed_teams",
+      "format_type": "conversation",
+      "content": "Разложу от самого простого к самому амбициозному.\n\n**Низкоуровневые frameworks.** CrewAI, AutoGen (Microsoft Research), LangGraph — позволяют строить multi-agent pipelines, где один LLM играет роль менеджера, другие — роли исполнителей. Подходит для прототипа уровня 1-2. Работает. Не масштабируется за пределы демо.\n\n**Среднеуровневые попытки.** MetaGPT (симулирует целую software company из AI-агентов — product manager, architect, engineer, QA), ChatDev (то же для софтверной разработки). Интересн",
+      "metadata": {
+        "q6": "110100",
+        "file": "ai_distributed_teams",
+        "section": 25
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ai_distributed_teams:37:Альтернативные_подходы__от_простых_до_эк",
+      "title": "Альтернативные подходы, от простых до экзотических (4)",
+      "source": "docs/ai_distributed_teams",
+      "format_type": "conversation",
+      "content": "**Fantastical: коллективный интеллект с AI-mediated consensus.** Вся команда из 50-100 человек общается через AI-translator, который в реальном времени агрегирует идеи, находит конфликты, предлагает синтезы. Что-то вроде Loomio + ChatGPT на стероидах. Близко к тому, что описывает Jamais Cascio в концепции «augmented reflexivity». Технически частично реализуемо, но требует радикально более мощных LLM и лучшего UX.",
+      "metadata": {
+        "q6": "000001",
+        "file": "ai_distributed_teams",
+        "section": 37
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ai_distributed_teams:3:Обмен_1__2_",
+      "title": "Обмен 1 (2)",
+      "source": "docs/ai_distributed_teams",
+      "format_type": "conversation",
+      "content": "Terence Tao, Polymath Project.\nВариант C (сильный и прорывной, ваш тезис): AI-managed distributed virtual company. AI-агент не просто собирает команду, а управляет ей на протяжении проекта — разбивает задачи, контролирует deadlines, модерирует конфликты, распределяет работу по сильным сторонам, управляет cash flow. По сути это AI-CEO для ad hoc-команд. Команда живёт 6-12 месяцев вокруг одной миссии, затем распадается или реконфигурируется под следующую.\nВариант C — это именно то, что вы описали,",
+      "metadata": {
+        "q6": "000001",
+        "file": "ai_distributed_teams",
+        "section": 3
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "conv:ai_distributed_teams:40:Конкретный_практический_вывод",
+      "title": "Конкретный практический вывод",
+      "source": "docs/ai_distributed_teams",
+      "format_type": "conversation",
+      "content": "Если ваша идея заинтересовала вас достаточно, чтобы двигаться к реализации, есть три точки входа разной амбиции.\n\n**Минимальная — proof-of-concept на один вертикальный слайс**. Выбираете одну **конкретную задачу из ваших top-10** в data70 — например, **legal-sgb-toolkit** — и запускаете пилот: живую команду 3-5 фрилансеров, с двухуровневой AI-оркестрацией (мета-агент на Claude Opus, суб-агенты на Claude Sonnet, MCP для shared context, LangGraph или CrewAI как caркас). Цель — не заработать денег,",
+      "metadata": {
+        "q6": "010101",
+        "file": "ai_distributed_teams",
+        "section": 40
+      },
+      "links": [],
+      "is_fallback": false
+    },
+    {
+      "id": "data2:arch:синтез",
+      "title": "Архетип: Синтез",
+      "source": "svend4/data2",
+      "format_type": "archetype",
+      "content": "Интеграция всех архетипов",
+      "metadata": {
+        "archetype": "синтез",
+        "ca_class": "IV",
+        "q6": "111110",
+        "alpha": 3
+      },
+      "links": [
+        "meta:ca_class:IV",
+        "pro2:q6:111110",
+        "info1:alpha:3"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "data2:etd",
+      "title": "ЕТД — Единая Теория Движения",
+      "source": "svend4/data2",
+      "format_type": "volume",
+      "content": "12 архетипов движения × 7 аксиом Крюкова. 310+ томов в 5 сериях. LCI как метрика системы.",
+      "metadata": {
+        "type": "overview",
+        "volumes": "1-310",
+        "series": "I–V+",
+        "q6": "111110",
+        "alpha": 3
+      },
+      "links": [
+        "info1:methodology",
+        "meta:hexagram:50",
+        "pro2:bidir"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "data2:scarab",
+      "title": "Scarab Algorithm (фигура-8)",
+      "source": "svend4/data2",
+      "format_type": "volume",
+      "content": "scarab_algorithm.py — обход Q6-пространства по траектории фигуры-8. Прямой мост к семантическому пространству pro2.",
+      "metadata": {
+        "type": "algorithm",
+        "file": "scarab_algorithm.py",
+        "q6": "101010",
+        "alpha": 1
+      },
+      "links": [
+        "pro2:q6",
+        "meta:hexagram:63"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "data2:three_spheres",
+      "title": "Три Сферы (МВС / СВС / БВС)",
+      "source": "svend4/data2",
+      "format_type": "archetype",
+      "content": "МВС (малая) / СВС (средняя) / БВС (большая) вложенные сферы. Резонанс трёх сфер → максимальная эффективность системы.",
+      "metadata": {
+        "archetype": "три сферы",
+        "ca_class": "II",
+        "alpha": -1,
+        "q6": "000111"
+      },
+      "links": [
+        "meta:ca_class:II",
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "data2:vol:150",
+      "title": "Том 150. Синтез IV",
+      "source": "svend4/data2",
+      "format_type": "volume",
+      "content": "Серия IV · домен: synthesis",
+      "metadata": {
+        "volume": 150,
+        "series": "IV",
+        "domain": "synthesis",
+        "alpha": 3,
+        "q6": "111111"
+      },
+      "links": [
+        "info1:alpha:3",
+        "pro2:q6:111111"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "data2:vol:2",
+      "title": "Том 2. Геймдизайн ЕТД",
+      "source": "svend4/data2",
+      "format_type": "volume",
+      "content": "Серия I · домен: design",
+      "metadata": {
+        "volume": 2,
+        "series": "I",
+        "domain": "design",
+        "alpha": -1,
+        "q6": "000010"
+      },
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:000010"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "data2:vol:20",
+      "title": "Том 20. Единая теория (синтез I)",
+      "source": "svend4/data2",
+      "format_type": "volume",
+      "content": "Серия I · домен: synthesis",
+      "metadata": {
+        "volume": 20,
+        "series": "I",
+        "domain": "synthesis",
+        "alpha": 0,
+        "q6": "010100"
+      },
+      "links": [
+        "info1:alpha:0",
+        "pro2:q6:010100"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "data2:vol:310",
+      "title": "Том 310. Финальный синтез",
+      "source": "svend4/data2",
+      "format_type": "volume",
+      "content": "Серия V+ · домен: synthesis",
+      "metadata": {
+        "volume": 310,
+        "series": "V+",
+        "domain": "synthesis",
+        "alpha": 3,
+        "q6": "111111"
+      },
+      "links": [
+        "info1:alpha:3",
+        "pro2:q6:111111"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "data2:vol:4",
+      "title": "Том 4. Алгоритмы",
+      "source": "svend4/data2",
+      "format_type": "volume",
+      "content": "Серия I · домен: algorithms",
+      "metadata": {
+        "volume": 4,
+        "series": "I",
+        "domain": "algorithms",
+        "alpha": -1,
+        "q6": "000100"
+      },
+      "links": [
+        "info1:alpha:-1",
+        "pro2:q6:000100"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "data2:vol:40",
+      "title": "Том 40. Конечный синтез II",
+      "source": "svend4/data2",
+      "format_type": "volume",
+      "content": "Серия II · домен: synthesis",
+      "metadata": {
+        "volume": 40,
+        "series": "II",
+        "domain": "synthesis",
+        "alpha": 1,
+        "q6": "101000"
+      },
+      "links": [
+        "info1:alpha:1",
+        "pro2:q6:101000"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "data7:analogy_table",
+      "title": "Таблица аналогий data7 ↔ pro2",
+      "source": "svend4/data7",
+      "format_type": "bridge",
+      "content": "KnowledgeGraph.compute_centrality()  ↔  hex_weights (мягкое внимание)\nidentify_gaps()                       ↔  domain_triplet_loss (разрыв)\ngenerate_hypotheses()                 ↔  self_dialog stage 3\nAdaptiveLearningOptimizer             ↔  gradient descent на QFilter\nTSP-оптимизация порядка               ↔  BFS-путь по biangua-графу",
+      "metadata": {
+        "type": "analogy_table",
+        "source_file": "bidir_train.py docstring",
+        "q6": "110001",
+        "alpha": 1
+      },
+      "links": [
+        "pro2:bidir",
+        "pro2:knowledge_graph"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "data7:concept",
+      "title": "Concept — атомарная единица знания",
+      "source": "svend4/data7",
+      "format_type": "schema",
+      "content": "Базовый класс data7. В pro2 расширен: Concept.hex_idx (Q6-позиция), Concept.pagerank (PageRank-центральность в графе), Concept.depth (специализация 0..1), Concept.novelty (новизна 0..1).",
+      "metadata": {
+        "class": "Concept",
+        "extended_in": "pro2/bidir_train.py",
+        "q6": "000001",
+        "alpha": -3
+      },
+      "links": [
+        "pro2:knowledge_graph",
+        "pro2:q6"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "data7:missing_loop",
+      "title": "Недостающая петля (реализована в pro2)",
+      "source": "svend4/data7",
+      "format_type": "theory",
+      "content": "# Missing: proposals → decomposer.decompose() → refinement loop\nКомментарий в data7/knowledge_transformer.py.\nЭта петля реализована в pro2/bidir_train.py:\nGPT генерирует гипотезы → граф оценивает → AdaptiveLearning обновляет веса → identify_gaps() → новый корпус → снова вперёд.",
+      "metadata": {
+        "file": "knowledge_transformer.py",
+        "status": "missing_in_data7",
+        "implemented_in": "pro2/bidir_train.py",
+        "q6": "101010",
+        "alpha": 1
+      },
+      "links": [
+        "pro2:bidir",
+        "pro2:adaptive_learning"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "data7:theory:transformation",
+      "title": "Теория трансформации знаний K₀→K₁→K₂",
+      "source": "svend4/data7",
+      "format_type": "theory",
+      "content": "Диссертации ⇄ Энциклопедии. K₀ → decompose → aggregate → K₁ → decompose → synthesize → K₂ → ... Итеративное сжатие и расширение знаний между специализированным и обобщённым полюсами.",
+      "metadata": {
+        "file": "knowledge_transformation_theory.md",
+        "cycle": "K₀→K₁→K₂",
+        "poles": [
+          "dissertations",
+          "encyclopedias"
+        ],
+        "q6": "111110",
+        "alpha": 3
+      },
+      "links": [
+        "pro2:bidir",
+        "pro2:knowledge_graph"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "daten22:architecture",
+      "title": "Архитектура daten22: Dynamic Planner + AI",
+      "source": "svend4/daten22",
+      "format_type": "concept",
+      "content": "Трёхслойная архитектура: (1) Knowledge Layer — SQLite FTS4 индекс, (2) Planning Layer — динамический планировщик задач с приоритетами, (3) AI Layer — интеграция с LLM для генерации и оценки планов. Планировщик использует 16 архетипов рационализации как building blocks.",
+      "metadata": {
+        "q6": "101010",
+        "tags": [
+          "architecture",
+          "planner",
+          "ai",
+          "layers"
+        ]
+      },
+      "links": [
+        "daten22:fts4_rag",
+        "daten22:planner",
+        "info1:methodology"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "daten22:fts4_rag",
+      "title": "SQLite FTS4-RAG — локальный семантический поиск",
+      "source": "svend4/daten22",
+      "format_type": "concept",
+      "content": "Гибридный поиск: SQLite FTS4 (полнотекстовый) + векторное embedding (RAG). Работает полностью локально без внешних API. Индексирует Markdown/текстовые файлы, поддерживает русский и немецкий язык. Скорость: <100ms на корпусе 10k документов.",
+      "metadata": {
+        "q6": "101010"
+      },
+      "links": [
+        "daten22:architecture",
+        "pro2:bidir"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "graphrag:community_detection",
+      "title": "Обнаружение сообществ (Community Detection)",
+      "source": "svend4/infom",
+      "format_type": "concept",
+      "content": "Алгоритм Leiden/Louvain делит граф на кластеры-сообщества. Каждое сообщество суммаризируется LLM — получается иерархический контекст. Уровни иерархии = разные степени обобщения.",
+      "metadata": {
+        "q6": "110001",
+        "tags": [
+          "leiden",
+          "community",
+          "clustering",
+          "hierarchy"
+        ],
+        "repo": "svend4/infom"
+      },
+      "links": [
+        "graphrag:knowledge_graph",
+        "graphrag:summarization"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "graphrag:entity_extraction",
+      "title": "Сущностное извлечение (Entity Extraction)",
+      "source": "svend4/infom",
+      "format_type": "concept",
+      "content": "NLP-этап: из сырого текста извлекаются сущности (люди, понятия, места) и отношения между ними. Используются LLM + NER. Результат: список (entity, type, description) + список (source, target, relation).",
+      "metadata": {
+        "q6": "110001",
+        "tags": [
+          "nlp",
+          "entity",
+          "extraction",
+          "ner"
+        ],
+        "repo": "svend4/infom"
+      },
+      "links": [
+        "graphrag:pipeline",
+        "graphrag:knowledge_graph"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "graphrag:knowledge_graph",
+      "title": "Граф знаний (Knowledge Graph)",
+      "source": "svend4/infom",
+      "format_type": "concept",
+      "content": "Направленный взвешенный граф: узлы = сущности, рёбра = отношения. Веса рёбер — частота совстречаемости + LLM-оценка семантической близости. Хранится в памяти (networkx) или персистентно (Neo4j, SQLite).",
+      "metadata": {
+        "q6": "110001",
+        "tags": [
+          "knowledge-graph",
+          "graph",
+          "networkx",
+          "semantic"
+        ],
+        "repo": "svend4/infom"
+      },
+      "links": [
+        "graphrag:entity_extraction",
+        "graphrag:community_detection",
+        "pro2:q6"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "graphrag:pipeline",
+      "title": "GraphRAG Pipeline",
+      "source": "svend4/infom",
+      "format_type": "concept",
+      "content": "Полный конвейер граф-RAG: извлечение сущностей → построение графа знаний → community detection → суммаризация → контекстный retrieval. Превосходит vanilla RAG на задачах с глобальными вопросами по корпусу.",
+      "metadata": {
+        "q6": "110001",
+        "tags": [
+          "rag",
+          "graph",
+          "pipeline",
+          "retrieval"
+        ],
+        "repo": "svend4/infom"
+      },
+      "links": [
+        "graphrag:entity_extraction",
+        "graphrag:community_detection",
+        "pro2:q6"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "info1:alpha:-1",
+      "title": "α=-1 · Спецификации",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "content": "Уровень абстракции α=-1: Спецификации, API, форматы данных.",
+      "metadata": {
+        "alpha": -1,
+        "domain": "спецификации",
+        "q6": "000111"
+      },
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "info1:alpha:-2",
+      "title": "α=-2 · Реализация",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "content": "Уровень абстракции α=-2: Детали реализации, компоненты, модули.",
+      "metadata": {
+        "alpha": -2,
+        "domain": "реализация",
+        "q6": "000011"
+      },
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "info1:alpha:-3",
+      "title": "α=-3 · Примеры",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "content": "Уровень абстракции α=-3: Примеры, туториалы, демонстрации.",
+      "metadata": {
+        "alpha": -3,
+        "domain": "примеры",
+        "q6": "000001"
+      },
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "info1:alpha:-4",
+      "title": "α=-4 · Код",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "content": "Уровень абстракции α=-4: Исходный код, скрипты, конкретные реализации.",
+      "metadata": {
+        "alpha": -4,
+        "domain": "код",
+        "q6": "000000"
+      },
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "info1:alpha:0",
+      "title": "α=+0 · Концепция",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "content": "Уровень абстракции α=0: Концепции, идеи, принципы.",
+      "metadata": {
+        "alpha": 0,
+        "domain": "концепция",
+        "q6": "010100"
+      },
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "info1:alpha:1",
+      "title": "α=+1 · Руководства",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "content": "Уровень абстракции α=1: Руководства, процессы, методики.",
+      "metadata": {
+        "alpha": 1,
+        "domain": "руководства",
+        "q6": "010111"
+      },
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "info1:alpha:2",
+      "title": "α=+2 · Методология",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "content": "Уровень абстракции α=2: Методологии, системные подходы.",
+      "metadata": {
+        "alpha": 2,
+        "domain": "методология",
+        "q6": "101010"
+      },
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "info1:alpha:3",
+      "title": "α=+3 · Философия",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "content": "Уровень абстракции α=3: Философские основания, аксиомы.",
+      "metadata": {
+        "alpha": 3,
+        "domain": "философия",
+        "q6": "111110"
+      },
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "info1:alpha:4",
+      "title": "α=+4 · Онтология",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "content": "Уровень абстракции α=4: Онтологии, высший уровень абстракции.",
+      "metadata": {
+        "alpha": 4,
+        "domain": "онтология",
+        "q6": "111111"
+      },
+      "links": [
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "info1:cards",
+      "title": "Карточная система",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "content": "Карточки как атомарные единицы знания. 8 типов карточек. Аналог концептов Q6 в pro2.",
+      "metadata": {
+        "alpha": -1,
+        "path": "02-Информационная-система/",
+        "q6": "000111"
+      },
+      "links": [
+        "pro2:concept:knowledge"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "info1:methodology",
+      "title": "Методология ⇑⇓↔",
+      "source": "svend4/info1",
+      "format_type": "document",
+      "content": "Параллельное двунаправленное развитие. 8 уровней абстракции (α=-4..+4). 74 документа, 1156 связей.",
+      "metadata": {
+        "alpha": 2,
+        "path": "README.md#methodology",
+        "q6": "101010"
+      },
+      "links": [
+        "pro2:bidir",
+        "meta:hexagram:50"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "infosystems:corpus_structure",
+      "title": "Структура учебного корпуса (6+1 доменов)",
+      "source": "svend4/pro2",
+      "format_type": "schema",
+      "content": "Корпус организован по 6 семантическим доменам:\n- ai_agents: определения ИИ-агентов\n- infosystems: информационные системы и архитектуры\n- knowledge: базы знаний и онтологии\n- algorithms: алгоритмы и структуры данных\n- data2: данные Крюкова (ETD, 310+ томов)\n- meta: мета-документы (CA-правила, гексаграммы)\n+ synthetic: синтетические данные для быстрых тестов",
+      "metadata": {
+        "n_domains": 7,
+        "format": "utf-8 text",
+        "q6": "010110",
+        "alpha": 0
+      },
+      "links": [
+        "data2:etd",
+        "meta:ca_rules",
+        "data7:theory:transformation"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "infosystems:domain_moe",
+      "title": "DomainMoE — доменная маршрутизация экспертов",
+      "source": "svend4/pro2",
+      "format_type": "architecture",
+      "content": "Mixture of Experts с доменной специализацией. 6 доменов: ai_agents, infosystems, knowledge, algorithms, data2, meta. Каждый эксперт специализируется на своём домене. Domain supervision loss направляет токены к правильному эксперту.",
+      "metadata": {
+        "file": "geometry/ffn.py",
+        "class": "DomainMoE",
+        "n_domains": 6,
+        "domains": [
+          "ai_agents",
+          "infosystems",
+          "knowledge",
+          "algorithms",
+          "data2",
+          "meta"
+        ],
+        "q6": "110001",
+        "alpha": 1
+      },
+      "links": [
+        "pro2:moe",
+        "pro2:domain_routing"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "infosystems:knowledge_graph",
+      "title": "KnowledgeGraph — графовая база знаний",
+      "source": "svend4/pro2",
+      "format_type": "schema",
+      "content": "Граф концептов с PageRank-центральностью. Узлы = Concept(name, hex_idx, pagerank, depth, novelty). Рёбра = семантические связи с весами. Используется в bidir_train.py для двунаправленного обучения: forward (граф→обучение) ↔ backward (генерация→граф).",
+      "metadata": {
+        "file": "bidir_train.py",
+        "class": "KnowledgeGraph",
+        "nodes": "Concept",
+        "edges": "semantic_link",
+        "q6": "101010",
+        "alpha": 1
+      },
+      "links": [
+        "pro2:bidir",
+        "data7:theory:transformation"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "legal:dsgvo_art15",
+      "title": "DSGVO Art. 15 — Auskunftsrecht",
+      "source": "svend4/soz150",
+      "format_type": "document",
+      "content": "Право субъекта данных на получение информации об обрабатываемых персональных данных. Оператор обязан ответить в течение 1 месяца. При отказе — жалоба в надзорный орган (Datenschutzbehörde).",
+      "metadata": {
+        "q6": "100011",
+        "tags": [
+          "gdpr",
+          "dsgvo",
+          "art15",
+          "auskunft",
+          "data-access"
+        ],
+        "jurisdiction": "EU",
+        "valid_from": "2018-05-25",
+        "language": "de",
+        "gdpr_contains_personal_data": true
+      },
+      "links": [
+        "legal:writing_os"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "legal:writing:datenschutz",
+      "title": "Защита данных (Datenschutz / DSGVO)",
+      "source": "svend4/soz150",
+      "format_type": "document",
+      "content": "GDPR-инструменты: запросы на доступ к данным (Art. 15 DSGVO), требования об удалении (Art. 17), возражения против обработки (Art. 21). Шаблоны писем в немецкие органы надзора (DSK).",
+      "metadata": {
+        "q6": "100011",
+        "tags": [
+          "gdpr",
+          "dsgvo",
+          "datenschutz",
+          "privacy",
+          "data"
+        ],
+        "jurisdiction": "DE, EU",
+        "language": "de",
+        "gdpr_contains_personal_data": false
+      },
+      "links": [
+        "legal:writing_os"
+      ],
+      "is_fallback": false
+    },
+    {
+      "id": "legal:writing_os",
+      "title": "Writing OS — система создания правовых документов",
+      "source": "svend4/soz150",
+      "format_type": "document",
+      "content": "svend4/soz150: JavaScript-система из 300+ инструментов для автоматизации создания юридических документов. Концепция: 'операционная система письма' — каждый документ создаётся из модульных компонентов (header, claim, basis, request). Ориентирована на немецкое социальное право и права граждан.",
+      "metadata": {
+        "q6": "100010",
+        "jurisdiction": "DE",
+        "valid_from": "2024-01-01",
+        "language": "de",
+        "gdpr_contains_personal_data": false,
+        "tags": [
+          "writing-os",
+          "soz150",
+          "javascript",
+          "legal-tools",
+          "automation"
+        ]
+      },
+      "links": [],
+      "is_fallback": true
+    },
+    {
+      "id": "meta:ca_class:I",
+      "title": "CA-класс I: Стационарные",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "content": "Паттерны, сходящиеся к точкам или исчезающие. α=-3. Гексаграммы: 1, 2, 52.",
+      "metadata": {
+        "ca_class": "I",
+        "alpha": -3,
+        "hexagrams": [
+          1,
+          2,
+          52
+        ]
+      },
+      "links": [
+        "info1:alpha:-3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "meta:ca_class:II",
+      "title": "CA-класс II: Периодические",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "content": "Паттерны с устойчивыми циклами и стабильными структурами. α=-1. Гексаграммы: 3, 4, 5, 7, 8, 9, 10, 11, 14, 19, 21, 41, 42, 53, 54, 57, 58.",
+      "metadata": {
+        "ca_class": "II",
+        "alpha": -1,
+        "hexagrams": [
+          3,
+          4,
+          5,
+          7,
+          8,
+          9,
+          10,
+          11,
+          14,
+          19,
+          21,
+          41,
+          42,
+          53,
+          54,
+          57,
+          58
+        ]
+      },
+      "links": [
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "meta:ca_class:III",
+      "title": "CA-класс III: Хаотические",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "content": "Сложные, непредсказуемые паттерны. α=+1. Гексаграммы: 6, 12, 23, 29, 30, 51.",
+      "metadata": {
+        "ca_class": "III",
+        "alpha": 1,
+        "hexagrams": [
+          6,
+          12,
+          23,
+          29,
+          30,
+          51
+        ]
+      },
+      "links": [
+        "info1:alpha:1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "meta:ca_class:IV",
+      "title": "CA-класс IV: Сложные",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "content": "Структуры на грани хаоса и порядка (класс Вольфрама IV). α=+3. Гексаграммы: 24, 49, 50, 63, 64.",
+      "metadata": {
+        "ca_class": "IV",
+        "alpha": 3,
+        "hexagrams": [
+          24,
+          49,
+          50,
+          63,
+          64
+        ]
+      },
+      "links": [
+        "info1:alpha:3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "meta:ca_rules",
+      "title": "CA-правила (Клеточные Автоматы)",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "content": "256 правил элементарных клеточных автоматов Вольфрама → 4 класса сложности → 64 гексаграммы.",
+      "metadata": {
+        "total_rules": 256,
+        "classes": 4
+      },
+      "links": [
+        "meta:ca_class:I",
+        "meta:ca_class:II",
+        "meta:ca_class:III",
+        "meta:ca_class:IV"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "meta:hexagram",
+      "title": "Гексаграммы И-Цзин",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "content": "64 гексаграммы как категориальная онтология. Каждая = вершина Q6-гиперкуба.",
+      "metadata": {
+        "total": 64
+      },
+      "links": [
+        "pro2:q6",
+        "meta:hexagram:all"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "meta:hexagram:1",
+      "title": "[1] 乾 Творчество",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "content": "Чистая созидательная сила",
+      "metadata": {
+        "hexagram_id": 1,
+        "char": "乾",
+        "ca_rule": 0,
+        "ca_class": "I",
+        "q6": "000000",
+        "alpha_equiv": -3
+      },
+      "links": [
+        "pro2:q6:000000",
+        "info1:alpha:-3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "meta:hexagram:24",
+      "title": "[24] 復 Возврат",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "content": "Поворотная точка, начало нового цикла",
+      "metadata": {
+        "hexagram_id": 24,
+        "char": "復",
+        "ca_rule": 92,
+        "ca_class": "IV",
+        "q6": "010111",
+        "alpha_equiv": 3
+      },
+      "links": [
+        "pro2:q6:010111",
+        "info1:alpha:3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "meta:hexagram:50",
+      "title": "[50] 鼎 Котёл",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "content": "Трансформация через огонь",
+      "metadata": {
+        "hexagram_id": 50,
+        "char": "鼎",
+        "ca_rule": 196,
+        "ca_class": "IV",
+        "q6": "110001",
+        "alpha_equiv": 3
+      },
+      "links": [
+        "pro2:q6:110001",
+        "info1:alpha:3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "meta:hexagram:63",
+      "title": "[63] 既濟 После завершения",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "content": "Равновесие достигнуто",
+      "metadata": {
+        "hexagram_id": 63,
+        "char": "既濟",
+        "ca_rule": 248,
+        "ca_class": "IV",
+        "q6": "111110",
+        "alpha_equiv": 3
+      },
+      "links": [
+        "pro2:q6:111110",
+        "info1:alpha:3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "meta:hexagram:all",
+      "title": "Все 64 гексаграммы (обзор)",
+      "source": "svend4/meta",
+      "format_type": "rule",
+      "content": "Полное пространство 31 гексаграмм в таблице. 4 CA-класса Вольфрама.",
+      "metadata": {
+        "total": 64,
+        "in_table": 31
+      },
+      "links": [
+        "meta:ca_class:I",
+        "meta:ca_class:II",
+        "meta:ca_class:III",
+        "meta:ca_class:IV"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:adaptive_learning",
+      "title": "AdaptiveLearning — динамический выбор концептов",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Обновляет веса рёбер графа по результатам генерации GPT. identify_gaps() ↔ domain_triplet_loss (из data7). generate_hypotheses() ↔ self_dialog stage 3. Критерий завершения: L_total = L_lm + α·L_domain + β·L_quality + γ·L_gate.",
+      "metadata": {
+        "file": "bidir_train.py",
+        "loss": "L_lm + 0.30*L_domain + 0.20*L_quality + 0.10*L_gate"
+      },
+      "links": [
+        "data7:missing_loop",
+        "pro2:bidir"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:biangua",
+      "title": "BianGuaTransform — навигация в Q6",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Преобразование гексаграмм: переход между категориями Q6-гиперкуба по Хэмминговому расстоянию.",
+      "metadata": {
+        "q6": true
+      },
+      "links": [
+        "pro2:q6",
+        "meta:hexagram:all"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:bidir",
+      "title": "Bidirectional Training ⇑⇓ (замкнутый цикл)",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "ВПЕРЁД (специализация→обобщение): Корпус→KnowledgeGraph→PageRank-центры→Q6-анкоры→Variant3GPT. НАЗАД (обобщение→специализация): GPT генерирует→QFilter оценивает→AdaptiveLearning обновляет граф→identify_gaps()→generate_hypotheses()→новый корпус→снова вперёд. Реализует НЕДОСТАЮЩУЮ ПЕТЛЮ из data7/knowledge_transformer.py.",
+      "metadata": {
+        "method": "bidirectional",
+        "file": "bidir_train.py",
+        "criterion": "модель генерирует тексты, граф признаёт 'достаточно центральными'",
+        "analogy": {
+          "data7:compute_centrality": "hex_weights",
+          "data7:identify_gaps": "domain_triplet_loss",
+          "data7:generate_hypotheses": "self_dialog stage 3"
+        }
+      },
+      "links": [
+        "info1:methodology",
+        "data7:missing_loop",
+        "data7:theory:transformation"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:bidir_train",
+      "title": "bidir_train.py — двунаправленное обучение",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Реализация замкнутого цикла forward+backward. Алиас pro2:bidir.",
+      "metadata": {
+        "file": "bidir_train.py"
+      },
+      "links": [
+        "pro2:bidir"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:concept:knowledge",
+      "title": "Концепт: Знание (Knowledge Graph)",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Узел типа 'knowledge' в Q6-пространстве. Связывает карточки info1 с граф-концептами pro2.",
+      "metadata": {
+        "q6": "000001",
+        "domain": "knowledge"
+      },
+      "links": [
+        "pro2:q6",
+        "info1:methodology"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:domain_routing",
+      "title": "Domain Routing — доменная маршрутизация",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Маршрутизация токенов к специализированным экспертам по домену. Domain supervision loss.",
+      "metadata": {
+        "file": "geometry/ffn.py"
+      },
+      "links": [
+        "pro2:moe"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:generate",
+      "title": "AdvancedGenerator — генерация текста",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "5 стратегий: greedy, nucleus, beam, speculative, dynamic_temp. inference/bridge_inference.py.",
+      "metadata": {
+        "file": "inference/bridge_inference.py",
+        "strategies": 5
+      },
+      "links": [
+        "pro2:speculative"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:hmoe",
+      "title": "HMoE — иерархическая смесь экспертов",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Hierarchical MoE: эксперты CONCRETE→DYNAMIC→ABSTRACT. train_hmoe_curriculum.py.",
+      "metadata": {
+        "file": "train_hmoe_curriculum.py"
+      },
+      "links": [
+        "pro2:moe",
+        "pro2:domain_routing"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:knowledge_graph",
+      "title": "KnowledgeGraph — граф научных знаний",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Аналог data7:KnowledgeGraph. Отличие: рёбра взвешены качеством связи (обновляется AdaptiveLearning). Типы рёбер: causes, extends, contradicts, related_to, is_a, part_of. PageRank-центральность определяет Q6-анкоры для обучения.",
+      "metadata": {
+        "file": "bidir_train.py",
+        "class": "KnowledgeGraph"
+      },
+      "links": [
+        "data7:concept",
+        "data7:theory:transformation"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:moe",
+      "title": "MoE — Mixture of Experts",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Смесь экспертов с доменной маршрутизацией. geometry/ffn.py: DomainMoE, 6 доменов.",
+      "metadata": {
+        "file": "geometry/ffn.py",
+        "class": "DomainMoE"
+      },
+      "links": [
+        "pro2:domain_routing",
+        "infosystems:domain_moe"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:nautilus",
+      "title": "NautilusHierarchy — 7-камерная архитектура",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "7 камер от микро до макро. Прогрессивная активация. geometry/nautilus.py.",
+      "metadata": {
+        "file": "geometry/nautilus.py",
+        "chambers": 7
+      },
+      "links": [
+        "pro2:six_sources"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6",
+      "title": "Q6 Семантическое пространство",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "64 состояния (6-битное пространство). Каждый концепт = координата Q6[b0..b5]. Соответствует 64 гексаграммам И-Цзин.",
+      "metadata": {
+        "dims": 6,
+        "states": 64
+      },
+      "links": [
+        "meta:hexagram:all",
+        "info1:alpha:0"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:000000",
+      "title": "Q6=000000 · Ката",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Зафиксированные паттерны движения",
+      "metadata": {
+        "q6": "000000",
+        "ca_class": "I",
+        "alpha": -3
+      },
+      "links": [
+        "meta:hexagram:1",
+        "info1:alpha:-3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:000001",
+      "title": "Q6=000001 · Архетипы",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Базовые архетипы движения ЕТД",
+      "metadata": {
+        "q6": "000001",
+        "ca_class": "I",
+        "alpha": -3
+      },
+      "links": [
+        "meta:hexagram:2",
+        "info1:alpha:-3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:000010",
+      "title": "Q6=000010 · Геймдизайн",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Игровые паттерны и механики",
+      "metadata": {
+        "q6": "000010",
+        "ca_class": "I",
+        "alpha": -3
+      },
+      "links": [
+        "meta:hexagram:3",
+        "info1:alpha:-3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:000011",
+      "title": "Q6=000011 · Петля",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Цикл, периодический паттерн",
+      "metadata": {
+        "q6": "000011",
+        "ca_class": "II",
+        "alpha": -1
+      },
+      "links": [
+        "meta:hexagram:4",
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:000100",
+      "title": "Q6=000100 · Алгоритмы",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Алгоритмические паттерны",
+      "metadata": {
+        "q6": "000100",
+        "ca_class": "I",
+        "alpha": -3
+      },
+      "links": [
+        "meta:hexagram:5",
+        "info1:alpha:-3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:000101",
+      "title": "Q6=000101 · Ожидание",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Терпение перед действием",
+      "metadata": {
+        "q6": "000101",
+        "ca_class": "II",
+        "alpha": -1
+      },
+      "links": [
+        "meta:hexagram:6",
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:000110",
+      "title": "Q6=000110 · 7±2",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Мнемоническое ограничение Миллера",
+      "metadata": {
+        "q6": "000110",
+        "ca_class": "II",
+        "alpha": -1
+      },
+      "links": [
+        "meta:hexagram:7",
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:000111",
+      "title": "Q6=000111 · Три сферы",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Иерархия МВС/СВС/БВС",
+      "metadata": {
+        "q6": "000111",
+        "ca_class": "II",
+        "alpha": -1
+      },
+      "links": [
+        "meta:hexagram:8",
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:001000",
+      "title": "Q6=001000 · Сдерживание",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Накопление силы через малое терпение",
+      "metadata": {
+        "q6": "001000",
+        "ca_class": "II",
+        "alpha": -1
+      },
+      "links": [
+        "meta:hexagram:9",
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:001001",
+      "title": "Q6=001001 · Нечётность",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Закон нечётности {1,3,5,7,9}",
+      "metadata": {
+        "q6": "001001",
+        "ca_class": "II",
+        "alpha": -1
+      },
+      "links": [
+        "meta:hexagram:10",
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:001010",
+      "title": "Q6=001010 · Мир",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Гармония неба и земли",
+      "metadata": {
+        "q6": "001010",
+        "ca_class": "II",
+        "alpha": -1
+      },
+      "links": [
+        "meta:hexagram:11",
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:001011",
+      "title": "Q6=001011 · Застой",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Разделение, блокировка",
+      "metadata": {
+        "q6": "001011",
+        "ca_class": "III",
+        "alpha": 1
+      },
+      "links": [
+        "meta:hexagram:12",
+        "info1:alpha:1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:001101",
+      "title": "Q6=001101 · Великое владение",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Изобилие и ответственность",
+      "metadata": {
+        "q6": "001101",
+        "ca_class": "II",
+        "alpha": -1
+      },
+      "links": [
+        "meta:hexagram:14",
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:010010",
+      "title": "Q6=010010 · Шахматка",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Модульная тактическая сетка",
+      "metadata": {
+        "q6": "010010",
+        "ca_class": "II",
+        "alpha": -1
+      },
+      "links": [
+        "meta:hexagram:19",
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:010100",
+      "title": "Q6=010100 · Синтез I",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Единая теория синтез I",
+      "metadata": {
+        "q6": "010100",
+        "ca_class": "II",
+        "alpha": -1
+      },
+      "links": [
+        "meta:hexagram:21",
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:010110",
+      "title": "Q6=010110 · Разрушение",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Отслаивание, конец цикла",
+      "metadata": {
+        "q6": "010110",
+        "ca_class": "III",
+        "alpha": 1
+      },
+      "links": [
+        "meta:hexagram:23",
+        "info1:alpha:1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:010111",
+      "title": "Q6=010111 · Возврат",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Поворотная точка, начало нового цикла",
+      "metadata": {
+        "q6": "010111",
+        "ca_class": "IV",
+        "alpha": 3
+      },
+      "links": [
+        "meta:hexagram:24",
+        "info1:alpha:3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:011100",
+      "title": "Q6=011100 · Бездна",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Опасность, которую нужно пройти",
+      "metadata": {
+        "q6": "011100",
+        "ca_class": "III",
+        "alpha": 1
+      },
+      "links": [
+        "meta:hexagram:29",
+        "info1:alpha:1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:011101",
+      "title": "Q6=011101 · Огонь",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Прилипание, ясность, зависимость",
+      "metadata": {
+        "q6": "011101",
+        "ca_class": "III",
+        "alpha": 1
+      },
+      "links": [
+        "meta:hexagram:30",
+        "info1:alpha:1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:101000",
+      "title": "Q6=101000 · Синтез II",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Конечный синтез II",
+      "metadata": {
+        "q6": "101000",
+        "ca_class": "II",
+        "alpha": -1
+      },
+      "links": [
+        "meta:hexagram:41",
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:101001",
+      "title": "Q6=101001 · Прибавление",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Рост через щедрость",
+      "metadata": {
+        "q6": "101001",
+        "ca_class": "II",
+        "alpha": -1
+      },
+      "links": [
+        "meta:hexagram:42",
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:110000",
+      "title": "Q6=110000 · Революция",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Преобразование в нужный момент",
+      "metadata": {
+        "q6": "110000",
+        "ca_class": "IV",
+        "alpha": 3
+      },
+      "links": [
+        "meta:hexagram:49",
+        "info1:alpha:3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:110001",
+      "title": "Q6=110001 · Котёл",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Трансформация через огонь",
+      "metadata": {
+        "q6": "110001",
+        "ca_class": "IV",
+        "alpha": 3
+      },
+      "links": [
+        "meta:hexagram:50",
+        "info1:alpha:3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:110010",
+      "title": "Q6=110010 · Гром",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Пробуждение через потрясение",
+      "metadata": {
+        "q6": "110010",
+        "ca_class": "III",
+        "alpha": 1
+      },
+      "links": [
+        "meta:hexagram:51",
+        "info1:alpha:1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:110011",
+      "title": "Q6=110011 · Резонанс",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "ω_МВС = ω_СВС = ω_БВС → max",
+      "metadata": {
+        "q6": "110011",
+        "ca_class": "IV",
+        "alpha": 3
+      },
+      "links": [
+        "meta:hexagram:52",
+        "info1:alpha:3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:110100",
+      "title": "Q6=110100 · Теория струн",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Физика высоких энергий",
+      "metadata": {
+        "q6": "110100",
+        "ca_class": "IV",
+        "alpha": 3
+      },
+      "links": [
+        "meta:hexagram:53",
+        "info1:alpha:3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:110101",
+      "title": "Q6=110101 · Изобилие",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Полнота накопленной силы",
+      "metadata": {
+        "q6": "110101",
+        "ca_class": "II",
+        "alpha": -1
+      },
+      "links": [
+        "meta:hexagram:54",
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:111000",
+      "title": "Q6=111000 · Ветер",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Мягкое проникновение",
+      "metadata": {
+        "q6": "111000",
+        "ca_class": "II",
+        "alpha": -1
+      },
+      "links": [
+        "meta:hexagram:57",
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:111001",
+      "title": "Q6=111001 · Радость",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Открытость, обмен",
+      "metadata": {
+        "q6": "111001",
+        "ca_class": "II",
+        "alpha": -1
+      },
+      "links": [
+        "meta:hexagram:58",
+        "info1:alpha:-1"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:111110",
+      "title": "Q6=111110 · Синтез",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Интеграция всех архетипов",
+      "metadata": {
+        "q6": "111110",
+        "ca_class": "IV",
+        "alpha": 3
+      },
+      "links": [
+        "meta:hexagram:63",
+        "info1:alpha:3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:q6:111111",
+      "title": "Q6=111111 · Финал",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Финальный синтез всех систем",
+      "metadata": {
+        "q6": "111111",
+        "ca_class": "IV",
+        "alpha": 3
+      },
+      "links": [
+        "meta:hexagram:64",
+        "info1:alpha:3"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:self_train",
+      "title": "self_train.py — 3-стадийное самообучение",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Stage 0 (Q6 topology) → Stage 1 (RAG-buffer) → Stage 2 (filtered wild).",
+      "metadata": {
+        "file": "self_train.py",
+        "stages": 3
+      },
+      "links": [
+        "pro2:bidir"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:six_sources",
+      "title": "Шесть источников (Six Sources)",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Шесть источников данных для обучения Nautilus: корпус, граф, архетипы, гексаграммы, Q6, ЕТД.",
+      "metadata": {
+        "sources": 6
+      },
+      "links": [
+        "pro2:nautilus",
+        "data2:etd"
+      ],
+      "is_fallback": true
+    },
+    {
+      "id": "pro2:speculative",
+      "title": "Speculative Decoding — ускоренная генерация",
+      "source": "svend4/pro2",
+      "format_type": "concept",
+      "content": "Draft model + verify: быстрая генерация с проверкой крупной моделью.",
+      "metadata": {
+        "file": "inference/bridge_inference.py"
+      },
+      "links": [
+        "pro2:generate"
+      ],
+      "is_fallback": true
+    }
+  ],
+  "cross_links": [
+    {
+      "from": "ai_agents:bidir_agent",
+      "to": "data7:missing_loop",
+      "from_repo": "ai_agents",
+      "to_repo": "data7",
+      "bridge_type": "derivation",
+      "bridge_direction": "→",
+      "bridge_mapping": "bidir_train implements the missing K₀→K∞ loop described in data7",
+      "bridge_confidence": 0.9
+    },
+    {
+      "from": "ai_agents:self_train",
+      "to": "data7:theory:transformation",
+      "from_repo": "ai_agents",
+      "to_repo": "data7",
+      "bridge_type": "derivation",
+      "bridge_direction": "→",
+      "bridge_mapping": "bidir_train implements the missing K₀→K∞ loop described in data7",
+      "bridge_confidence": 0.9
+    },
+    {
+      "from": "ai_agents:bidir_agent",
+      "to": "infosystems:knowledge_graph",
+      "from_repo": "ai_agents",
+      "to_repo": "infosystems",
+      "bridge_type": "embedding",
+      "bridge_direction": "↔",
+      "bridge_mapping": "KnowledgeGraph is shared infrastructure for both ai_agents and infosystems domains",
+      "bridge_confidence": 1.0
+    },
+    {
+      "from": "ai_agents:bidir_agent",
+      "to": "pro2:bidir",
+      "from_repo": "ai_agents",
+      "to_repo": "pro2",
+      "bridge_type": "embedding",
+      "bridge_direction": "←",
+      "bridge_mapping": "all agent implementations reside in pro2",
+      "bridge_confidence": 1.0
+    },
+    {
+      "from": "ai_agents:nautilus_hierarchy",
+      "to": "pro2:nautilus",
+      "from_repo": "ai_agents",
+      "to_repo": "pro2",
+      "bridge_type": "embedding",
+      "bridge_direction": "←",
+      "bridge_mapping": "all agent implementations reside in pro2",
+      "bridge_confidence": 1.0
+    },
+    {
+      "from": "ai_agents:nautilus_hierarchy",
+      "to": "pro2:six_sources",
+      "from_repo": "ai_agents",
+      "to_repo": "pro2",
+      "bridge_type": "embedding",
+      "bridge_direction": "←",
+      "bridge_mapping": "all agent implementations reside in pro2",
+      "bridge_confidence": 1.0
+    },
+    {
+      "from": "ai_agents:self_train",
+      "to": "pro2:self_train",
+      "from_repo": "ai_agents",
+      "to_repo": "pro2",
+      "bridge_type": "embedding",
+      "bridge_direction": "←",
+      "bridge_mapping": "all agent implementations reside in pro2",
+      "bridge_confidence": 1.0
+    },
+    {
+      "from": "ai_agents:generator",
+      "to": "pro2:generate",
+      "from_repo": "ai_agents",
+      "to_repo": "pro2",
+      "bridge_type": "embedding",
+      "bridge_direction": "←",
+      "bridge_mapping": "all agent implementations reside in pro2",
+      "bridge_confidence": 1.0
+    },
+    {
+      "from": "ai_agents:generator",
+      "to": "pro2:speculative",
+      "from_repo": "ai_agents",
+      "to_repo": "pro2",
+      "bridge_type": "embedding",
+      "bridge_direction": "←",
+      "bridge_mapping": "all agent implementations reside in pro2",
+      "bridge_confidence": 1.0
+    },
+    {
+      "from": "ai_agents:hmoe_curriculum",
+      "to": "pro2:hmoe",
+      "from_repo": "ai_agents",
+      "to_repo": "pro2",
+      "bridge_type": "embedding",
+      "bridge_direction": "←",
+      "bridge_mapping": "all agent implementations reside in pro2",
+      "bridge_confidence": 1.0
+    },
+    {
+      "from": "ai_agents:hmoe_curriculum",
+      "to": "pro2:domain_routing",
+      "from_repo": "ai_agents",
+      "to_repo": "pro2",
+      "bridge_type": "embedding",
+      "bridge_direction": "←",
+      "bridge_mapping": "all agent implementations reside in pro2",
+      "bridge_confidence": 1.0
+    },
+    {
+      "from": "ai_research:agentic_workflow",
+      "to": "ai_agents:self_train",
+      "from_repo": "ai_research",
+      "to_repo": "ai_agents",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "research agent patterns ↔ pro2 agent implementations",
+      "bridge_confidence": 0.75
+    },
+    {
+      "from": "ai_research:mas",
+      "to": "ai_agents:self_train",
+      "from_repo": "ai_research",
+      "to_repo": "ai_agents",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "research agent patterns ↔ pro2 agent implementations",
+      "bridge_confidence": 0.75
+    },
+    {
+      "from": "ai_research:agentic_workflow",
+      "to": "continuum:dag",
+      "from_repo": "ai_research",
+      "to_repo": "continuum",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Agentic Workflow patterns ↔ Continuum step types",
+      "bridge_confidence": 0.8
+    },
+    {
+      "from": "continuum:core",
+      "to": "ai_agents:self_train",
+      "from_repo": "continuum",
+      "to_repo": "ai_agents",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Continuum Steps ↔ Nautilus AI-agent execution units",
+      "bridge_confidence": 0.75
+    },
+    {
+      "from": "continuum:step",
+      "to": "daten22:planner",
+      "from_repo": "continuum",
+      "to_repo": "daten22",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Continuum execution DAG ↔ daten22 Dynamic Planner DAG",
+      "bridge_confidence": 0.8
+    },
+    {
+      "from": "data2:etd",
+      "to": "info1:methodology",
+      "from_repo": "data2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "volume series (I–V+) → α-level depth",
+      "bridge_confidence": 0.65
+    },
+    {
+      "from": "data2:three_spheres",
+      "to": "info1:alpha:-1",
+      "from_repo": "data2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "volume series (I–V+) → α-level depth",
+      "bridge_confidence": 0.65
+    },
+    {
+      "from": "data2:arch:синтез",
+      "to": "info1:alpha:3",
+      "from_repo": "data2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "volume series (I–V+) → α-level depth",
+      "bridge_confidence": 0.65
+    },
+    {
+      "from": "data2:vol:20",
+      "to": "info1:alpha:0",
+      "from_repo": "data2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "volume series (I–V+) → α-level depth",
+      "bridge_confidence": 0.65
+    },
+    {
+      "from": "data2:vol:40",
+      "to": "info1:alpha:1",
+      "from_repo": "data2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "volume series (I–V+) → α-level depth",
+      "bridge_confidence": 0.65
+    },
+    {
+      "from": "data2:vol:150",
+      "to": "info1:alpha:3",
+      "from_repo": "data2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "volume series (I–V+) → α-level depth",
+      "bridge_confidence": 0.65
+    },
+    {
+      "from": "data2:vol:310",
+      "to": "info1:alpha:3",
+      "from_repo": "data2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "volume series (I–V+) → α-level depth",
+      "bridge_confidence": 0.65
+    },
+    {
+      "from": "data2:vol:4",
+      "to": "info1:alpha:-1",
+      "from_repo": "data2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "volume series (I–V+) → α-level depth",
+      "bridge_confidence": 0.65
+    },
+    {
+      "from": "data2:vol:2",
+      "to": "info1:alpha:-1",
+      "from_repo": "data2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "volume series (I–V+) → α-level depth",
+      "bridge_confidence": 0.65
+    },
+    {
+      "from": "data2:etd",
+      "to": "meta:hexagram:50",
+      "from_repo": "data2",
+      "to_repo": "meta",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "ETD movement archetypes ↔ CA-classes",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "data2:scarab",
+      "to": "meta:hexagram:63",
+      "from_repo": "data2",
+      "to_repo": "meta",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "ETD movement archetypes ↔ CA-classes",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "data2:three_spheres",
+      "to": "meta:ca_class:II",
+      "from_repo": "data2",
+      "to_repo": "meta",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "ETD movement archetypes ↔ CA-classes",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "data2:arch:синтез",
+      "to": "meta:ca_class:IV",
+      "from_repo": "data2",
+      "to_repo": "meta",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "ETD movement archetypes ↔ CA-classes",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "data2:etd",
+      "to": "pro2:bidir",
+      "from_repo": "data2",
+      "to_repo": "pro2",
+      "bridge_type": "derivation",
+      "bridge_direction": "→",
+      "bridge_mapping": "scarab_algorithm → Q6-trajectory traversal",
+      "bridge_confidence": 0.75
+    },
+    {
+      "from": "data2:scarab",
+      "to": "pro2:q6",
+      "from_repo": "data2",
+      "to_repo": "pro2",
+      "bridge_type": "derivation",
+      "bridge_direction": "→",
+      "bridge_mapping": "scarab_algorithm → Q6-trajectory traversal",
+      "bridge_confidence": 0.75
+    },
+    {
+      "from": "data2:arch:синтез",
+      "to": "pro2:q6:111110",
+      "from_repo": "data2",
+      "to_repo": "pro2",
+      "bridge_type": "derivation",
+      "bridge_direction": "→",
+      "bridge_mapping": "scarab_algorithm → Q6-trajectory traversal",
+      "bridge_confidence": 0.75
+    },
+    {
+      "from": "data2:vol:20",
+      "to": "pro2:q6:010100",
+      "from_repo": "data2",
+      "to_repo": "pro2",
+      "bridge_type": "derivation",
+      "bridge_direction": "→",
+      "bridge_mapping": "scarab_algorithm → Q6-trajectory traversal",
+      "bridge_confidence": 0.75
+    },
+    {
+      "from": "data2:vol:40",
+      "to": "pro2:q6:101000",
+      "from_repo": "data2",
+      "to_repo": "pro2",
+      "bridge_type": "derivation",
+      "bridge_direction": "→",
+      "bridge_mapping": "scarab_algorithm → Q6-trajectory traversal",
+      "bridge_confidence": 0.75
+    },
+    {
+      "from": "data2:vol:150",
+      "to": "pro2:q6:111111",
+      "from_repo": "data2",
+      "to_repo": "pro2",
+      "bridge_type": "derivation",
+      "bridge_direction": "→",
+      "bridge_mapping": "scarab_algorithm → Q6-trajectory traversal",
+      "bridge_confidence": 0.75
+    },
+    {
+      "from": "data2:vol:310",
+      "to": "pro2:q6:111111",
+      "from_repo": "data2",
+      "to_repo": "pro2",
+      "bridge_type": "derivation",
+      "bridge_direction": "→",
+      "bridge_mapping": "scarab_algorithm → Q6-trajectory traversal",
+      "bridge_confidence": 0.75
+    },
+    {
+      "from": "data2:vol:4",
+      "to": "pro2:q6:000100",
+      "from_repo": "data2",
+      "to_repo": "pro2",
+      "bridge_type": "derivation",
+      "bridge_direction": "→",
+      "bridge_mapping": "scarab_algorithm → Q6-trajectory traversal",
+      "bridge_confidence": 0.75
+    },
+    {
+      "from": "data2:vol:2",
+      "to": "pro2:q6:000010",
+      "from_repo": "data2",
+      "to_repo": "pro2",
+      "bridge_type": "derivation",
+      "bridge_direction": "→",
+      "bridge_mapping": "scarab_algorithm → Q6-trajectory traversal",
+      "bridge_confidence": 0.75
+    },
+    {
+      "from": "data7:concept",
+      "to": "pro2:q6",
+      "from_repo": "data7",
+      "to_repo": "pro2",
+      "bridge_type": "derivation",
+      "bridge_direction": "←",
+      "bridge_mapping": "bidir_train (pro2) implements the missing K₀→K∞ loop",
+      "bridge_confidence": 0.9
+    },
+    {
+      "from": "data7:analogy_table",
+      "to": "pro2:bidir",
+      "from_repo": "data7",
+      "to_repo": "pro2",
+      "bridge_type": "derivation",
+      "bridge_direction": "←",
+      "bridge_mapping": "bidir_train (pro2) implements the missing K₀→K∞ loop",
+      "bridge_confidence": 0.9
+    },
+    {
+      "from": "data7:analogy_table",
+      "to": "pro2:knowledge_graph",
+      "from_repo": "data7",
+      "to_repo": "pro2",
+      "bridge_type": "derivation",
+      "bridge_direction": "←",
+      "bridge_mapping": "bidir_train (pro2) implements the missing K₀→K∞ loop",
+      "bridge_confidence": 0.9
+    },
+    {
+      "from": "daten22:architecture",
+      "to": "info1:methodology",
+      "from_repo": "daten22",
+      "to_repo": "info1",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "rationalization archetypes ↔ α-level methodology",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "daten22:fts4_rag",
+      "to": "pro2:bidir",
+      "from_repo": "daten22",
+      "to_repo": "pro2",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "FTS4-RAG local index ↔ bidir_train KnowledgeGraph",
+      "bridge_confidence": 0.65
+    },
+    {
+      "from": "graphrag:knowledge_graph",
+      "to": "pro2:q6",
+      "from_repo": "graphrag",
+      "to_repo": "pro2",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "GraphRAG graph nodes ↔ Q6 hypercube vertices",
+      "bridge_confidence": 0.75
+    },
+    {
+      "from": "graphrag:pipeline",
+      "to": "pro2:q6",
+      "from_repo": "graphrag",
+      "to_repo": "pro2",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "GraphRAG graph nodes ↔ Q6 hypercube vertices",
+      "bridge_confidence": 0.75
+    },
+    {
+      "from": "info1:methodology",
+      "to": "meta:hexagram:50",
+      "from_repo": "info1",
+      "to_repo": "meta",
+      "bridge_type": "analogy",
+      "bridge_direction": "→",
+      "bridge_mapping": "α=+4 → hexagrams class I (ontology)",
+      "bridge_confidence": 0.65
+    },
+    {
+      "from": "info1:methodology",
+      "to": "pro2:bidir",
+      "from_repo": "info1",
+      "to_repo": "pro2",
+      "bridge_type": "projection",
+      "bridge_direction": "↔",
+      "bridge_mapping": "α-level ↔ Q6 concept depth",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "info1:cards",
+      "to": "pro2:concept:knowledge",
+      "from_repo": "info1",
+      "to_repo": "pro2",
+      "bridge_type": "projection",
+      "bridge_direction": "↔",
+      "bridge_mapping": "α-level ↔ Q6 concept depth",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "infosystems:corpus_structure",
+      "to": "data2:etd",
+      "from_repo": "infosystems",
+      "to_repo": "data2",
+      "bridge_type": "unknown",
+      "bridge_direction": "↔",
+      "bridge_mapping": "",
+      "bridge_confidence": null
+    },
+    {
+      "from": "infosystems:knowledge_graph",
+      "to": "data7:theory:transformation",
+      "from_repo": "infosystems",
+      "to_repo": "data7",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-ontology (64 vertices) ↔ K₀→K∞ transformation cycle",
+      "bridge_confidence": 0.75
+    },
+    {
+      "from": "infosystems:corpus_structure",
+      "to": "data7:theory:transformation",
+      "from_repo": "infosystems",
+      "to_repo": "data7",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-ontology (64 vertices) ↔ K₀→K∞ transformation cycle",
+      "bridge_confidence": 0.75
+    },
+    {
+      "from": "infosystems:corpus_structure",
+      "to": "meta:ca_rules",
+      "from_repo": "infosystems",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "64 hexagrams ↔ 64 Q6 hypercube vertices",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "infosystems:knowledge_graph",
+      "to": "pro2:bidir",
+      "from_repo": "infosystems",
+      "to_repo": "pro2",
+      "bridge_type": "embedding",
+      "bridge_direction": "←",
+      "bridge_mapping": "KnowledgeGraph and DomainMoE are implemented inside pro2",
+      "bridge_confidence": 1.0
+    },
+    {
+      "from": "infosystems:domain_moe",
+      "to": "pro2:domain_routing",
+      "from_repo": "infosystems",
+      "to_repo": "pro2",
+      "bridge_type": "embedding",
+      "bridge_direction": "←",
+      "bridge_mapping": "KnowledgeGraph and DomainMoE are implemented inside pro2",
+      "bridge_confidence": 1.0
+    },
+    {
+      "from": "meta:hexagram:50",
+      "to": "info1:alpha:3",
+      "from_repo": "meta",
+      "to_repo": "info1",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "CA-class I↔IV ↔ α-level -3↔+3",
+      "bridge_confidence": 0.8
+    },
+    {
+      "from": "meta:hexagram:63",
+      "to": "info1:alpha:3",
+      "from_repo": "meta",
+      "to_repo": "info1",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "CA-class I↔IV ↔ α-level -3↔+3",
+      "bridge_confidence": 0.8
+    },
+    {
+      "from": "meta:hexagram:24",
+      "to": "info1:alpha:3",
+      "from_repo": "meta",
+      "to_repo": "info1",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "CA-class I↔IV ↔ α-level -3↔+3",
+      "bridge_confidence": 0.8
+    },
+    {
+      "from": "meta:hexagram:1",
+      "to": "info1:alpha:-3",
+      "from_repo": "meta",
+      "to_repo": "info1",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "CA-class I↔IV ↔ α-level -3↔+3",
+      "bridge_confidence": 0.8
+    },
+    {
+      "from": "meta:ca_class:I",
+      "to": "info1:alpha:-3",
+      "from_repo": "meta",
+      "to_repo": "info1",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "CA-class I↔IV ↔ α-level -3↔+3",
+      "bridge_confidence": 0.8
+    },
+    {
+      "from": "meta:ca_class:II",
+      "to": "info1:alpha:-1",
+      "from_repo": "meta",
+      "to_repo": "info1",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "CA-class I↔IV ↔ α-level -3↔+3",
+      "bridge_confidence": 0.8
+    },
+    {
+      "from": "meta:ca_class:III",
+      "to": "info1:alpha:1",
+      "from_repo": "meta",
+      "to_repo": "info1",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "CA-class I↔IV ↔ α-level -3↔+3",
+      "bridge_confidence": 0.8
+    },
+    {
+      "from": "meta:ca_class:IV",
+      "to": "info1:alpha:3",
+      "from_repo": "meta",
+      "to_repo": "info1",
+      "bridge_type": "analogy",
+      "bridge_direction": "↔",
+      "bridge_mapping": "CA-class I↔IV ↔ α-level -3↔+3",
+      "bridge_confidence": 0.8
+    },
+    {
+      "from": "meta:hexagram",
+      "to": "pro2:q6",
+      "from_repo": "meta",
+      "to_repo": "pro2",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "hexagram number (1..64) ↔ Q6-bits [b0..b5] semantic space",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:six_sources",
+      "to": "data2:etd",
+      "from_repo": "pro2",
+      "to_repo": "data2",
+      "bridge_type": "derivation",
+      "bridge_direction": "→",
+      "bridge_mapping": "scarab_algorithm → Q6-trajectory traversal",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:bidir",
+      "to": "data7:missing_loop",
+      "from_repo": "pro2",
+      "to_repo": "data7",
+      "bridge_type": "derivation",
+      "bridge_direction": "↔",
+      "bridge_mapping": "bidir_train cycle ↔ K₀→K₁→K₂ transformation",
+      "bridge_confidence": 0.8
+    },
+    {
+      "from": "pro2:bidir",
+      "to": "data7:theory:transformation",
+      "from_repo": "pro2",
+      "to_repo": "data7",
+      "bridge_type": "derivation",
+      "bridge_direction": "↔",
+      "bridge_mapping": "bidir_train cycle ↔ K₀→K₁→K₂ transformation",
+      "bridge_confidence": 0.8
+    },
+    {
+      "from": "pro2:knowledge_graph",
+      "to": "data7:concept",
+      "from_repo": "pro2",
+      "to_repo": "data7",
+      "bridge_type": "derivation",
+      "bridge_direction": "↔",
+      "bridge_mapping": "bidir_train cycle ↔ K₀→K₁→K₂ transformation",
+      "bridge_confidence": 0.8
+    },
+    {
+      "from": "pro2:knowledge_graph",
+      "to": "data7:theory:transformation",
+      "from_repo": "pro2",
+      "to_repo": "data7",
+      "bridge_type": "derivation",
+      "bridge_direction": "↔",
+      "bridge_mapping": "bidir_train cycle ↔ K₀→K₁→K₂ transformation",
+      "bridge_confidence": 0.8
+    },
+    {
+      "from": "pro2:adaptive_learning",
+      "to": "data7:missing_loop",
+      "from_repo": "pro2",
+      "to_repo": "data7",
+      "bridge_type": "derivation",
+      "bridge_direction": "↔",
+      "bridge_mapping": "bidir_train cycle ↔ K₀→K₁→K₂ transformation",
+      "bridge_confidence": 0.8
+    },
+    {
+      "from": "pro2:q6",
+      "to": "info1:alpha:0",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:concept:knowledge",
+      "to": "info1:methodology",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:000000",
+      "to": "info1:alpha:-3",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:000001",
+      "to": "info1:alpha:-3",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:000010",
+      "to": "info1:alpha:-3",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:000011",
+      "to": "info1:alpha:-1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:000100",
+      "to": "info1:alpha:-3",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:000110",
+      "to": "info1:alpha:-1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:000111",
+      "to": "info1:alpha:-1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:001001",
+      "to": "info1:alpha:-1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:010010",
+      "to": "info1:alpha:-1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:010100",
+      "to": "info1:alpha:-1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:010111",
+      "to": "info1:alpha:3",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:101000",
+      "to": "info1:alpha:-1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:110001",
+      "to": "info1:alpha:3",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:110011",
+      "to": "info1:alpha:3",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:110100",
+      "to": "info1:alpha:3",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:111110",
+      "to": "info1:alpha:3",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:111111",
+      "to": "info1:alpha:3",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:000101",
+      "to": "info1:alpha:-1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:001000",
+      "to": "info1:alpha:-1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:001010",
+      "to": "info1:alpha:-1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:001011",
+      "to": "info1:alpha:1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:001101",
+      "to": "info1:alpha:-1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:010110",
+      "to": "info1:alpha:1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:011100",
+      "to": "info1:alpha:1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:011101",
+      "to": "info1:alpha:1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:101001",
+      "to": "info1:alpha:-1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:110000",
+      "to": "info1:alpha:3",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:110010",
+      "to": "info1:alpha:1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:110101",
+      "to": "info1:alpha:-1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:111000",
+      "to": "info1:alpha:-1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:q6:111001",
+      "to": "info1:alpha:-1",
+      "from_repo": "pro2",
+      "to_repo": "info1",
+      "bridge_type": "projection",
+      "bridge_direction": "→",
+      "bridge_mapping": "concept depth → α-level (-4..+4)",
+      "bridge_confidence": 0.7
+    },
+    {
+      "from": "pro2:moe",
+      "to": "infosystems:domain_moe",
+      "from_repo": "pro2",
+      "to_repo": "infosystems",
+      "bridge_type": "embedding",
+      "bridge_direction": "→",
+      "bridge_mapping": "KnowledgeGraph and DomainMoE are implemented inside pro2",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6",
+      "to": "meta:hexagram:all",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:biangua",
+      "to": "meta:hexagram:all",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:000000",
+      "to": "meta:hexagram:1",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:000001",
+      "to": "meta:hexagram:2",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:000010",
+      "to": "meta:hexagram:3",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:000011",
+      "to": "meta:hexagram:4",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:000100",
+      "to": "meta:hexagram:5",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:000110",
+      "to": "meta:hexagram:7",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:000111",
+      "to": "meta:hexagram:8",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:001001",
+      "to": "meta:hexagram:10",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:010010",
+      "to": "meta:hexagram:19",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:010100",
+      "to": "meta:hexagram:21",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:010111",
+      "to": "meta:hexagram:24",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:101000",
+      "to": "meta:hexagram:41",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:110001",
+      "to": "meta:hexagram:50",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:110011",
+      "to": "meta:hexagram:52",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:110100",
+      "to": "meta:hexagram:53",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:111110",
+      "to": "meta:hexagram:63",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:111111",
+      "to": "meta:hexagram:64",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:000101",
+      "to": "meta:hexagram:6",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:001000",
+      "to": "meta:hexagram:9",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:001010",
+      "to": "meta:hexagram:11",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:001011",
+      "to": "meta:hexagram:12",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:001101",
+      "to": "meta:hexagram:14",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:010110",
+      "to": "meta:hexagram:23",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:011100",
+      "to": "meta:hexagram:29",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:011101",
+      "to": "meta:hexagram:30",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:101001",
+      "to": "meta:hexagram:42",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:110000",
+      "to": "meta:hexagram:49",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:110010",
+      "to": "meta:hexagram:51",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:110101",
+      "to": "meta:hexagram:54",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:111000",
+      "to": "meta:hexagram:57",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    },
+    {
+      "from": "pro2:q6:111001",
+      "to": "meta:hexagram:58",
+      "from_repo": "pro2",
+      "to_repo": "meta",
+      "bridge_type": "isomorphism",
+      "bridge_direction": "↔",
+      "bridge_mapping": "Q6-bits [b0..b5] ↔ hexagram number (1..64)",
+      "bridge_confidence": 0.95
+    }
+  ]
+}

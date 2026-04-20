@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-20T04:10:47Z",
+  "generated_at": "2026-04-20T04:10:45Z",
   "score": 66,
   "ok": false,
   "total_entries": 152,
@@ -18,14 +18,14 @@
       "entries_real": 0,
       "entries_fallback": 11,
       "has_q6": true,
-      "response_ms": 80
+      "response_ms": 79
     },
     "pro2": {
       "ok": true,
       "entries_real": 0,
       "entries_fallback": 46,
       "has_q6": true,
-      "response_ms": 1
+      "response_ms": 0
     },
     "meta": {
       "ok": true,
@@ -102,14 +102,14 @@
       "entries_real": 3,
       "entries_fallback": 0,
       "has_q6": true,
-      "response_ms": 9
+      "response_ms": 6
     },
     "sessions": {
       "ok": true,
       "entries_real": 3,
       "entries_fallback": 0,
       "has_q6": true,
-      "response_ms": 12
+      "response_ms": 6
     }
   }
 }

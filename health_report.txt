@@ -1,0 +1,57 @@
+
+⬡ Nautilus Ecosystem Health Report
+==================================================
+Дата:    2026-04-20 04:10 UTC
+Оценка:  ⚠️  66/100  [█████████████░░░░░░░]
+
+── Адаптеры ──────────────────────────────────────
+  ✅ ai_agents        real=1  fallback=0  Q6✓  links✓  0ms
+  ✅ ai_research      real=0  fallback=2  Q6✓  links✓  0ms
+  ✅ continuum        real=0  fallback=1  Q6✓  links✓  0ms
+  ✅ conversations    real=3  fallback=0  Q6✓  links✗  9ms
+  ✅ data2            real=0  fallback=3  Q6✓  links✓  0ms
+  ✅ data7            real=4  fallback=0  Q6✓  links✓  0ms
+  ✅ daten22          real=1  fallback=0  Q6✓  links✓  0ms
+  ✅ graphrag         real=1  fallback=0  Q6✓  links✓  0ms
+  ✅ info1            real=0  fallback=11  Q6✓  links✓  87ms
+  ✅ infosystems      real=3  fallback=0  Q6✓  links✓  0ms
+  ✅ legal            real=0  fallback=1  Q6✓  links✗  0ms
+  ✅ meta             real=0  fallback=8  Q6✓  links✓  0ms
+  ✅ pro2             real=0  fallback=46  Q6✓  links✓  0ms
+  ✅ sessions         real=3  fallback=0  Q6✓  links✗  11ms
+
+── Паспорта ───────────────────────────────────────
+  ✅ ai_agents        46 строк  Q6✗  bridges✓
+  ⚠️  ai_research      46 строк  Q6✓  bridges✓  (нет: Репозиторий)
+  ✅ continuum        48 строк  Q6✓  bridges✓
+  ✅ data2            39 строк  Q6✓  bridges✓
+  ✅ data7            48 строк  Q6✗  bridges✓
+  ✅ daten22          44 строк  Q6✓  bridges✓
+  ✅ graphrag         49 строк  Q6✓  bridges✓
+  ✅ info1            41 строк  Q6✓  bridges✓
+  ✅ infosystems      41 строк  Q6✓  bridges✓
+  ❌ jsonl            ОТСУТСТВУЕТ
+  ✅ legal            47 строк  Q6✓  bridges✓
+  ✅ meta             42 строк  Q6✓  bridges✓
+  ✅ pro2             52 строк  Q6✓  bridges✓
+
+── Консенсус ──────────────────────────────────────
+  ⚠️  "knowledge      "  real=36%  +fallback=86%  entries=88  xlinks=106
+     отсутствует: conversations, sessions
+  ⚠️  "синтез         "  real=14%  +fallback=71%  entries=85  xlinks=102
+     отсутствует: conversations, data7, infosystems, sessions
+  ✅ "bidir          "  real=21%  +fallback=86%  entries=86  xlinks=101
+     отсутствует: conversations, sessions
+
+── Bridges ────────────────────────────────────────
+  ✅ 33 bridges в 12 адаптерах  [analogy=17  derivation=6  embedding=3  isomorphism=3  projection=4]
+
+── Кэш ────────────────────────────────────────────
+  Закэшировано репо: 0
+
+── Проблемы ───────────────────────────────────────
+  ⚠️  Только fallback-записи: info1, pro2, meta, data2, legal, continuum, ai_research
+  ❌ Паспорта отсутствуют: jsonl
+  ⚠️  Неполные паспорта: ai_research
+  ⚠️  Низкий консенсус: knowledge, синтез
+
