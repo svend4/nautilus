@@ -4,7 +4,7 @@
 ![entries](https://img.shields.io/badge/entries-152-blue)
 ![links](https://img.shields.io/badge/cross--links-136-blue)
 
-*Generated: 2026-04-20T04:10:43Z*
+*Generated: 2026-04-27T04:17:47Z*
 
 **Score: 66/100** `[█████████████░░░░░░░]`
 
@@ -20,7 +20,7 @@
 | ✅ data7 | 4 | 0 | ✓ | 0ms |
 | ✅ daten22 | 1 | 0 | ✓ | 0ms |
 | ✅ graphrag | 1 | 0 | ✓ | 0ms |
-| ✅ info1 | 0 | 11 | ✓ | 79ms |
+| ✅ info1 | 0 | 11 | ✓ | 32ms |
 | ✅ infosystems | 3 | 0 | ✓ | 0ms |
 | ✅ legal | 0 | 1 | ✓ | 0ms |
 | ✅ meta | 0 | 8 | ✓ | 0ms |

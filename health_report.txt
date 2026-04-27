@@ -1,7 +1,7 @@
 
 ⬡ Nautilus Ecosystem Health Report
 ==================================================
-Дата:    2026-04-20 04:10 UTC
+Дата:    2026-04-27 04:17 UTC
 Оценка:  ⚠️  66/100  [█████████████░░░░░░░]
 
 ── Адаптеры ──────────────────────────────────────
@@ -13,7 +13,7 @@
   ✅ data7            real=4  fallback=0  Q6✓  links✓  0ms
   ✅ daten22          real=1  fallback=0  Q6✓  links✓  0ms
   ✅ graphrag         real=1  fallback=0  Q6✓  links✓  0ms
-  ✅ info1            real=0  fallback=11  Q6✓  links✓  87ms
+  ✅ info1            real=0  fallback=11  Q6✓  links✓  36ms
   ✅ infosystems      real=3  fallback=0  Q6✓  links✓  0ms
   ✅ legal            real=0  fallback=1  Q6✓  links✗  0ms
   ✅ meta             real=0  fallback=8  Q6✓  links✓  0ms

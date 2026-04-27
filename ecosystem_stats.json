@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-20T04:10:47Z",
+  "generated_at": "2026-04-27T04:17:49Z",
   "score": 66,
   "ok": false,
   "total_entries": 152,
@@ -18,7 +18,7 @@
       "entries_real": 0,
       "entries_fallback": 11,
       "has_q6": true,
-      "response_ms": 80
+      "response_ms": 39
     },
     "pro2": {
       "ok": true,
@@ -109,7 +109,7 @@
       "entries_real": 3,
       "entries_fallback": 0,
       "has_q6": true,
-      "response_ms": 12
+      "response_ms": 11
     }
   }
 }
